@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.L.M MARKET | Accès Administrateur</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6a00;
+            --primary-glow: rgba(255, 106, 0, 0.25);
+            --bg: #060608;
+            --panel: #0e0e12;
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #ffffff;
+            --muted: #666677;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ─── PANNEAU GAUCHE — BRANDING ─── */
+        .brand-panel {
+            width: 55%;
+            background: linear-gradient(135deg, #0a0a0d 0%, #130d06 60%, #1a0e00 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 50px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            top: -200px; left: -200px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,106,0,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -150px; right: -150px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,106,0,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Grille décorative */
+        .grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .brand-top {
+            position: relative; z-index: 1;
+        }
+
+        .brand-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--primary);
+            letter-spacing: 4px;
+            line-height: 1;
+        }
+
+        .brand-logo sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .brand-center {
+            position: relative; z-index: 1;
+        }
+
+        .brand-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px;
+            line-height: 1.1;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .brand-headline em {
+            color: var(--primary);
+            font-style: italic;
+        }
+
+        .brand-sub {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 380px;
+            font-weight: 400;
+        }
+
+        .brand-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .brand-footer {
+            position: relative; z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .brand-footer i { color: var(--primary); }
+
+        /* ─── PANNEAU DROIT — FORMULAIRE ─── */
+        .login-panel {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 50px;
+            background: var(--panel);
+            border-left: 1px solid var(--border);
+            position: relative;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 30px; left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: var(--primary); }
+        .back-link:hover i { transform: translateX(-3px); }
+        .back-link i { transition: transform 0.3s; }
+
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .login-icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--primary), #ff9a3c);
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 12px 30px var(--primary-glow);
+        }
+
+        .login-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .login-desc {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 16px 18px 16px 48px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--primary);
+            background: rgba(255,106,0,0.04);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        .input-wrap input:focus + i,
+        .input-wrap:focus-within i {
+            color: var(--primary);
+        }
+
+        .input-wrap .toggle-pw {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            left: auto;
+            transition: color 0.3s;
+        }
+
+        .input-wrap .toggle-pw:hover { color: var(--primary); }
+
+        .btn-login {
+            width: 100%;
+            padding: 17px;
+            margin-top: 10px;
+            background: var(--primary);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--primary-glow);
+        }
+
+        .btn-login:active { transform: translateY(0); }
+
+        .btn-login.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-login .spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        .btn-login.loading .spinner { display: block; }
+        .btn-login.loading .btn-text { display: none; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-block {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 15px;
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .error-block.show { display: flex; }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 30px;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .security-badge i { color: var(--primary); font-size: 12px; }
+
+        /* Shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        .shake { animation: shake 0.5s ease; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .brand-panel { width: 100%; padding: 40px; min-height: 0; }
+            .brand-headline { font-size: 36px; }
+            .brand-stats { display: none; }
+            .login-panel { width: 100%; padding: 40px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── PANNEAU BRANDING ─── -->
+    <div class="brand-panel">
+        <div class="grid-lines"></div>
+
+        <div class="brand-top">
+            <div class="brand-logo">
+                S.L.M
+                <sub>Market — Command Center</sub>
+            </div>
+        </div>
+
+        <div class="brand-center">
+            <h1 class="brand-headline">
+                Gestion<br>
+                <em>Exclusive</em><br>
+                & Sécurisée
+            </h1>
+            <p class="brand-sub">
+                Accédez à votre tableau de bord privé pour gérer les commandes, suivre les livraisons et piloter votre activité en temps réel.
+            </p>
+
+            <div class="brand-stats">
+                <div class="stat-item">
+                    <div class="stat-value">AES-256</div>
+                    <div class="stat-label">Chiffrement</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Privé</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Disponible</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="brand-footer">
+            <i class="fas fa-shield-alt"></i>
+            Connexion sécurisée — Accès réservé aux administrateurs autorisés
+        </div>
+    </div>
+
+    <!-- ─── PANNEAU FORMULAIRE ─── -->
+    <div class="login-panel">
+        <a href="/frontend/slm-market-enterprise.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Retour Boutique
+        </a>
+
+        <div class="login-box">
+            <div class="login-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+
+            <h2 class="login-title">Connexion Admin</h2>
+            <p class="login-desc">Entrez votre code d'accès administrateur pour accéder au panneau de contrôle.</p>
+
+            <div class="form-group">
+                <label for="accessKey">Code d'accès secret</label>
+                <div class="input-wrap">
+                    <i class="fas fa-key"></i>
+                    <input
+                        type="password"
+                        id="accessKey"
+                        placeholder="••••••••••••••"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button class="toggle-pw" type="button" id="togglePw" tabindex="-1">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn-login" id="loginBtn" onclick="handleLogin()">
+                <div class="spinner"></div>
+                <span class="btn-text"><i class="fas fa-unlock-alt"></i>&nbsp; Accéder au Panel</span>
+            </button>
+
+            <div class="error-block" id="errorBlock">
+                <i class="fas fa-ban"></i>
+                <span>Code incorrect — Accès refusé</span>
+            </div>
+
+            <div class="security-badge">
+                <i class="fas fa-lock"></i> Session chiffrée AES-256
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nettoyer toute session expirée
+        localStorage.removeItem('slm_admin_token');
+
+        const SECRET = 'BOSS-SLM-2026';
+
+        function handleLogin() {
+            const key = document.getElementById('accessKey').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const errorBlock = document.getElementById('errorBlock');
+            const loginBox = document.querySelector('.login-box');
+
+            errorBlock.classList.remove('show');
+
+            if (!key) return;
+
+            // State chargement
+            btn.classList.add('loading');
+
+            setTimeout(() => {
+                if (key === SECRET) {
+                    localStorage.setItem('slm_admin_token', 'access_granted');
+                    btn.classList.remove('loading');
+                    btn.style.background = '#10b981';
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i>&nbsp; Accès Autorisé';
+                    setTimeout(() => {
+                        window.location.replace('admin.html');
+                    }, 700);
+                } else {
+                    btn.classList.remove('loading');
+                    errorBlock.classList.add('show');
+                    loginBox.classList.add('shake');
+                    document.getElementById('accessKey').value = '';
+                    document.getElementById('accessKey').style.borderColor = '#ef4444';
+                    setTimeout(() => {
+                        loginBox.classList.remove('shake');
+                        document.getElementById('accessKey').style.borderColor = '';
+                        errorBlock.classList.remove('show');
+                    }, 3000);
+                }
+            }, 900);
+        }
+
+        // Enter key support
+        document.getElementById('accessKey').addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        // Toggle mot de passe
+        document.getElementById('togglePw').addEventListener('click', () => {
+            const input = document.getElementById('accessKey');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        });
+    </script>
+</body>
+</html>

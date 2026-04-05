@@ -1,0 +1,285 @@
+/* ==========================================================================
+   SLM MARKET - Responsive Stylesheet
+   Breakpoints: mobile <600px, tablet <900px, desktop <1200px
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   TABLET (< 1200px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    .cart-sidebar {
+        width: 380px;
+    }
+
+    .hero-stats {
+        gap: 24px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   TABLET (< 900px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+    :root {
+        --navbar-height: 60px;
+    }
+
+    .navbar {
+        padding: 0 16px;
+        gap: 12px;
+    }
+
+    .navbar-search {
+        max-width: 300px;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .hero {
+        padding: 60px 0;
+    }
+
+    .hero-stats {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cart-sidebar {
+        width: 100%;
+        max-width: 420px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   MOBILE (< 600px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+    :root {
+        --navbar-height: 56px;
+    }
+
+    .container {
+        padding: 0 16px;
+    }
+
+    .navbar {
+        padding: 0 12px;
+    }
+
+    /* Hide search bar in navbar on mobile — use dedicated search page */
+    .navbar-search {
+        display: none;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .product-card-body {
+        padding: 12px;
+    }
+
+    .product-card-footer {
+        padding: 0 12px 12px;
+    }
+
+    .product-name {
+        font-size: 0.85rem;
+    }
+
+    .price-sale {
+        font-size: 1rem;
+    }
+
+    .hero {
+        padding: 40px 0;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-subtitle {
+        max-width: 100%;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .hero-stats {
+        justify-content: center;
+        gap: 24px;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+
+    /* Cart full-width on mobile */
+    .cart-sidebar {
+        width: 100%;
+        max-width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        top: auto;
+        bottom: 0;
+        height: 85vh;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        transform: translateY(100%);
+    }
+    .cart-sidebar.open {
+        transform: translateY(0);
+    }
+
+    /* Auth */
+    .auth-card {
+        padding: 28px 20px;
+    }
+
+    /* Footer */
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Modal */
+    .modal {
+        padding: 24px 16px;
+        margin: 0;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        position: fixed;
+        bottom: 0;
+        max-height: 85vh;
+    }
+
+    /* Category bar */
+    .category-bar {
+        gap: 8px;
+    }
+    .category-chip {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+    }
+
+    /* Order card */
+    .order-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .order-timeline {
+        display: none; /* Simplified on mobile */
+    }
+
+    /* Notification */
+    #notification-container {
+        top: auto;
+        bottom: 80px;
+        left: 16px;
+        right: 16px;
+        max-width: 100%;
+    }
+
+    /* Buttons */
+    .btn-lg {
+        padding: 14px 28px;
+        font-size: 0.95rem;
+    }
+
+    /* Stats */
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        display: grid;
+    }
+
+    /* Section header */
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   EXTRA SMALL (< 380px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 380px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   PRINT STYLES
+   -------------------------------------------------------------------------- */
+@media print {
+    .navbar,
+    .cart-sidebar,
+    .cart-overlay,
+    .modal-overlay,
+    #notification-container,
+    .footer {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+    }
+
+    .order-card {
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   PREFERS REDUCED MOTION
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   DARK MODE OVERRIDE (system preference)
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+    /* The site is dark-first; light mode users can toggle if implemented */
+    /* Keeping variables as-is since SLM is a dark luxury brand */
+}

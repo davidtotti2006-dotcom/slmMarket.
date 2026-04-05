@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.L.M LOGISTICS | Plateforme de Suivi Sécurisée</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           01. VARIABLES & DESIGN TOKENS (CHARTE BLANC/ORANGE LUXE)
+           ========================================================================== */
+        :root {
+            /* Couleurs Primaires */
+            --sm-primary: #ff6a00;
+            --sm-primary-hover: #e65c00;
+            --sm-primary-light: rgba(255, 106, 0, 0.08);
+            --sm-primary-glow: rgba(255, 106, 0, 0.2);
+            
+            /* Nuances de Fond */
+            --bg-body: #f8f9fc; 
+            --bg-card: #ffffff;
+            --bg-card-hover: #fdfdfd;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            
+            /* Nuances de Texte */
+            --text-main: #111111;
+            --text-secondary: #444444;
+            --text-muted: #888888;
+            --text-inverse: #ffffff;
+            
+            /* UI Elements & Statuts */
+            --border-color: #eaeaea;
+            --border-focus: #cccccc;
+            --success: #00b36b;
+            --warning: #ffb400;
+            --danger: #ff3333;
+            
+            /* Ombres et Formes */
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.08);
+            --shadow-float: 0 30px 60px rgba(255, 106, 0, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ==========================================================================
+           02. RESET & STYLES GLOBAUX
+           ========================================================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Arrière-plan subtil de luxe */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #ffffff 0%, transparent 60%);
+            z-index: -2;
+        }
+
+        /* Canvas Radar Background */
+        #radar-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button, input { font-family: inherit; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: #dcdcdc; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sm-primary); }
+
+        /* ==========================================================================
+           03. EN-TÊTE VIP (HEADER)
+           ========================================================================== */
+        .site-header {
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--text-main);
+            letter-spacing: 2px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand-logo span {
+            color: var(--sm-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding-left: 10px;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-ghost {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-base);
+            padding: 12px 24px;
+            border-radius: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .btn-ghost:hover {
+            color: var(--sm-primary);
+            border-color: var(--sm-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ==========================================================================
+           04. ZONE CENTRALE ET CARTE DE SUIVI
+           ========================================================================== */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 5%;
+            width: 100%;
+        }
+
+        .tracking-module {
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 0.8s var(--transition-base);
+        }
+
+        .luxe-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 60px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-base);
+        }
+        
+        .luxe-panel:hover {
+            box-shadow: var(--shadow-float);
+        }
+
+        /* ==========================================================================
+           05. ÉCRAN 1 : RECHERCHE INITIALE
+           ========================================================================== */
+        .search-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .radar-icon-box {
+            width: 90px;
+            height: 90px;
+            background: var(--sm-primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            box-shadow: inset 0 0 0 2px rgba(255, 106, 0, 0.1);
+        }
+        
+        .radar-icon-box i {
+            font-size: 35px;
+            color: var(--sm-primary);
+            animation: floatingIcon 3s ease-in-out infinite;
+        }
+        
+        .search-container h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+        
+        .search-container p {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 45px;
+            max-width: 550px;
+            margin-inline: auto;
+            line-height: 1.6;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        
+        .search-input-wrapper input {
+            width: 100%;
+            background: var(--bg-body);
+            border: 2px solid var(--border-color); 
+            padding: 25px 30px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-size: 20px;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: 4px;
+            transition: var(--transition-base);
+            text-transform: uppercase;
+        }
+        
+        .search-input-wrapper input:focus {
+            outline: none;
+            border-color: var(--sm-primary);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 5px var(--sm-primary-glow);
+        }
+        
+        .search-input-wrapper input::placeholder {
+            color: #bbbbbb;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: none;
+        }
+
+        .btn-launch-tracking {
+            width: 100%;
+            max-width: 550px;
+            margin: 20px auto 0;
+            padding: 22px;
+            border-radius: var(--radius-md);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: var(--text-main);
+            color: var(--text-inverse);
+            font-weight: 800;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+        
+        .btn-launch-tracking:hover {
+            background: var(--sm-primary);
+            box-shadow: 0 15px 30px var(--sm-primary-glow);
+            transform: translateY(-3px);
+        }
+
+        /* ==========================================================================
+           06. ÉCRAN 2 : CHARGEMENT (SKELETON & SPINNER)
+           ========================================================================== */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .circular-loader {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 30px;
+            border: 4px solid var(--bg-body);
+            border-top: 4px solid var(--sm-primary);
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+        
+        .loading-text {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: pulseOpacity 1.5s infinite;
+        }
+
+        /* ==========================================================================
+           07. ÉCRAN 3 : RÉSULTATS DU BORDEREAU
+           ========================================================================== */
+        .result-container {
+            display: none;
+            animation: fadeInItem 0.6s var(--transition-base);
+        }
+
+        /* 🌍 NOUVEAU : BADGE DE TYPE D'EXPÉDITION (LOCAL / INTL) */
+        .shipping-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .shipping-intl {
+            background: var(--sm-primary-light);
+            color: var(--sm-primary);
+            border: 1px solid rgba(255, 106, 0, 0.2);
+        }
+        
+        .shipping-local {
+            background: rgba(0, 179, 107, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 179, 107, 0.2);
+        }
+
+        .receipt-header-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 35px;
+            margin-bottom: 35px;
+        }
+        
+        .data-block h3 {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .data-block .data-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        
+        .data-block.align-right { text-align: right; }
+        
+        .data-block.highlight .data-value {
+            color: var(--sm-primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        /* Bandeau de Statut */
+        .status-hero {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--bg-body), var(--bg-card));
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .status-hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--sm-primary);
+        }
+        
+        .status-hero h4 {
+            color: var(--sm-primary);
+            font-size: 12px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+        }
+        
+        .status-hero .current-status {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            color: var(--text-main);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================================================
+           08. TIMELINE (PROGRESSION LOGISTIQUE)
+           ========================================================================== */
+        .logistics-timeline {
+            position: relative;
+            margin: 70px 0 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .timeline-background-bar {
+            position: absolute;
+            top: 28px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        
+        .timeline-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: var(--sm-primary);
+            border-radius: 4px;
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 10px var(--sm-primary-glow);
+        }
+
+        .timeline-node {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 110px;
+        }
+        
+        .timeline-node .node-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--border-focus);
+            transition: var(--transition-base);
+        }
+        
+        .timeline-node.status-done .node-icon {
+            border-color: var(--sm-primary);
+            color: var(--sm-primary);
+        }
+        
+        .timeline-node.status-current .node-icon {
+            background: var(--sm-primary);
+            color: var(--text-inverse);
+            border-color: var(--sm-primary);
+            box-shadow: 0 0 25px var(--sm-primary-glow);
+            transform: scale(1.15);
+        }
+
+        .timeline-node .node-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+            transition: var(--transition-fast);
+        }
+        
+        .timeline-node.status-done .node-label { color: var(--text-main); }
+        .timeline-node.status-current .node-label { color: var(--sm-primary); }
+
+        /* ==========================================================================
+           09. DÉTAILS DE LA COMMANDE
+           ========================================================================== */
+        .inventory-section {
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .inventory-section h4 {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .inventory-list { list-style: none; }
+        
+        .inventory-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        
+        .inventory-list li:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .inventory-list .item-qty {
+            color: var(--sm-primary);
+            font-weight: 900;
+            background: var(--sm-primary-light);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-right: 15px;
+        }
+
+        .inventory-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-focus);
+        }
+        
+        .inventory-total span {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+        
+        .inventory-total b {
+            font-size: 32px;
+            color: var(--text-main);
+            font-weight: 900;
+        }
+
+        /* ==========================================================================
+           10. BOUTONS D'ACTION FINAUX
+           ========================================================================== */
+        .action-buttons-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn-tertiary, .btn-secondary, .btn-primary {
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-tertiary {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-tertiary:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+            background: var(--bg-body);
+        }
+
+        .btn-secondary {
+            background: var(--bg-body);
+            border: 2px solid var(--sm-primary);
+            color: var(--sm-primary);
+        }
+        .btn-secondary:hover {
+            background: var(--sm-primary);
+            color: var(--text-inverse);
+            box-shadow: 0 10px 25px var(--sm-primary-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            border: 2px solid var(--text-main);
+            color: var(--text-inverse);
+        }
+        .btn-primary:hover {
+            background: var(--sm-primary);
+            border-color: var(--sm-primary);
+            box-shadow: 0 10px 25px var(--sm-primary-glow);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           11. SECTION D'INFORMATION / FAQ
+           ========================================================================== */
+        .logistics-info-section {
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 5% 80px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .info-card {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 40px 30px;
+            border-radius: var(--radius-lg);
+            transition: var(--transition-base);
+        }
+        
+        .info-card:hover {
+            background: var(--bg-card);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-5px);
+            border-color: var(--bg-card);
+        }
+        
+        .info-card i {
+            font-size: 30px;
+            color: var(--sm-primary);
+            margin-bottom: 20px;
+        }
+        
+        .info-card h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        
+        .info-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* ==========================================================================
+           12. FOOTER VIP
+           ========================================================================== */
+        .site-footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 60px 5% 40px;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+        }
+        
+        .footer-logo span { color: var(--sm-primary); }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .footer-links a {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-links a:hover { color: var(--sm-primary); }
+        
+        .footer-bottom {
+            width: 100%;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--border-focus);
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================================================
+           13. MODALES ET NOTIFICATIONS (TOASTS)
+           ========================================================================== */
+        /* Modal Email UI */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: var(--transition-base);
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-box {
+            background: var(--bg-card); width: 100%; max-width: 450px;
+            border-radius: var(--radius-lg); padding: 40px;
+            transform: scale(0.9); transition: var(--transition-bounce);
+            box-shadow: var(--shadow-float);
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        
+        .modal-header { margin-bottom: 25px; text-align: center; }
+        .modal-header i { font-size: 35px; color: var(--sm-primary); margin-bottom: 15px; }
+        .modal-header h3 { font-size: 22px; font-weight: 800; }
+        
+        .modal-input { width: 100%; padding: 18px 20px; border: 2px solid var(--border-color); border-radius: var(--radius-sm); font-size: 15px; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .modal-input:focus { border-color: var(--sm-primary); }
+        
+        .modal-actions { display: flex; gap: 15px; }
+        .modal-btn { flex: 1; padding: 15px; border-radius: var(--radius-sm); border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s;}
+        .modal-btn-cancel { background: var(--bg-body); color: var(--text-secondary); }
+        .modal-btn-cancel:hover { background: var(--border-color); }
+        .modal-btn-confirm { background: var(--sm-primary); color: white; }
+        .modal-btn-confirm:hover { background: var(--sm-primary-hover); }
+
+        /* Toast Container */
+        #toast-container {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .toast-notification {
+            background: var(--text-main);
+            color: var(--text-inverse);
+            padding: 20px 30px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: var(--shadow-float);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideInRight 0.5s var(--transition-bounce) forwards;
+            border-left: 4px solid transparent;
+        }
+        
+        .toast-notification.success { border-left-color: var(--success); }
+        .toast-notification.error { border-left-color: var(--danger); }
+        .toast-notification.info { border-left-color: var(--sm-primary); }
+
+        /* ==========================================================================
+           14. KEYFRAMES & ANIMATIONS
+           ========================================================================== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInItem {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulseOpacity {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        @keyframes floatingIcon {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOutRight {
+            to { transform: translateX(120%); opacity: 0; }
+        }
+
+        /* ==========================================================================
+           15. RESPONSIVE DESIGN (MEDIA QUERIES)
+           ========================================================================== */
+        @media (max-width: 992px) {
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
+            .action-buttons-wrapper { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 768px) {
+            .luxe-panel { padding: 40px 25px; }
+            .search-container h1 { font-size: 32px; }
+            .receipt-header-grid { grid-template-columns: 1fr; gap: 20px; text-align: center; }
+            .data-block.align-right { text-align: center; }
+            
+            /* Responsive Timeline Verticale */
+            .logistics-timeline { flex-direction: column; gap: 40px; align-items: flex-start; padding-left: 20px; }
+            .timeline-background-bar { width: 4px; height: 100%; left: 48px; top: 0; }
+            .timeline-progress-fill { width: 4px !important; height: 0%; left: 0; top: 0; transition: height 1.5s ease; }
+            .timeline-node { width: auto; display: flex; align-items: center; gap: 25px; text-align: left; }
+            .timeline-node .node-icon { margin: 0; }
+            .timeline-node .node-label { margin-top: 0; }
+            
+            .info-grid { grid-template-columns: 1fr; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .footer-links { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="radar-canvas"></canvas>
+
+    <header class="site-header">
+        <a href="/frontend/slm-market-enterprise.html" class="brand-logo">
+            SLM <span>Logistics</span>
+        </a>
+        <div class="header-actions">
+            <button class="btn-ghost" id="btn-return-shop">
+                <i class="fas fa-arrow-left"></i> Boutique
+            </button>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        <div class="tracking-module">
+            <div class="luxe-panel" id="pdf-capture-zone">
+
+                <div id="view-search" class="search-container">
+                    <div class="radar-icon-box">
+                        <i class="fas fa-satellite-dish"></i>
+                    </div>
+                    <h1>Système de Suivi Global</h1>
+                    <p>Accédez en temps réel aux données de localisation de votre acquisition. Veuillez saisir votre identifiant crypté S.L.M.</p>
+                    
+                    <div class="search-input-wrapper">
+                        <input type="text" id="input-tracking-id" placeholder="SLM-XX-0000" autocomplete="off" spellcheck="false">
+                        <button class="btn-launch-tracking" id="btn-trigger-search">
+                            <i class="fas fa-search"></i> Activer le radar
+                        </button>
+                    </div>
+                </div>
+
+                <div id="view-loading" class="loading-container">
+                    <div class="circular-loader"></div>
+                    <div class="loading-text" id="loading-message-text">ÉTABLISSEMENT DE LA CONNEXION...</div>
+                </div>
+
+                <div id="view-results" class="result-container">
+                    
+                    <div class="receipt-header-grid">
+                        <div class="data-block">
+                            <h3>Bénéficiaire VIP</h3>
+                            <div class="data-value" id="res-client-name">---</div>
+                        </div>
+                        <div class="data-block align-right highlight">
+                            <h3>Clé de Registre</h3>
+                            <div class="data-value" id="res-tracking-id">---</div>
+                        </div>
+                    </div>
+
+                    <div class="status-hero">
+                        <div id="shipping-type-badge" class="shipping-type-badge" style="display: none;">
+                            </div>
+                        
+                        <h4>Statut Logistique Actuel</h4>
+                        <div class="current-status" id="res-current-status">---</div>
+                    </div>
+
+                    <div class="logistics-timeline">
+                        <div class="timeline-background-bar">
+                            <div class="timeline-progress-fill" id="timeline-progress-bar"></div>
+                        </div>
+                        
+                        <div class="timeline-node" id="step-1">
+                            <div class="node-icon"><i class="fas fa-check"></i></div>
+                            <div class="node-label">Protocole Validé</div>
+                        </div>
+                        <div class="timeline-node" id="step-2">
+                            <div class="node-icon"><i class="fas fa-box"></i></div>
+                            <div class="node-label">Préparation S.M</div>
+                        </div>
+                        <div class="timeline-node" id="step-3">
+                            <div class="node-icon" id="icon-step-3"><i class="fas fa-plane-departure"></i></div>
+                            <div class="node-label" id="label-step-3">Fret Aérien</div>
+                        </div>
+                        <div class="timeline-node" id="step-4">
+                            <div class="node-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="node-label" id="label-step-4">Centre Abidjan</div>
+                        </div>
+                    </div>
+
+                    <div class="inventory-section">
+                        <h4><i class="fas fa-clipboard-list"></i> Inventaire du Colis <span style="margin-left:auto; color:var(--text-main); font-weight:800;" id="res-date">---</span></h4>
+                        <ul class="inventory-list" id="res-product-list">
+                            </ul>
+                        <div class="inventory-total">
+                            <span>Valeur Assurée (100%)</span>
+                            <b id="res-total-amount">0 FCFA</b>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons-wrapper" id="manifest-actions">
+                        <button class="btn-tertiary" id="btn-action-reset">
+                            <i class="fas fa-sync-alt"></i> Nouvelle Recherche
+                        </button>
+                        <button class="btn-secondary" id="btn-action-email">
+                            <i class="fas fa-envelope"></i> Transmettre par Mail
+                        </button>
+                        <button class="btn-primary" id="btn-action-pdf">
+                            <i class="fas fa-file-download"></i> Enregistrer le PDF
+                        </button>
+                    </div>
+
+                </div> </div>
+        </div>
+    </main>
+
+    <section class="logistics-info-section">
+        <div class="info-grid">
+            <div class="info-card">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Sécurité & Assurance</h4>
+                <p>L'Empire S.L.M garantit chaque expédition. En cas de perte ou de dommage lors du fret ou de la livraison, l'intégralité de la valeur déclarée vous est remboursée sous 48h ouvrées.</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-stopwatch"></i>
+                <h4>Délais de Livraison</h4>
+                <p>Pour l'international, comptez 3 à 7 jours ouvrés. Pour les acquisitions locales (stock Abidjan), la livraison VIP par coursier se fait en moins de 24h.</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-file-signature"></i>
+                <h4>Conciergerie Douanière</h4>
+                <p>La logistique inclut la gestion douanière complète pour l'importation. Le colis est remis dédouané, scellé, et prêt à l'emploi.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                SLM <span>Market</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Conditions Logistiques</a>
+                <a href="#">Politique de Confidentialité</a>
+                <a href="#">Support VIP</a>
+                <a href="#">Mentions Légales</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 S.M. EMPIRE HOLDINGS. Tous droits réservés. Plateforme de données chiffrées de bout en bout.
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="email-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <i class="fas fa-paper-plane"></i>
+                <h3>Transmission du Manifeste</h3>
+            </div>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; text-align: center;">
+                Veuillez saisir l'adresse de destination pour le rapport crypté.
+            </p>
+            <input type="email" class="modal-input" id="input-modal-email" placeholder="adresse@email.com">
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="btn-modal-cancel">Annuler</button>
+                <button class="modal-btn modal-btn-confirm" id="btn-modal-send">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        /**
+         * 🛰️ MOTEUR D'ANIMATION RADAR EN ARRIÈRE-PLAN (CANVAS)
+         */
+        class CanvasRadar {
+            constructor() {
+                this.canvas = document.getElementById('radar-canvas');
+                if(!this.canvas) return;
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.initParticles();
+                this.animate();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            initParticles() {
+                for (let i = 0; i < 50; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        radius: Math.random() * 2,
+                        speedX: (Math.random() - 0.5) * 0.5,
+                        speedY: (Math.random() - 0.5) * 0.5,
+                        alpha: Math.random() * 0.5
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = 'rgba(255, 106, 0, 0.5)';
+
+                this.particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+
+                    if (p.x < 0 || p.x > this.canvas.width) p.speedX *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.speedY *= -1;
+
+                    this.ctx.globalAlpha = p.alpha;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        /**
+         * 📣 SYSTÈME DE NOTIFICATIONS (TOASTS)
+         */
+        class NotificationManager {
+            static show(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                if(!container) return;
+                
+                const toast = document.createElement('div');
+                toast.className = `toast-notification ${type}`;
+                
+                let iconClass = 'fa-info-circle';
+                if(type === 'success') iconClass = 'fa-check-circle';
+                if(type === 'error') iconClass = 'fa-exclamation-triangle';
+                
+                toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${message}</span>`;
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.animation = 'fadeOutRight 0.5s forwards';
+                    setTimeout(() => toast.remove(), 500);
+                }, 4500);
+            }
+        }
+
+        /**
+         * 🖥️ MOTEUR PRINCIPAL DE SUIVI LOGISTIQUE
+         */
+        class TrackingEngine {
+            constructor() {
+                this.views = {
+                    search: document.getElementById('view-search'),
+                    loading: document.getElementById('view-loading'),
+                    result: document.getElementById('view-results')
+                };
+                
+                this.inputs = {
+                    searchId: document.getElementById('input-tracking-id'),
+                    modalEmail: document.getElementById('input-modal-email')
+                };
+                
+                this.modals = {
+                    email: document.getElementById('email-modal')
+                };
+
+                this.bindGlobalEvents();
+                this.checkForAutoTracking();
+            }
+
+            bindGlobalEvents() {
+                document.getElementById('btn-return-shop')?.addEventListener('click', () => {
+                    window.location.href = '/frontend/slm-market-enterprise.html';
+                });
+
+                this.inputs.searchId?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.startTrackingProcess();
+                });
+
+                this.inputs.searchId?.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+
+                document.addEventListener('click', (e) => {
+                    if(e.target.closest('#btn-trigger-search')) this.startTrackingProcess();
+                    if(e.target.closest('#btn-action-reset')) location.reload();
+                    if(e.target.closest('#btn-action-pdf')) this.handlePDFGeneration();
+                    if(e.target.closest('#btn-action-email')) this.openEmailModal();
+                    if(e.target.closest('#btn-modal-cancel')) this.closeEmailModal();
+                    if(e.target.closest('#btn-modal-send')) this.processEmailSending();
+                });
+            }
+
+            checkForAutoTracking() {
+                const storedId = localStorage.getItem('slm_dernier_tracking');
+                if(storedId) {
+                    if(this.inputs.searchId) this.inputs.searchId.value = storedId;
+                    setTimeout(() => this.startTrackingProcess(), 800); 
+                    localStorage.removeItem('slm_dernier_tracking');
+                }
+            }
+
+            async startTrackingProcess() {
+                if(!this.inputs.searchId) return;
+                const trackingKey = this.inputs.searchId.value.trim();
+                
+                if(!trackingKey || trackingKey.length < 5) {
+                    NotificationManager.show("Erreur de syntaxe. Clé S.L.M invalide.", "error");
+                    return;
+                }
+
+                this.switchView('loading');
+                const loadingTextEl = document.getElementById('loading-message-text');
+                if(loadingTextEl) loadingTextEl.innerText = "CONNEXION AU PORTAIL SÉCURISÉ S.M...";
+
+                let orderPayload = null;
+
+                try {
+                    // Connexion au Port 5000
+                    const response = await fetch(`http://localhost:5000/api/slm/commandes/${trackingKey}`);
+                    if (response.ok) {
+                        orderPayload = await response.json();
+                        if(loadingTextEl) loadingTextEl.innerText = "DÉCHIFFREMENT DU MANIFESTE...";
+                    } else {
+                        throw new Error("Erreur 404: Non trouvé");
+                    }
+                } catch (error) {
+                    console.error("[S.L.M CORE] Impossible de joindre la base.", error);
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                if(!orderPayload) {
+                    this.switchView('search');
+                    NotificationManager.show("Clé introuvable. Accès refusé.", "error");
+                    return;
+                }
+
+                if(loadingTextEl) loadingTextEl.innerText = "GÉNÉRATION DE L'INTERFACE VISUELLE...";
+                await new Promise(resolve => setTimeout(resolve, 600));
+
+                this.populateDataAndShowResult(orderPayload);
+            }
+
+            populateDataAndShowResult(data) {
+                this.switchView('result');
+                
+                document.getElementById('res-client-name').innerText = data.client || "Anonyme";
+                document.getElementById('res-tracking-id').innerText = data.id || "SLM-ERROR";
+                document.getElementById('res-date').innerText = data.date || "Date inconnue";
+                document.getElementById('res-total-amount').innerText = (data.montant || 0).toLocaleString() + " FCFA";
+                
+                const rawStatus = data.statut || "en attente";
+                document.getElementById('res-current-status').innerText = rawStatus.toUpperCase();
+
+                const inventoryListEl = document.getElementById('res-product-list');
+                if(inventoryListEl) {
+                    inventoryListEl.innerHTML = '';
+                    const rawProducts = data.produits || "Contenu scellé";
+                    const itemsArray = rawProducts.split(',');
+                    
+                    itemsArray.forEach(item => {
+                        const parts = item.trim().split('x ');
+                        const li = document.createElement('li');
+                        
+                        if(parts.length === 2) {
+                            li.innerHTML = `<span class="item-qty">${parts[0]}X</span> <span>${parts[1]}</span>`;
+                        } else {
+                            li.innerText = item;
+                        }
+                        inventoryListEl.appendChild(li);
+                    });
+                }
+
+                // 🧠 INTELLIGENCE ARTIFICIELLE : DÉTECTION LOCAL VS INTERNATIONAL
+                const isLocal = rawStatus.toLowerCase().match(/coursier|express|local|moto|abidjan|transit/);
+                
+                const badgeEl = document.getElementById('shipping-type-badge');
+                const labelStep3 = document.getElementById('label-step-3');
+                const iconStep3 = document.getElementById('icon-step-3');
+                const labelStep4 = document.getElementById('label-step-4');
+                
+                if (badgeEl) {
+                    badgeEl.style.display = 'inline-flex';
+                    if(isLocal) {
+                        badgeEl.className = 'shipping-type-badge shipping-local';
+                        badgeEl.innerHTML = '<i class="fas fa-motorcycle"></i> Livraison Locale Express';
+                        if(labelStep3) labelStep3.innerText = "En Transit (Coursier)";
+                        if(iconStep3) iconStep3.innerHTML = '<i class="fas fa-motorcycle"></i>';
+                        if(labelStep4) labelStep4.innerText = "Livré (Mains Propres)";
+                    } else {
+                        badgeEl.className = 'shipping-type-badge shipping-intl';
+                        badgeEl.innerHTML = '<i class="fas fa-globe-africa"></i> Fret International';
+                        if(labelStep3) labelStep3.innerText = "Fret Aérien";
+                        if(iconStep3) iconStep3.innerHTML = '<i class="fas fa-plane-departure"></i>';
+                        if(labelStep4) labelStep4.innerText = "Centre Abidjan";
+                    }
+                }
+
+                // Lancement animation avec le statut
+                this.animateLogisticsTimeline(rawStatus, isLocal);
+            }
+
+            animateLogisticsTimeline(statusStr, isLocal) {
+                const s = statusStr.toLowerCase();
+                const progressBar = document.getElementById('timeline-progress-bar');
+                if(!progressBar) return;
+                
+                let isStep2Done = false;
+                let isStep3Done = false;
+                let isStep4Done = false;
+
+                // Logique conditionnelle selon Local ou International
+                if (isLocal) {
+                    isStep2Done = s.match(/prépa|coursier|transit|livr/);
+                    isStep3Done = s.match(/coursier|transit|livr/);
+                    isStep4Done = s.match(/livr/);
+                } else {
+                    isStep2Done = s.match(/prépa|chin|fret|aéri|douan|livr|abi/);
+                    isStep3Done = s.match(/fret|aéri|douan|livr|abi/);
+                    isStep4Done = s.match(/livr|abi/);
+                }
+
+                const timelineSteps = [
+                    { id: 'step-1', isDone: true, barWidth: '0%' },
+                    { id: 'step-2', isDone: isStep2Done, barWidth: '33.33%' },
+                    { id: 'step-3', isDone: isStep3Done, barWidth: '66.66%' },
+                    { id: 'step-4', isDone: isStep4Done, barWidth: '100%' }
+                ];
+
+                timelineSteps.forEach(step => {
+                    const el = document.getElementById(step.id);
+                    if(el) el.classList.remove('status-done', 'status-current');
+                });
+
+                let lastCompletedIndex = -1;
+
+                timelineSteps.forEach((step, index) => {
+                    if(step.isDone) {
+                        const el = document.getElementById(step.id);
+                        if(el) el.classList.add('status-done');
+                        lastCompletedIndex = index;
+                    }
+                });
+
+                if(lastCompletedIndex !== -1) {
+                    const currentEl = document.getElementById(timelineSteps[lastCompletedIndex].id);
+                    if(currentEl) currentEl.classList.add('status-current');
+                }
+
+                setTimeout(() => {
+                    const targetWidth = lastCompletedIndex !== -1 ? timelineSteps[lastCompletedIndex].barWidth : '0%';
+                    if(window.innerWidth > 768) {
+                        progressBar.style.width = targetWidth;
+                        progressBar.style.height = '100%';
+                    } else {
+                        progressBar.style.height = targetWidth;
+                        progressBar.style.width = '100%';
+                    }
+                }, 300);
+            }
+
+            openEmailModal() {
+                if(this.modals.email) {
+                    this.modals.email.classList.add('active');
+                    if(this.inputs.modalEmail) this.inputs.modalEmail.focus();
+                }
+            }
+
+            closeEmailModal() {
+                if(this.modals.email) {
+                    this.modals.email.classList.remove('active');
+                    if(this.inputs.modalEmail) this.inputs.modalEmail.value = '';
+                }
+            }
+
+            processEmailSending() {
+                const targetEmail = this.inputs.modalEmail?.value.trim();
+                
+                if(!targetEmail || !targetEmail.includes('@')) {
+                    NotificationManager.show("Adresse email invalide.", "error");
+                    return;
+                }
+
+                const idStr = document.getElementById('res-tracking-id')?.innerText;
+                const statusStr = document.getElementById('res-current-status')?.innerText;
+
+                if(!idStr || idStr === "---") return;
+
+                this.closeEmailModal();
+                NotificationManager.show("Cryptage et transmission en cours...", "info");
+
+                const templateData = {
+                    to_email: targetEmail,
+                    client_name: document.getElementById('res-client-name')?.innerText,
+                    order_id: idStr,
+                    order_status: statusStr,
+                    order_total: document.getElementById('res-total-amount')?.innerText,
+                    order_date: document.getElementById('res-date')?.innerText
+                };
+
+                emailjs.send(
+                    'VOTRE_SERVICE_ID', 
+                    'VOTRE_TEMPLATE_ID', 
+                    templateData, 
+                    'VOTRE_CLE_PUBLIQUE' 
+                )
+                .then(() => {
+                    NotificationManager.show("Le Manifeste a été transmis avec succès.", "success");
+                }, (error) => {
+                    console.error("Erreur SMTP :", error);
+                    NotificationManager.show("Échec de la connexion au serveur mail S.M.", "error");
+                });
+            }
+
+            handlePDFGeneration() {
+                const idLabel = document.getElementById('res-tracking-id')?.innerText || "Inconnu";
+                const captureZone = document.getElementById('pdf-capture-zone');
+                const actionsMenu = document.getElementById('manifest-actions');
+                
+                if(!captureZone || !actionsMenu) return;
+
+                actionsMenu.style.display = 'none';
+                NotificationManager.show("Génération du document officiel...", "info");
+
+                const pdfOptions = {
+                    margin: [15, 15, 15, 15],
+                    filename: `SM_Manifeste_Officiel_${idLabel}.pdf`,
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(pdfOptions).from(captureZone).save().then(() => {
+                    actionsMenu.style.display = 'grid';
+                    NotificationManager.show("Téléchargement sécurisé terminé.", "success");
+                });
+            }
+
+            switchView(viewName) {
+                Object.values(this.views).forEach(el => {
+                    if(el) el.style.display = 'none';
+                });
+                if(this.views[viewName]) {
+                    this.views[viewName].style.display = 'block';
+                }
+            }
+        }
+
+        // INITIALISATION SÉCURISÉE
+        window.addEventListener('DOMContentLoaded', () => {
+            new CanvasRadar();
+            window.SLMTracker = new TrackingEngine();
+        });
+
+    </script>
+</body>
+</html>

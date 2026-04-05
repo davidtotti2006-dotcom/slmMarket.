@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte — S.L.M Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6a00;
+            --primary-light: rgba(255,106,0,0.08);
+            --primary-border: rgba(255,106,0,0.2);
+            --black: #050505;
+            --dark: #111;
+            --bg: #f6f7fb;
+            --white: #fff;
+            --text: #111;
+            --muted: #888;
+            --border: #eee;
+            --gold: #c9a84c;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --radius: 16px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        a { text-decoration:none; color:inherit; }
+        button { font-family:inherit; cursor:pointer; }
+        input, select, textarea { font-family:inherit; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-thumb { background:#ddd; border-radius:10px; }
+
+        /* ── NAV ── */
+        nav {
+            background:var(--white); border-bottom:1px solid var(--border);
+            padding:0 5%; height:68px; display:flex; align-items:center; justify-content:space-between;
+            position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.04);
+        }
+        .nav-logo { display:flex; align-items:center; gap:10px; }
+        .nav-logo svg { flex-shrink:0; }
+        .nav-back {
+            display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700;
+            color:var(--muted); transition:color .2s;
+        }
+        .nav-back:hover { color:var(--primary); }
+        .nav-back i { transition:transform .2s; }
+        .nav-back:hover i { transform:translateX(-3px); }
+
+        /* ── LAYOUT ── */
+        .page-wrap { max-width:1100px; margin:0 auto; padding:40px 5% 80px; }
+
+        .page-header { margin-bottom:36px; }
+        .page-header h1 { font-family:'Playfair Display',serif; font-size:32px; margin-bottom:6px; }
+        .page-header p { color:var(--muted); font-size:14px; }
+
+        .grid-layout { display:grid; grid-template-columns:300px 1fr; gap:28px; }
+        @media(max-width:860px) { .grid-layout { grid-template-columns:1fr; } }
+
+        /* ── CARDS ── */
+        .card {
+            background:var(--white); border-radius:var(--radius); border:1px solid var(--border);
+            box-shadow:var(--shadow); overflow:hidden;
+        }
+        .card-header {
+            padding:22px 26px; border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+        }
+        .card-header h3 { font-size:15px; font-weight:800; display:flex; align-items:center; gap:10px; }
+        .card-header h3 i { color:var(--primary); font-size:16px; }
+        .card-body { padding:26px; }
+
+        /* ── PROFIL AVATAR ── */
+        .profile-avatar-wrap { text-align:center; padding:32px 26px 24px; }
+        .avatar-circle {
+            width:88px; height:88px; border-radius:50%; background:linear-gradient(135deg,#ff6a00,#ff9a3c);
+            margin:0 auto 14px; display:flex; align-items:center; justify-content:center;
+            font-family:'Playfair Display',serif; font-size:36px; color:white; font-weight:900;
+            box-shadow:0 8px 24px rgba(255,106,0,0.3);
+        }
+        .profile-name { font-size:18px; font-weight:800; margin-bottom:4px; }
+        .profile-email { font-size:13px; color:var(--muted); margin-bottom:14px; }
+        .elite-badge {
+            display:inline-flex; align-items:center; gap:6px;
+            padding:5px 14px; border-radius:20px; font-size:11px; font-weight:800;
+            text-transform:uppercase; letter-spacing:1px;
+        }
+        .elite-badge.bronze  { background:rgba(205,127,50,0.12); color:#a0693a; }
+        .elite-badge.silver  { background:rgba(180,180,180,0.15); color:#777; }
+        .elite-badge.gold    { background:rgba(201,168,76,0.15); color:#a07c20; }
+        .elite-badge.elite   { background:rgba(255,106,0,0.12); color:var(--primary); }
+
+        /* ── FORM ── */
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:7px; }
+        .form-group input {
+            width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px;
+            font-size:14px; outline:none; transition:border-color .2s; background:var(--bg);
+        }
+        .form-group input:focus { border-color:var(--primary); background:var(--white); }
+        .btn-save {
+            width:100%; padding:14px; background:var(--primary); color:white; border:none;
+            border-radius:10px; font-size:14px; font-weight:800; transition:all .2s;
+        }
+        .btn-save:hover { background:#e65c00; transform:translateY(-1px); box-shadow:0 6px 20px rgba(255,106,0,0.3); }
+
+        /* ── TABS ── */
+        .tabs { display:flex; gap:0; border-bottom:1px solid var(--border); padding:0 26px; background:var(--white); }
+        .tab-btn {
+            padding:16px 20px; font-size:13px; font-weight:700; color:var(--muted);
+            border:none; background:none; border-bottom:3px solid transparent;
+            transition:all .2s; cursor:pointer; white-space:nowrap;
+        }
+        .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+        .tab-btn:hover { color:var(--text); }
+        .tab-content { display:none; padding:26px; }
+        .tab-content.active { display:block; }
+
+        /* ── COMMANDES ── */
+        .order-card {
+            border:1px solid var(--border); border-radius:12px; padding:20px;
+            margin-bottom:14px; transition:box-shadow .2s;
+        }
+        .order-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+        .order-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+        .order-id { font-size:12px; font-weight:800; color:var(--primary); font-family:monospace; }
+        .order-date { font-size:11px; color:var(--muted); }
+        .order-badge {
+            padding:4px 12px; border-radius:20px; font-size:10px; font-weight:800;
+            text-transform:uppercase; letter-spacing:1px;
+        }
+        .order-badge.recue    { background:rgba(59,130,246,0.1); color:#2563eb; }
+        .order-badge.en-cours { background:rgba(245,158,11,0.1); color:#d97706; }
+        .order-badge.livree   { background:rgba(34,197,94,0.1);  color:#16a34a; }
+        .order-badge.annulee  { background:rgba(239,68,68,0.1);  color:#dc2626; }
+        .order-articles { font-size:13px; color:#444; line-height:1.6; margin-bottom:10px; }
+        .order-total { font-size:18px; font-weight:900; color:var(--primary); }
+        .order-track {
+            display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800;
+            color:var(--muted); padding:5px 12px; border:1px solid var(--border); border-radius:8px;
+            transition:all .2s; margin-top:8px;
+        }
+        .order-track:hover { border-color:var(--primary); color:var(--primary); }
+
+        /* ── ELITE ── */
+        .elite-tier-row {
+            display:flex; align-items:center; gap:14px; padding:16px;
+            border-radius:12px; border:1px solid var(--border); margin-bottom:12px;
+            transition:all .2s;
+        }
+        .elite-tier-row.current {
+            border-color:var(--primary); background:var(--primary-light);
+            box-shadow:0 4px 16px rgba(255,106,0,0.1);
+        }
+        .tier-icon {
+            width:44px; height:44px; border-radius:12px; display:flex; align-items:center;
+            justify-content:center; font-size:18px; flex-shrink:0;
+        }
+        .tier-info { flex:1; }
+        .tier-name { font-size:14px; font-weight:800; margin-bottom:3px; }
+        .tier-req  { font-size:11px; color:var(--muted); }
+        .tier-perk { font-size:11px; color:var(--primary); font-weight:700; }
+        .tier-check { color:var(--success); font-size:18px; }
+        .tier-lock  { color:#ccc; font-size:18px; }
+
+        .pts-bar-wrap { background:#f0f0f0; border-radius:20px; height:10px; margin:20px 0 6px; overflow:hidden; }
+        .pts-bar-fill { height:100%; background:linear-gradient(90deg,#ff6a00,#ff9a3c); border-radius:20px; transition:width .8s ease; }
+        .pts-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); font-weight:700; }
+
+        .pts-big { text-align:center; padding:24px 0 12px; }
+        .pts-big .pts-number { font-family:'Playfair Display',serif; font-size:52px; font-weight:900; color:var(--primary); line-height:1; }
+        .pts-big .pts-label  { font-size:12px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-top:4px; }
+
+        /* ── WISHLIST ── */
+        .wishlist-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
+        .wish-item {
+            border:1px solid var(--border); border-radius:12px; overflow:hidden;
+            transition:all .2s; cursor:pointer;
+        }
+        .wish-item:hover { box-shadow:0 6px 20px rgba(0,0,0,0.08); transform:translateY(-2px); }
+        .wish-img { width:100%; height:110px; object-fit:cover; background:#f5f5f5; }
+        .wish-info { padding:10px; }
+        .wish-name { font-size:11px; font-weight:800; margin-bottom:4px; line-height:1.3; }
+        .wish-price { font-size:13px; font-weight:900; color:var(--primary); }
+
+        /* ── STATS ── */
+        .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+        .stat-box { background:var(--bg); border-radius:12px; padding:18px; text-align:center; border:1px solid var(--border); }
+        .stat-box .stat-val { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--primary); }
+        .stat-box .stat-lbl { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-top:4px; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state { text-align:center; padding:50px 20px; color:var(--muted); }
+        .empty-state i { font-size:40px; margin-bottom:16px; opacity:.3; display:block; }
+        .empty-state p { font-size:14px; }
+
+        /* ── TOAST ── */
+        #toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:10px; }
+        .toast { background:var(--black); color:white; padding:14px 20px; border-radius:12px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:10px; box-shadow:0 8px 24px rgba(0,0,0,0.15); border-left:4px solid var(--primary); animation:slideIn .4s ease-out; }
+        @keyframes slideIn { from { transform:translateX(120%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+        @keyframes slideOut { to { transform:translateX(120%); opacity:0; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">
+        <svg width="160" height="40" viewBox="0 0 230 65">
+            <text x="5" y="44" font-family="'Playfair Display',serif" font-size="48" font-weight="900" fill="#0a1a33">SLM</text>
+            <text x="120" y="44" font-family="'Plus Jakarta Sans',sans-serif" font-size="24" font-weight="800" fill="#ff6a00">Market</text>
+            <path d="M5 57 Q 115 67 225 57" stroke="#ff6a00" stroke-width="2.5" fill="transparent"/>
+            <circle cx="222" cy="40" r="4" fill="#ff6a00"/>
+        </svg>
+    </div>
+    <a href="slm-market-enterprise.html" class="nav-back">
+        <i class="fas fa-arrow-left"></i> Retour à la boutique
+    </a>
+</nav>
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <h1>Mon Compte</h1>
+        <p>Gérez votre profil, suivez vos commandes et votre progression SLM Elite.</p>
+    </div>
+
+    <div class="grid-layout">
+
+        <!-- ── COLONNE GAUCHE ── -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+            <!-- Avatar + Identité -->
+            <div class="card">
+                <div class="profile-avatar-wrap">
+                    <div class="avatar-circle" id="avatarInitial">?</div>
+                    <div class="profile-name" id="profileName">Chargement...</div>
+                    <div class="profile-email" id="profileEmail">—</div>
+                    <div id="eliteBadgeWrap"></div>
+                </div>
+
+                <div class="card-body" style="padding-top:0;">
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-val" id="statOrders">0</div>
+                            <div class="stat-lbl">Commandes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-val" id="statPoints">0</div>
+                            <div class="stat-lbl">Points Elite</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-val" id="statWish">0</div>
+                            <div class="stat-lbl">Favoris</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modifier le profil -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-edit"></i> Modifier le profil</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Prénom &amp; Nom</label>
+                        <input type="text" id="editName" placeholder="Votre nom complet">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse e-mail</label>
+                        <input type="email" id="editEmail" placeholder="votre@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="editPhone" placeholder="+225 07 00 00 00 00">
+                    </div>
+                    <div class="form-group">
+                        <label>Ville</label>
+                        <input type="text" id="editCity" placeholder="Abidjan, Côte d'Ivoire">
+                    </div>
+                    <button class="btn-save" onclick="saveProfile()">
+                        <i class="fas fa-save" style="margin-right:8px;"></i>Sauvegarder
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sécurité -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
+                </div>
+                <div class="card-body">
+                    <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">
+                        Vos données sont stockées localement sur votre appareil. Aucune information n'est transmise à des tiers.
+                    </p>
+                    <button onclick="clearHistory()" style="width:100%;padding:11px;background:transparent;border:1.5px solid #ef4444;color:#ef4444;border-radius:10px;font-weight:800;font-size:13px;transition:all .2s;"
+                        onmouseover="this.style.background='#ef4444';this.style.color='white';"
+                        onmouseout="this.style.background='transparent';this.style.color='#ef4444';">
+                        <i class="fas fa-trash-alt" style="margin-right:8px;"></i>Effacer mes données
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── COLONNE DROITE ── -->
+        <div class="card" style="align-self:start;">
+            <div class="tabs" id="tabBar">
+                <button class="tab-btn active" onclick="switchTab('orders', this)"><i class="fas fa-box" style="margin-right:6px;"></i>Commandes</button>
+                <button class="tab-btn" onclick="switchTab('elite', this)"><i class="fas fa-crown" style="margin-right:6px;"></i>SLM Elite</button>
+                <button class="tab-btn" onclick="switchTab('wishlist', this)"><i class="fas fa-heart" style="margin-right:6px;"></i>Favoris</button>
+            </div>
+
+            <!-- TAB: Commandes -->
+            <div class="tab-content active" id="tab-orders">
+                <div id="ordersContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>Aucune commande pour le moment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SLM Elite -->
+            <div class="tab-content" id="tab-elite">
+                <div class="pts-big">
+                    <div class="pts-number" id="elitePoints">0</div>
+                    <div class="pts-label">Points S.L.M Elite</div>
+                </div>
+
+                <div class="pts-bar-wrap">
+                    <div class="pts-bar-fill" id="eliteProgressBar" style="width:0%"></div>
+                </div>
+                <div class="pts-labels">
+                    <span id="eliteBarMin">0 pts</span>
+                    <span id="eliteBarMax">—</span>
+                </div>
+
+                <div id="eliteTiersContainer" style="margin-top:24px;"></div>
+            </div>
+
+            <!-- TAB: Favoris -->
+            <div class="tab-content" id="tab-wishlist">
+                <div id="wishlistContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-heart"></i>
+                        <p>Votre liste de favoris est vide.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function showToast(msg, type = 'success') {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.style.borderLeftColor = type === 'error' ? '#ef4444' : type === 'info' ? '#3b82f6' : '#ff6a00';
+        t.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color:${type === 'error' ? '#ef4444' : '#ff6a00'};"></i> ${msg}`;
+        c.appendChild(t);
+        setTimeout(() => { t.style.animation = 'slideOut .4s forwards'; setTimeout(() => t.remove(), 400); }, 3000);
+    }
+
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ── Profil ───────────────────────────────────────────────────────────────
+    const PROFILE_KEY = 'slm_user_profile';
+
+    function loadProfile() {
+        // Priorité : profil sauvegardé ici, sinon user de l'appStore enterprise
+        const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
+        const storeUser = JSON.parse(localStorage.getItem('slm_store_state') || '{}').user || {};
+
+        const name  = saved.name  || storeUser.name  || '';
+        const email = saved.email || storeUser.email || '';
+        const phone = saved.phone || storeUser.phone || '';
+        const city  = saved.city  || '';
+
+        // Affichage
+        document.getElementById('avatarInitial').textContent = name ? name.charAt(0).toUpperCase() : '?';
+        document.getElementById('profileName').textContent  = name  || 'Membre S.L.M';
+        document.getElementById('profileEmail').textContent = email || 'Email non renseigné';
+
+        // Pré-remplir les champs
+        document.getElementById('editName').value  = name;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editPhone').value = phone;
+        document.getElementById('editCity').value  = city;
+
+        return { name, email, phone, city };
+    }
+
+    function saveProfile() {
+        const name  = document.getElementById('editName').value.trim();
+        const email = document.getElementById('editEmail').value.trim();
+        const phone = document.getElementById('editPhone').value.trim();
+        const city  = document.getElementById('editCity').value.trim();
+
+        if (!name) { showToast('Le nom est requis.', 'error'); return; }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Email invalide.', 'error'); return; }
+
+        localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, email, phone, city }));
+
+        // Sync avec l'appStore de enterprise.html
+        try {
+            const s = JSON.parse(localStorage.getItem('slm_store_state') || '{}');
+            s.user = { ...(s.user || {}), name, email, phone };
+            localStorage.setItem('slm_store_state', JSON.stringify(s));
+        } catch(e) {}
+
+        document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('profileName').textContent  = name;
+        document.getElementById('profileEmail').textContent = email || '—';
+        showToast('Profil sauvegardé ✓');
+    }
+
+    // ── Commandes ────────────────────────────────────────────────────────────
+    function loadOrders(userEmail) {
+        let orders = [];
+        try { orders = JSON.parse(localStorage.getItem('slm_admin_orders') || '[]'); } catch(e) {}
+
+        // Filtrer par email si connu, sinon tout afficher
+        const myOrders = userEmail
+            ? orders.filter(o => o.email && o.email.toLowerCase() === userEmail.toLowerCase())
+            : orders;
+
+        document.getElementById('statOrders').textContent = myOrders.length;
+
+        const container = document.getElementById('ordersContainer');
+        if (myOrders.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Aucune commande trouvée.</p></div>`;
+            return;
+        }
+
+        const statusMap = { 'reçue': 'recue', 'en cours': 'en-cours', 'livrée': 'livree', 'annulée': 'annulee' };
+
+        container.innerHTML = myOrders.map(o => {
+            const badgeClass = statusMap[o.statut] || 'recue';
+            const date = o.date ? new Date(o.date).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+            return `
+                <div class="order-card">
+                    <div class="order-top">
+                        <div>
+                            <div class="order-id">${o.id || '—'}</div>
+                            <div class="order-date">${date}</div>
+                        </div>
+                        <span class="order-badge ${badgeClass}">${o.statut || 'reçue'}</span>
+                    </div>
+                    <div class="order-articles">${o.articles || '—'}</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <div class="order-total">${(o.montant || 0).toLocaleString()} FCFA</div>
+                        <a href="../suivi.html" class="order-track"><i class="fas fa-satellite-dish"></i> Suivre</a>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    // ── SLM Elite ────────────────────────────────────────────────────────────
+    const ELITE_TIERS = [
+        { name:'Bronze',        min:0,       max:499999,   icon:'🥉', color:'#a0693a', bg:'rgba(205,127,50,0.1)',  perk:'Accès prioritaire aux nouveautés' },
+        { name:'Silver',        min:500000,  max:1999999,  icon:'🥈', color:'#888',    bg:'rgba(180,180,180,0.12)', perk:'5% de réduction permanente' },
+        { name:'Gold',          min:2000000, max:4999999,  icon:'👑', color:'#a07c20', bg:'rgba(201,168,76,0.12)',  perk:'10% + conseiller dédié' },
+        { name:'Elite Diamant', min:5000000, max:Infinity, icon:'💎', color:'#ff6a00', bg:'rgba(255,106,0,0.1)',    perk:'15% + livraison offerte + ligne VIP' }
+    ];
+
+    function loadElite() {
+        const pts = parseInt(localStorage.getItem('slm_elite_points') || '0');
+        document.getElementById('elitePoints').textContent = pts.toLocaleString();
+        document.getElementById('statPoints').textContent  = pts.toLocaleString();
+
+        const currentTier = ELITE_TIERS.findLast(t => pts >= t.min) || ELITE_TIERS[0];
+        const nextTier    = ELITE_TIERS.find(t => t.min > pts);
+
+        // Badge dans le profil
+        const badgeWrap = document.getElementById('eliteBadgeWrap');
+        const tierClass = currentTier.name.toLowerCase().replace(' diamant','').replace('elite','elite');
+        badgeWrap.innerHTML = `<span class="elite-badge ${tierClass}" style="background:${currentTier.bg};color:${currentTier.color};">
+            ${currentTier.icon} ${currentTier.name}
+        </span>`;
+
+        // Barre de progression
+        if (nextTier) {
+            const progress = Math.min(100, Math.round((pts - currentTier.min) / (nextTier.min - currentTier.min) * 100));
+            document.getElementById('eliteProgressBar').style.width = progress + '%';
+            document.getElementById('eliteBarMin').textContent = currentTier.min.toLocaleString() + ' pts';
+            document.getElementById('eliteBarMax').textContent = nextTier.min.toLocaleString() + ' pts → ' + nextTier.name;
+        } else {
+            document.getElementById('eliteProgressBar').style.width = '100%';
+            document.getElementById('eliteBarMin').textContent = 'Niveau maximum atteint';
+            document.getElementById('eliteBarMax').textContent = '💎';
+        }
+
+        // Niveaux
+        document.getElementById('eliteTiersContainer').innerHTML = ELITE_TIERS.map(t => {
+            const unlocked = pts >= t.min;
+            const isCurrent = t.name === currentTier.name;
+            return `
+                <div class="elite-tier-row ${isCurrent ? 'current' : ''}">
+                    <div class="tier-icon" style="background:${t.bg}; font-size:22px;">${t.icon}</div>
+                    <div class="tier-info">
+                        <div class="tier-name" style="color:${t.color};">${t.name}</div>
+                        <div class="tier-req">À partir de ${t.min.toLocaleString()} pts</div>
+                        <div class="tier-perk" style="color:${unlocked ? t.color : '#ccc'};">${t.perk}</div>
+                    </div>
+                    <i class="fas ${unlocked ? 'fa-check-circle tier-check' : 'fa-lock tier-lock'}" style="color:${unlocked ? t.color : '#ccc'};"></i>
+                </div>`;
+        }).join('');
+    }
+
+    // ── Wishlist ─────────────────────────────────────────────────────────────
+    function loadWishlist() {
+        let wishlist = [];
+        try {
+            const s = JSON.parse(localStorage.getItem('slm_store_state') || '{}');
+            wishlist = s.wishlist || [];
+        } catch(e) {}
+
+        document.getElementById('statWish').textContent = wishlist.length;
+        const container = document.getElementById('wishlistContainer');
+
+        if (wishlist.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-heart"></i><p>Votre liste de favoris est vide.</p></div>`;
+            return;
+        }
+
+        container.innerHTML = `<div class="wishlist-grid">${wishlist.map(item => `
+            <div class="wish-item" onclick="window.location.href='slm-market-enterprise.html'">
+                <img class="wish-img" src="${item.img || ''}" alt="${item.nom || ''}" onerror="this.style.background='#f0f0f0'">
+                <div class="wish-info">
+                    <div class="wish-name">${item.nom || '—'}</div>
+                    <div class="wish-price">${(item.prix || 0).toLocaleString()} FCFA</div>
+                </div>
+            </div>`).join('')}</div>`;
+    }
+
+    // ── Effacer données ───────────────────────────────────────────────────────
+    function clearHistory() {
+        if (!confirm('Effacer toutes vos données personnelles (profil, historique de chat) ? Vos commandes dans l\'admin ne seront pas supprimées.')) return;
+        localStorage.removeItem(PROFILE_KEY);
+        localStorage.removeItem('slm_chat_history');
+        localStorage.removeItem('slm_elite_points');
+        localStorage.removeItem('slm_newsletter_shown');
+        showToast('Données personnelles effacées.', 'info');
+        setTimeout(() => location.reload(), 1500);
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        const profile = loadProfile();
+        loadOrders(profile.email);
+        loadElite();
+        loadWishlist();
+    });
+</script>
+
+</body>
+</html>

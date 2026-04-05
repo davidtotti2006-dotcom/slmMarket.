@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.L.M COMMAND CENTER PRO | Global Management Hub</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           01. VARIABLES & DESIGN TOKENS
+           ========================================================================== */
+        :root {
+            --sm-primary: #ff6a00;
+            --sm-primary-glow: rgba(255, 106, 0, 0.2);
+            --sm-dark: #050505;
+            --sm-panel: #111111;
+            --sm-sidebar: #0a0a0c;
+            
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            
+            --status-wait: #3b82f6;
+            --status-prep: #f59e0b;
+            --status-transit: #8b5cf6;
+            --status-hq: var(--sm-primary);
+            --status-done: #10b981;
+            
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+ 
+        /* ==========================================================================
+           02. BASE & RESET
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--sm-dark);
+            color: var(--text-main);
+            height: 100%;
+        }
+ 
+        body {
+            display: flex;
+            overflow-x: hidden;
+        }
+ 
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--sm-dark); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sm-primary); }
+ 
+        /* ==========================================================================
+           03. LAYOUT
+           ========================================================================== */
+        .sidebar {
+            width: 280px;
+            background: var(--sm-sidebar);
+            border-right: 1px solid var(--glass-border);
+            display: flex; flex-direction: column;
+            padding: 30px 20px;
+            position: fixed; height: 100vh; z-index: 100;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+ 
+        .workspace {
+            margin-left: 280px; flex: 1; padding: 40px 50px;
+            display: flex; flex-direction: column; gap: 40px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+ 
+        /* Logo */
+        .logo-area {
+            font-family: 'Playfair Display', serif; font-size: 24px;
+            color: var(--sm-primary); margin-bottom: 50px;
+            display: flex; align-items: center; gap: 15px; letter-spacing: 2px;
+        }
+        .logo-area span { color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 1px; }
+ 
+        /* Navigation */
+        .nav-group { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+ 
+        .nav-link {
+            padding: 15px 20px; border-radius: 12px;
+            color: var(--text-muted); text-decoration: none;
+            display: flex; align-items: center; gap: 15px;
+            transition: var(--transition); font-weight: 600; font-size: 13px;
+            cursor: pointer; letter-spacing: 1px;
+        }
+        .nav-link i { font-size: 16px; width: 20px; text-align: center; }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 106, 0, 0.05); color: var(--sm-primary);
+        }
+        .nav-link.active { box-shadow: inset 2px 0 0 var(--sm-primary); }
+ 
+        .nav-logout {
+            border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; margin-top: auto;
+        }
+        .nav-logout:hover { background: #ef4444; color: white; }
+ 
+        /* ==========================================================================
+           04. TOP HEADER
+           ========================================================================== */
+        .top-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+        .welcome h1 { font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 5px; }
+        .welcome p { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+ 
+        .btn-action {
+            background: var(--sm-primary); color: var(--sm-dark);
+            border: none; padding: 15px 25px; border-radius: 12px;
+            font-weight: 800; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: var(--transition);
+        }
+        .btn-action:hover { background: var(--text-main); box-shadow: var(--sm-primary-glow); transform: translateY(-2px); }
+ 
+        /* ==========================================================================
+           05. KPI GRID
+           ========================================================================== */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+ 
+        .kpi-card {
+            background: var(--sm-panel); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 30px; position: relative;
+            overflow: hidden; transition: var(--transition); cursor: pointer;
+        }
+        .kpi-card:hover { border-color: rgba(255,106,0,0.3); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+ 
+        .kpi-card .icon {
+            width: 45px; height: 45px; background: rgba(255, 106, 0, 0.1);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            color: var(--sm-primary); font-size: 18px; margin-bottom: 20px;
+        }
+ 
+        .kpi-card h3 { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+        .kpi-card .value { font-size: 32px; font-weight: 900; margin: 10px 0; font-family: 'Playfair Display', serif; }
+        .kpi-card .trend { font-size: 12px; font-weight: 600; color: var(--status-done); display: flex; align-items: center; gap: 5px; }
+ 
+        /* ==========================================================================
+           06. SECTIONS & PAGES
+           ========================================================================== */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+ 
+        /* Filtres */
+        .filters-container {
+            background: var(--sm-panel); border-radius: 20px; border: 1px solid var(--glass-border);
+            padding: 25px 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 25px;
+        }
+ 
+        .filter-group {
+            display: flex; flex-direction: column;
+        }
+ 
+        .filter-group label {
+            display: block; font-size: 11px; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+        }
+ 
+        .filter-group input, .filter-group select {
+            width: 100%; background: var(--sm-dark); border: 1px solid var(--glass-border);
+            border-radius: 10px; padding: 12px 15px; color: var(--text-main);
+            font-family: inherit; font-size: 13px; outline: none; cursor: pointer;
+        }
+ 
+        /* ==========================================================================
+           07. TABLE
+           ========================================================================== */
+        .table-container {
+            background: var(--sm-panel); border-radius: 20px; border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+ 
+        .table-header {
+            padding: 25px 30px; border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+ 
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 20px 30px; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
+        td { padding: 20px 30px; font-size: 13px; border-bottom: 1px solid var(--glass-border); vertical-align: middle; }
+        
+        tr { transition: var(--transition); }
+        tr:hover { background: rgba(255,255,255,0.02); }
+ 
+        .id-badge {
+            background: rgba(255, 255, 255, 0.05); color: var(--text-main); padding: 6px 12px;
+            border-radius: 6px; font-family: monospace; font-weight: 700; font-size: 12px; letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s;
+        }
+        .id-badge:hover { border-color: var(--sm-primary); color: var(--sm-primary); }
+ 
+        .client-name { font-weight: 700; font-size: 14px; }
+ 
+        .status-select {
+            appearance: none; background: var(--sm-dark); color: var(--text-main);
+            border: 1px solid var(--glass-border); padding: 8px 30px 8px 15px;
+            border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+            cursor: pointer; outline: none; transition: 0.3s;
+        }
+        .status-select:focus { border-color: var(--sm-primary); }
+ 
+        .action-btns { display: flex; gap: 15px; align-items: center; }
+        .action-btns button {
+            background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 10px; border-radius: 6px; color: var(--text-muted);
+            cursor: pointer; font-weight: 700; font-size: 11px;
+            transition: all 0.3s;
+        }
+        .action-btns button:hover { border-color: var(--sm-primary); color: var(--sm-primary); }
+ 
+        /* ==========================================================================
+           08. MODAL
+           ========================================================================== */
+        .overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); z-index: 2000;
+        }
+ 
+        .modal {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); background: var(--sm-panel);
+            width: 100%; max-width: 550px; border-radius: 24px;
+            border: 1px solid var(--glass-border); padding: 40px;
+            z-index: 2001; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            animation: modalIn 0.4s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+ 
+        @keyframes modalIn { from { opacity: 0; transform: translate(-50%, -40%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+ 
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 24px; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+ 
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; background: var(--sm-dark); border: 1px solid var(--glass-border);
+            padding: 15px; border-radius: 12px; color: var(--text-main);
+            font-family: inherit; font-size: 14px; transition: 0.3s; outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--sm-primary); }
+ 
+        .modal-footer { display: flex; gap: 15px; margin-top: 30px; }
+        .btn-cancel { flex: 1; background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; }
+        .btn-save { flex: 2; background: var(--sm-primary); color: var(--sm-dark); border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 800; text-transform: uppercase; }
+ 
+        /* ==========================================================================
+           09. TOAST SYSTEM
+           ========================================================================== */
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: var(--sm-panel); color: var(--text-main); padding: 15px 25px;
+            border-radius: 12px; border-left: 4px solid var(--sm-primary);
+            font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 12px;
+            animation: slideIn 0.4s ease forwards;
+        }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { to { transform: translateX(120%); opacity: 0; } }
+ 
+        /* ==========================================================================
+           10. CHARTS
+           ========================================================================== */
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .chart-card { background: var(--sm-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; }
+        .chart-card h3 { margin-bottom: 20px; font-size: 16px; font-weight: 700; }
+ 
+        /* Pagination */
+        .pagination {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 30px; border-top: 1px solid var(--glass-border);
+        }
+        .pagination-btn { padding: 10px 15px; background: var(--sm-primary); color: var(--sm-dark); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        .pagination-btn:disabled { background: rgba(255,255,255,0.05); cursor: not-allowed; }
+ 
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-box { background: var(--sm-panel); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; text-align: center; }
+        .stat-box .value { font-size: 28px; font-weight: 900; color: var(--sm-primary); margin-bottom: 5px; }
+        .stat-box .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+ 
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+        <div class="logo-area">
+            <i class="fas fa-satellite-dish"></i> S.L.M <span>OVERLORD PRO</span>
+        </div>
+        
+        <nav class="nav-group">
+            <a class="nav-link active" onclick="App.switchPage('dashboard')"><i class="fas fa-th-large"></i> Tableau de Bord</a>
+            <a class="nav-link" onclick="App.switchPage('orders')"><i class="fas fa-box-open"></i> Commandes</a>
+            <a class="nav-link" onclick="App.switchPage('analytics')"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <a class="nav-link" onclick="App.switchPage('clients')"><i class="fas fa-users"></i> Clients VIP</a>
+            <a class="nav-link" onclick="App.switchPage('settings')"><i class="fas fa-cog"></i> Paramètres</a>
+            <a class="nav-link" href="/frontend/slm-market-enterprise.html" style="color: var(--text-muted);"><i class="fas fa-store"></i> Retour Boutique</a>
+        </nav>
+
+        <a class="nav-link nav-logout" onclick="App.logout()"><i class="fas fa-power-off"></i> Déconnexion</a>
+    </aside>
+ 
+    <!-- ==================== MAIN WORKSPACE ==================== -->
+    <main class="workspace">
+        
+        <!-- ==================== DASHBOARD PAGE ==================== -->
+        <section class="page-section active" id="dashboard">
+            <div class="top-header">
+                <div class="welcome">
+                    <h1>Protocole S.L.M</h1>
+                    <p id="current-date">SÉCURISE, SYNCHRONISE, DÉLIVRE.</p>
+                </div>
+            </div>
+ 
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="icon"><i class="fas fa-sack-dollar"></i></div>
+                    <h3>Volume d'Acquisition (Total)</h3>
+                    <div class="value" id="kpi-revenue">0 FCFA</div>
+                    <div class="trend"><i class="fas fa-arrow-up"></i> Flux sécurisé</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon"><i class="fas fa-plane-departure"></i></div>
+                    <h3>Colis en Transit Actif</h3>
+                    <div class="value" id="kpi-active">0</div>
+                    <div class="trend" style="color: var(--sm-primary);"><i class="fas fa-sync fa-spin"></i> Synchronisation</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon"><i class="fas fa-check-double"></i></div>
+                    <h3>Missions Accomplies</h3>
+                    <div class="value" id="kpi-done">0</div>
+                    <div class="trend"><i class="fas fa-shield-alt"></i> Conformité 100%</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <h3>Commandes Critiques</h3>
+                    <div class="value" id="kpi-critical">0</div>
+                    <div class="trend" style="color: #ef4444;"><i class="fas fa-bolt"></i> À traiter</div>
+                </div>
+            </div>
+ 
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Revenus par Jour (7 derniers jours)</h3>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Distribution des Statuts</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ==================== ORDERS PAGE ==================== -->
+        <section class="page-section" id="orders">
+            <div class="top-header">
+                <div class="welcome">
+                    <h1>Registre des Commandes</h1>
+                    <p id="current-date2">Gestion complète des acquisitions</p>
+                </div>
+                <button class="btn-action" onclick="App.openModal()">
+                    <i class="fas fa-plus"></i> Nouvelle Commande
+                </button>
+            </div>
+ 
+            <!-- Stats Quick View -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="value" id="stat-total">0</div>
+                    <div class="label">Total Commandes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="stat-pending">0</div>
+                    <div class="label">En Attente</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="stat-revenue">0M</div>
+                    <div class="label">Revenu Total</div>
+                </div>
+            </div>
+ 
+            <!-- Filters -->
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label>Recherche</label>
+                    <input type="text" id="searchInput" placeholder="ID, Client, Articles..." onkeyup="App.filterTable()">
+                </div>
+                <div class="filter-group">
+                    <label>Statut</label>
+                    <select id="filterStatus" onchange="App.filterTable()">
+                        <option value="">Tous les statuts</option>
+                        <option value="reçue">Validé / Reçu</option>
+                        <option value="préparation">Sourcing Hub</option>
+                        <option value="fret">Fret Aérien</option>
+                        <option value="abidjan">QG Abidjan</option>
+                        <option value="livré">Livré</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Priorité</label>
+                    <select id="filterPriority" onchange="App.filterTable()">
+                        <option value="">Toutes priorités</option>
+                        <option value="critical">🔴 Critique</option>
+                        <option value="high">🟠 Élevée</option>
+                        <option value="medium">🟡 Moyenne</option>
+                        <option value="low">🟢 Basse</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Trier par</label>
+                    <select id="sortBy" onchange="App.filterTable()">
+                        <option value="date">Date (récent)</option>
+                        <option value="montant">Montant (décroissant)</option>
+                        <option value="client">Client (A-Z)</option>
+                    </select>
+                </div>
+                <button class="btn-action" onclick="App.exportCSV()">
+                    <i class="fas fa-download"></i> Exporter
+                </button>
+            </div>
+ 
+            <!-- Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Réf. Prestige</th>
+                            <th>Acquéreur VIP</th>
+                            <th>Inventaire</th>
+                            <th>Valeur</th>
+                            <th>Priorité</th>
+                            <th>Échelon</th>
+                            <th>Protocoles</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody">
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <div id="pagination-info">Page 1 de 1</div>
+                    <div>
+                        <button class="pagination-btn" id="prevBtn" onclick="App.previousPage()" style="margin-right: 10px;">← Précédent</button>
+                        <button class="pagination-btn" id="nextBtn" onclick="App.nextPage()">Suivant →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ==================== ANALYTICS PAGE ==================== -->
+        <section class="page-section" id="analytics">
+            <div class="welcome">
+                <h1>Analytiques Avancées</h1>
+                <p>Statistiques et performances détaillées</p>
+            </div>
+ 
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="value" id="analytics-revenue">0M</div>
+                    <div class="label">Revenu Total</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="analytics-completed">0</div>
+                    <div class="label">Commandes Livrées</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="analytics-pending">0</div>
+                    <div class="label">En Attente</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="analytics-completion">0%</div>
+                    <div class="label">Taux de Complétion</div>
+                </div>
+            </div>
+ 
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Revenus Détaillés</h3>
+                    <canvas id="analyticsRevenueChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Répartition par Priorité</h3>
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ==================== CLIENTS PAGE ==================== -->
+        <section class="page-section" id="clients">
+            <div class="welcome">
+                <h1>Base de Données Clients VIP</h1>
+                <p>Gestion des acquéreurs prestige</p>
+            </div>
+ 
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Commandes</th>
+                            <th>Volume d'Affaires</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+ 
+        <!-- ==================== SETTINGS PAGE ==================== -->
+        <section class="page-section" id="settings">
+            <div class="welcome">
+                <h1>Paramètres Système</h1>
+                <p>Configuration et sécurité</p>
+            </div>
+ 
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div style="background: var(--sm-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px;">
+                    <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 15px;">Affichage</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px;">
+                            <input type="checkbox" checked style="cursor: pointer;">
+                            Notifications en temps réel
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px;">
+                            <input type="checkbox" checked style="cursor: pointer;">
+                            Mode sombre activé
+                        </label>
+                    </div>
+                </div>
+ 
+                <div style="background: var(--sm-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px;">
+                    <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 15px;">Sécurité</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button style="background: #ef4444; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px;">
+                            Réinitialiser Mot de Passe
+                        </button>
+                        <button style="background: transparent; color: white; border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px;">
+                            Activer 2FA
+                        </button>
+                    </div>
+                </div>
+ 
+                <div style="background: var(--sm-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px;">
+                    <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 15px;">Système</h3>
+                    <div style="font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong>Version:</strong> 2.0.0-PRO</div>
+                        <div><strong>Statut API:</strong> <span style="color: var(--status-done);">✓ Connecté</span></div>
+                    </div>
+                </div>
+
+                <!-- CODES PROMOS ADMIN -->
+                <div style="background: var(--sm-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; grid-column: 1/-1;">
+                    <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">🎁 Gestion des Codes Promo</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Les codes ajoutés ici apparaissent instantanément sur la boutique.</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <input type="text" id="newPromoCode" placeholder="CODE" style="flex:1; min-width:100px; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; font-family:monospace; font-weight:700; text-transform:uppercase; outline:none;">
+                        <input type="number" id="newPromoDiscount" placeholder="Valeur (ex: 0.20 ou 20000)" style="flex:2; min-width:160px; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;">
+                        <select id="newPromoType" style="background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;">
+                            <option value="percentage">% Réduction</option>
+                            <option value="fixed">Montant fixe (FCFA)</option>
+                        </select>
+                        <input type="number" id="newPromoMin" placeholder="Min. FCFA (0 = sans min)" style="flex:1; min-width:140px; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;">
+                        <button onclick="addPromoCode()" style="background:var(--sm-primary); color:var(--sm-dark); border:none; padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer; white-space:nowrap;">+ Ajouter</button>
+                    </div>
+                    <div id="promoCodesList" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+                </div>
+
+                <!-- CLÉ BREVO -->
+                <div style="background: var(--sm-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; grid-column: 1/-1;">
+                    <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">📧 Brevo — Configuration Emails</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
+                        1. Créer un compte sur <b>brevo.com</b> (gratuit jusqu'à 300 emails/jour)<br>
+                        2. Aller dans <b>Senders & IP</b> → ajouter votre email expéditeur et le valider<br>
+                        3. Aller dans <b>SMTP & API</b> → copier votre clé API ci-dessous
+                    </p>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="brevoKeyInput" placeholder="xkeysib-xxxxxxxxxxxx" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none; font-family:monospace;" value="${localStorage.getItem('slm_brevo_key') || ''}">
+                        <button onclick="saveBrevoKey()" style="background:var(--sm-primary); color:var(--sm-dark); border:none; padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer;">Sauvegarder</button>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="email" id="brevoSenderInput" placeholder="contact@slm-market.com" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;" value="${localStorage.getItem('slm_brevo_sender') || 'contact@slm-market.com'}">
+                        <button onclick="saveBrevoSender()" style="background:var(--sm-dark); color:var(--sm-primary); border:1px solid var(--sm-primary); padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer;">Email expéditeur</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+    </main>
+ 
+    <!-- ==================== MODAL ==================== -->
+    <div class="overlay" id="overlay" onclick="App.closeModal()"></div>
+    <div class="modal" id="orderModal">
+        <div class="modal-header">
+            <h2>Nouvelle Acquisition</h2>
+            <button class="modal-close" onclick="App.closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="form-group">
+            <label>Identité de l'Acquéreur</label>
+            <input type="text" id="f-client" placeholder="Ex: S. Excellence" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Contenu du Coffre (Détails)</label>
+            <textarea id="f-products" rows="3" placeholder="Ex: 1x Rolex, 2x Mèches Raw Hair..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Valeur d'Assurance (Montant en FCFA)</label>
+            <input type="number" id="f-amount" placeholder="Ex: 1500000">
+        </div>
+        <div class="form-group">
+            <label>Niveau de Priorité</label>
+            <select id="f-priority">
+                <option value="low">🟢 Basse</option>
+                <option value="medium" selected>🟡 Moyenne</option>
+                <option value="high">🟠 Élevée</option>
+                <option value="critical">🔴 Critique</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="App.closeModal()">Annuler</button>
+            <button class="btn-save" onclick="App.saveOrder()">Forger la Commande</button>
+        </div>
+    </div>
+ 
+    <!-- ==================== TOAST CONTAINER ==================== -->
+    <div id="toast-container"></div>
+ 
+    <!-- ==================== JAVASCRIPT KERNEL ==================== -->
+    <script>
+        // ==================== GARDE AUTHENTIFICATION ====================
+        if (!localStorage.getItem('slm_admin_token')) {
+            window.location.replace('login.html');
+        }
+
+        // ==================== CHARGEMENT COMMANDES RÉELLES ====================
+
+        function loadRealOrders() {
+            try {
+                const raw = localStorage.getItem('slm_admin_orders');
+                if (!raw) return [];
+                return JSON.parse(raw).map(o => ({
+                    id: o.id,
+                    client: o.client || o.clientNom || 'Client',
+                    telephone: o.telephone || '',
+                    email: o.email || '',
+                    articles: o.articles || '',
+                    montant: o.montant || 0,
+                    statut: o.statut || 'reçue',
+                    date: new Date(o.date || Date.now()),
+                    priority: o.priority || 'medium'
+                }));
+            } catch(e) { return []; }
+        }
+
+        function saveOrdersToStorage(orders) {
+            try {
+                localStorage.setItem('slm_admin_orders', JSON.stringify(orders.map(o => ({
+                    ...o, date: o.date instanceof Date ? o.date.toISOString() : o.date
+                }))));
+            } catch(e) {}
+        }
+
+        // ==================== MAIN APPLICATION ====================
+
+        const App = {
+            orders: loadRealOrders(),
+            filteredOrders: [],
+            currentPage: 'dashboard',
+            pageSize: 10,
+            currentPageNum: 1,
+ 
+            init() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.updateDate();
+                    this.renderDashboard();
+                    this.renderOrders();
+                    this.renderClients();
+                    this.initCharts();
+                    setInterval(() => this.updateDate(), 60000);
+                });
+            },
+ 
+            updateDate() {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const dateStr = new Date().toLocaleDateString('fr-FR', options).toUpperCase();
+                document.getElementById('current-date').innerText = dateStr;
+                if (document.getElementById('current-date2')) {
+                    document.getElementById('current-date2').innerText = dateStr;
+                }
+            },
+ 
+            // ==================== PAGE NAVIGATION ====================
+ 
+            switchPage(page) {
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(page).classList.add('active');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                event.target.closest('.nav-link').classList.add('active');
+                this.currentPage = page;
+ 
+                if (page === 'dashboard') this.renderDashboard();
+                if (page === 'analytics') this.renderAnalytics();
+            },
+ 
+            // ==================== DASHBOARD ====================
+ 
+            renderDashboard() {
+                let totalRev = this.orders.reduce((sum, o) => sum + o.montant, 0);
+                let activeCount = this.orders.filter(o => o.statut !== 'livré').length;
+                let doneCount = this.orders.filter(o => o.statut === 'livré').length;
+                let criticalCount = this.orders.filter(o => o.priority === 'critical').length;
+ 
+                document.getElementById('kpi-revenue').innerText = (totalRev / 1000000).toFixed(1) + "M FCFA";
+                document.getElementById('kpi-active').innerText = activeCount;
+                document.getElementById('kpi-done').innerText = doneCount;
+                document.getElementById('kpi-critical').innerText = criticalCount;
+            },
+ 
+            // ==================== ORDERS ====================
+ 
+            renderOrders() {
+                this.filteredOrders = [...this.orders];
+                this.filterTable();
+                this.updateOrderStats();
+            },
+ 
+            updateOrderStats() {
+                let total = this.orders.length;
+                let pending = this.orders.filter(o => o.statut !== 'livré').length;
+                let revenue = this.orders.reduce((sum, o) => sum + o.montant, 0);
+ 
+                document.getElementById('stat-total').innerText = total;
+                document.getElementById('stat-pending').innerText = pending;
+                document.getElementById('stat-revenue').innerText = (revenue / 1000000).toFixed(1) + 'M';
+            },
+ 
+            filterTable() {
+                const query = document.getElementById('searchInput').value.toLowerCase();
+                const statusFilter = document.getElementById('filterStatus').value;
+                const priorityFilter = document.getElementById('filterPriority').value;
+                const sortBy = document.getElementById('sortBy').value;
+ 
+                this.filteredOrders = this.orders.filter(o =>
+                    (o.id.toLowerCase().includes(query) || o.client.toLowerCase().includes(query) || o.articles.toLowerCase().includes(query)) &&
+                    (!statusFilter || o.statut === statusFilter) &&
+                    (!priorityFilter || o.priority === priorityFilter)
+                );
+ 
+                if (sortBy === 'montant') this.filteredOrders.sort((a, b) => b.montant - a.montant);
+                else if (sortBy === 'client') this.filteredOrders.sort((a, b) => a.client.localeCompare(b.client));
+                else this.filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+ 
+                this.currentPageNum = 1;
+                this.renderTablePage();
+            },
+ 
+            renderTablePage() {
+                const start = (this.currentPageNum - 1) * this.pageSize;
+                const pageOrders = this.filteredOrders.slice(start, start + this.pageSize);
+                const tbody = document.getElementById('orders-tbody');
+ 
+                if (pageOrders.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:60px 30px; color: var(--text-muted);">
+                                <i class="fas fa-inbox" style="font-size:40px; opacity:0.3; display:block; margin-bottom:15px;"></i>
+                                <p style="font-size:14px; font-weight:600;">Aucune commande reçue</p>
+                                <p style="font-size:12px; margin-top:5px; opacity:0.7;">Les commandes passées depuis la boutique apparaîtront ici automatiquement.</p>
+                            </td>
+                        </tr>`;
+                } else {
+                    tbody.innerHTML = pageOrders.map(order => `
+                        <tr>
+                            <td>
+                                <div class="id-badge" onclick="navigator.clipboard.writeText('${order.id}'); App.toast('Copié!', 'success')">
+                                    ${order.id} <i class="fas fa-copy" style="font-size:10px; margin-left:5px; opacity:0.5;"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="client-name">${order.client}</div>
+                                ${order.telephone ? `<div style="font-size:11px;color:#666;margin-top:3px;"><i class="fas fa-phone" style="margin-right:4px;"></i>${order.telephone}</div>` : ''}
+                                ${order.email ? `<div style="font-size:11px;color:#666;"><i class="fas fa-envelope" style="margin-right:4px;"></i>${order.email}</div>` : ''}
+                            </td>
+                            <td style="color:#aaa; font-size:12px;">${order.articles.length > 35 ? order.articles.substring(0, 35) + '...' : order.articles}</td>
+                            <td style="font-weight: 800; color: var(--sm-primary);">${order.montant.toLocaleString()} FCFA</td>
+                            <td>
+                                <span style="background: ${order.priority === 'critical' ? 'rgba(239,68,68,0.2)' : order.priority === 'high' ? 'rgba(245,158,11,0.2)' : order.priority === 'medium' ? 'rgba(59,130,246,0.2)' : 'rgba(16,185,129,0.2)'}; color: ${order.priority === 'critical' ? '#ef4444' : order.priority === 'high' ? '#f59e0b' : order.priority === 'medium' ? '#3b82f6' : '#10b981'}; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px;">
+                                    ${order.priority === 'critical' ? '🔴 Critique' : order.priority === 'high' ? '🟠 Élevée' : order.priority === 'medium' ? '🟡 Moyenne' : '🟢 Basse'}
+                                </span>
+                            </td>
+                            <td>
+                                <select class="status-select" onchange="App.updateStatus('${order.id}', this.value)" style="color: ${order.statut === 'livré' ? 'var(--status-done)' : 'white'};">
+                                    <option value="reçue" ${order.statut === 'reçue' ? 'selected' : ''}>Validé</option>
+                                    <option value="préparation" ${order.statut === 'préparation' ? 'selected' : ''}>Sourcing</option>
+                                    <option value="fret" ${order.statut === 'fret' ? 'selected' : ''}>Fret</option>
+                                    <option value="abidjan" ${order.statut === 'abidjan' ? 'selected' : ''}>Abidjan</option>
+                                    <option value="livré" ${order.statut === 'livré' ? 'selected' : ''}>Livré</option>
+                                </select>
+                            </td>
+                            <td class="action-btns">
+                                <button onclick="App.viewOrder('${order.id}')"><i class="fas fa-eye"></i></button>
+                                <button onclick="App.deleteOrder('${order.id}')"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+ 
+                const totalPages = Math.ceil(this.filteredOrders.length / this.pageSize);
+                document.getElementById('pagination-info').innerText = `Page ${this.currentPageNum} de ${Math.max(1, totalPages)}`;
+                document.getElementById('prevBtn').disabled = this.currentPageNum === 1;
+                document.getElementById('nextBtn').disabled = this.currentPageNum === totalPages || totalPages === 0;
+            },
+ 
+            updateStatus(orderId, newStatus) {
+                const order = this.orders.find(o => o.id === orderId);
+                if (order) {
+                    order.statut = newStatus;
+                    saveOrdersToStorage(this.orders);
+                    this.renderTablePage();
+                    this.updateOrderStats();
+                    this.toast(`Statut mis à jour → ${newStatus}`, 'success');
+                }
+            },
+
+            deleteOrder(orderId) {
+                if (confirm('Supprimer définitivement cette commande ?')) {
+                    this.orders = this.orders.filter(o => o.id !== orderId);
+                    saveOrdersToStorage(this.orders);
+                    this.filterTable();
+                    this.updateOrderStats();
+                    this.toast('Commande supprimée', 'success');
+                }
+            },
+
+            viewOrder(orderId) {
+                const order = this.orders.find(o => o.id === orderId);
+                if (order) {
+                    const dateStr = order.date instanceof Date
+                        ? order.date.toLocaleDateString('fr-FR')
+                        : new Date(order.date).toLocaleDateString('fr-FR');
+                    alert(
+                        `━━━━ COMMANDE ${order.id} ━━━━\n\n` +
+                        `Client : ${order.client}\n` +
+                        (order.telephone ? `Tél    : ${order.telephone}\n` : '') +
+                        (order.email ? `Email  : ${order.email}\n` : '') +
+                        `\nArticles : ${order.articles}\n` +
+                        `Montant  : ${order.montant.toLocaleString()} FCFA\n` +
+                        `Statut   : ${order.statut}\n` +
+                        `Priorité : ${order.priority}\n` +
+                        `Date     : ${dateStr}`
+                    );
+                }
+            },
+ 
+            // ==================== CLIENTS ====================
+ 
+            renderClients() {
+                const clientMap = new Map();
+                this.orders.forEach(o => {
+                    if (!clientMap.has(o.client)) {
+                        clientMap.set(o.client, { name: o.client, count: 0, total: 0 });
+                    }
+                    const client = clientMap.get(o.client);
+                    client.count++;
+                    client.total += o.montant;
+                });
+ 
+                const tbody = document.getElementById('clients-tbody');
+                tbody.innerHTML = Array.from(clientMap.values()).map(c => `
+                    <tr>
+                        <td class="client-name"><i class="fas fa-user-circle" style="margin-right: 10px; color: var(--sm-primary);"></i> ${c.name}</td>
+                        <td>${c.count} commande${c.count > 1 ? 's' : ''}</td>
+                        <td style="font-weight: 800; color: var(--sm-primary);">${c.total.toLocaleString()} FCFA</td>
+                        <td><span style="background: rgba(16, 185, 129, 0.2); color: var(--status-done); padding: 6px 12px; border-radius: 6px; font-weight: 700;">VIP</span></td>
+                        <td class="action-btns">
+                            <button><i class="fas fa-envelope"></i></button>
+                            <button><i class="fas fa-phone"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            },
+ 
+            // ==================== ANALYTICS ====================
+ 
+            renderAnalytics() {
+                let totalRev = this.orders.reduce((sum, o) => sum + o.montant, 0);
+                let completed = this.orders.filter(o => o.statut === 'livré').length;
+                let pending = this.orders.length - completed;
+                let percentage = (completed / this.orders.length * 100).toFixed(1);
+ 
+                document.getElementById('analytics-revenue').innerText = (totalRev / 1000000).toFixed(1) + 'M';
+                document.getElementById('analytics-completed').innerText = completed;
+                document.getElementById('analytics-pending').innerText = pending;
+                document.getElementById('analytics-completion').innerText = percentage + '%';
+            },
+ 
+            // ==================== CHARTS ====================
+ 
+            initCharts() {
+                this.createRevenueChart();
+                this.createStatusChart();
+                this.createAnalyticsCharts();
+            },
+ 
+            createRevenueChart() {
+                const ctx = document.getElementById('revenueChart');
+                if (!ctx) return;
+ 
+                const data = Array.from({ length: 7 }, (_, i) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() - (6 - i));
+                    const dayOrders = this.orders.filter(o => o.date.toDateString() === date.toDateString());
+                    return {
+                        label: date.toLocaleDateString('fr-FR', { weekday: 'short' }),
+                        revenue: dayOrders.reduce((sum, o) => sum + o.montant, 0) / 1000000
+                    };
+                });
+ 
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.label),
+                        datasets: [{
+                            label: 'Revenus (en millions)',
+                            data: data.map(d => d.revenue),
+                            borderColor: '#ff6a00',
+                            backgroundColor: 'rgba(255, 106, 0, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#ff6a00'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#888' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#888' }
+                            }
+                        }
+                    }
+                });
+            },
+ 
+            createStatusChart() {
+                const ctx = document.getElementById('statusChart');
+                if (!ctx) return;
+ 
+                const data = [
+                    this.orders.filter(o => o.statut === 'reçue').length,
+                    this.orders.filter(o => o.statut === 'préparation').length,
+                    this.orders.filter(o => o.statut === 'fret').length,
+                    this.orders.filter(o => o.statut === 'abidjan').length,
+                    this.orders.filter(o => o.statut === 'livré').length
+                ];
+ 
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Validé', 'Sourcing', 'Fret', 'Abidjan', 'Livré'],
+                        datasets: [{
+                            data: data,
+                            backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#ff6a00', '#10b981'],
+                            borderColor: '#111',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { labels: { color: '#888' } } }
+                    }
+                });
+            },
+ 
+            createAnalyticsCharts() {
+                const revenueCtx = document.getElementById('analyticsRevenueChart');
+                const priorityCtx = document.getElementById('priorityChart');
+ 
+                if (revenueCtx) {
+                    const data = Array.from({ length: 7 }, (_, i) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() - (6 - i));
+                        const dayOrders = this.orders.filter(o => o.date.toDateString() === date.toDateString());
+                        return {
+                            label: date.toLocaleDateString('fr-FR', { weekday: 'short' }),
+                            revenue: dayOrders.reduce((sum, o) => sum + o.montant, 0) / 1000000
+                        };
+                    });
+ 
+                    new Chart(revenueCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.map(d => d.label),
+                            datasets: [{
+                                label: 'Revenus (M FCFA)',
+                                data: data.map(d => d.revenue),
+                                backgroundColor: '#ff6a00',
+                                borderRadius: 8,
+                                borderSkipped: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: 'rgba(255,255,255,0.05)' },
+                                    ticks: { color: '#888' }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#888' }
+                                }
+                            }
+                        }
+                    });
+                }
+ 
+                if (priorityCtx) {
+                    new Chart(priorityCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Critique', 'Élevée', 'Moyenne', 'Basse'],
+                            datasets: [{
+                                label: 'Nombre de commandes',
+                                data: [
+                                    this.orders.filter(o => o.priority === 'critical').length,
+                                    this.orders.filter(o => o.priority === 'high').length,
+                                    this.orders.filter(o => o.priority === 'medium').length,
+                                    this.orders.filter(o => o.priority === 'low').length
+                                ],
+                                backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
+                                borderRadius: 8,
+                                borderSkipped: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: 'rgba(255,255,255,0.05)' },
+                                    ticks: { color: '#888' }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#888' }
+                                }
+                            }
+                        }
+                    });
+                }
+            },
+ 
+            // ==================== MODAL ====================
+ 
+            openModal() {
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('orderModal').style.display = 'block';
+            },
+ 
+            closeModal() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('orderModal').style.display = 'none';
+                document.getElementById('f-client').value = '';
+                document.getElementById('f-products').value = '';
+                document.getElementById('f-amount').value = '';
+            },
+ 
+            saveOrder() {
+                const client = document.getElementById('f-client').value.trim();
+                const products = document.getElementById('f-products').value.trim();
+                const amount = document.getElementById('f-amount').value.trim();
+                const priority = document.getElementById('f-priority').value;
+ 
+                if (!client || !amount) {
+                    this.toast('Remplissez tous les champs obligatoires', 'error');
+                    return;
+                }
+ 
+                const newOrder = {
+                    id: `SLM-${new Date().getFullYear()}-${String(this.orders.length + 1).padStart(3, '0')}`,
+                    client, articles: products || 'Non spécifié',
+                    montant: parseInt(amount),
+                    statut: 'reçue',
+                    date: new Date(),
+                    priority
+                };
+ 
+                this.orders.unshift(newOrder);
+                saveOrdersToStorage(this.orders);
+                this.closeModal();
+                this.filterTable();
+                this.updateOrderStats();
+                this.toast(`Commande créée: ${newOrder.id}`, 'success');
+            },
+ 
+            // ==================== UTILITIES ====================
+ 
+            nextPage() {
+                const totalPages = Math.ceil(this.filteredOrders.length / this.pageSize);
+                if (this.currentPageNum < totalPages) {
+                    this.currentPageNum++;
+                    this.renderTablePage();
+                }
+            },
+ 
+            previousPage() {
+                if (this.currentPageNum > 1) {
+                    this.currentPageNum--;
+                    this.renderTablePage();
+                }
+            },
+ 
+            exportCSV() {
+                const csv = ['ID,Client,Articles,Montant,Statut,Priorité'];
+                this.filteredOrders.forEach(o => {
+                    csv.push(`${o.id},"${o.client}","${o.articles}",${o.montant},${o.statut},${o.priority}`);
+                });
+                const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `slm-export-${new Date().getTime()}.csv`;
+                link.click();
+                this.toast('Exportation réussie', 'success');
+            },
+ 
+            toast(message, type = 'success') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                const colors = {
+                    success: '#10b981',
+                    error: '#ef4444',
+                    info: '#3b82f6'
+                };
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+ 
+                toast.style.borderLeftColor = colors[type];
+                toast.innerHTML = `<i class="fas ${icons[type]}" style="color:${colors[type]}; font-size:18px;"></i> <span>${message}</span>`;
+                container.appendChild(toast);
+ 
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.4s ease forwards';
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
+            },
+ 
+            logout() {
+                if (confirm('Se déconnecter et verrouiller le terminal ?')) {
+                    localStorage.removeItem('slm_admin_token');
+                    window.location.replace('login.html');
+                }
+            }
+        };
+ 
+        // ─── GESTION CODES PROMOS ───
+        function renderPromosAdmin() {
+            const container = document.getElementById('promoCodesList');
+            if (!container) return;
+            const codes = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+            if (Object.keys(codes).length === 0) {
+                container.innerHTML = '<span style="color:#555; font-size:12px;">Aucun code personnalisé ajouté.</span>';
+                return;
+            }
+            container.innerHTML = Object.entries(codes).map(([code, info]) => `
+                <div style="background:rgba(255,106,0,0.05); border:1px solid rgba(255,106,0,0.2); border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px;">
+                    <span style="font-family:monospace; font-weight:900; color:var(--sm-primary); letter-spacing:1px;">${code}</span>
+                    <span style="font-size:12px; color:#888;">${info.type === 'percentage' ? (info.discount*100)+'%' : info.discount.toLocaleString()+' FCFA'} — Min: ${info.minOrder.toLocaleString()} FCFA</span>
+                    <button onclick="deletePromoCode('${code}')" style="margin-left:auto; background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700;">Supprimer</button>
+                </div>
+            `).join('');
+        }
+
+        function addPromoCode() {
+            const code = document.getElementById('newPromoCode').value.trim().toUpperCase();
+            const discount = parseFloat(document.getElementById('newPromoDiscount').value);
+            const type = document.getElementById('newPromoType').value;
+            const minOrder = parseInt(document.getElementById('newPromoMin').value || '0');
+            if (!code || isNaN(discount)) { App.toast('Remplissez le code et la valeur', 'error'); return; }
+            const codes = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+            codes[code] = { discount, type, minOrder: minOrder || 0, label: type === 'percentage' ? `-${discount*100}%` : `-${discount.toLocaleString()} FCFA`, desc: 'Code admin' };
+            localStorage.setItem('slm_promo_codes', JSON.stringify(codes));
+            document.getElementById('newPromoCode').value = '';
+            document.getElementById('newPromoDiscount').value = '';
+            document.getElementById('newPromoMin').value = '';
+            renderPromosAdmin();
+            App.toast(`Code ${code} ajouté sur la boutique`, 'success');
+        }
+
+        function deletePromoCode(code) {
+            const codes = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+            delete codes[code];
+            localStorage.setItem('slm_promo_codes', JSON.stringify(codes));
+            renderPromosAdmin();
+            App.toast(`Code ${code} supprimé`, 'success');
+        }
+
+        function saveBrevoKey() {
+            const key = document.getElementById('brevoKeyInput').value.trim();
+            if (!key) return;
+            localStorage.setItem('slm_brevo_key', key);
+            App.toast('Clé Brevo sauvegardée ✓', 'success');
+        }
+
+        function saveBrevoSender() {
+            const email = document.getElementById('brevoSenderInput').value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                App.toast('Adresse email invalide', 'error');
+                return;
+            }
+            localStorage.setItem('slm_brevo_sender', email);
+            App.toast(`Email expéditeur défini : ${email}`, 'success');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { renderPromosAdmin(); });
+
+        // Initialisation
+        App.init();
+    </script>
+</body>
+</html>

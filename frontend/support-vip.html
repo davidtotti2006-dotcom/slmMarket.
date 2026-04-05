@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support VIP — S.L.M Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6a00;
+            --primary-light: rgba(255,106,0,0.1);
+            --primary-border: rgba(255,106,0,0.25);
+            --bg: #fafafa;
+            --white: #ffffff;
+            --text: #1a1a1a;
+            --muted: #777;
+            --border: #eee;
+            --gold: #c9a84c;
+            --gold-light: rgba(201,168,76,0.1);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* NAV */
+        nav {
+            background: white; border-bottom: 1px solid var(--border);
+            padding: 18px 5%; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--text); }
+        .nav-logo span { color: var(--primary); }
+        .nav-back { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--muted); transition: color 0.2s; }
+        .nav-back:hover { color: var(--primary); text-decoration: none; }
+        .nav-back i { transition: transform 0.2s; }
+        .nav-back:hover i { transform: translateX(-3px); }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #050505 0%, #1a0800 50%, #0d0500 100%);
+            padding: 90px 5% 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 70% 50%, rgba(255,106,0,0.12) 0%, transparent 60%);
+        }
+        .hero::after {
+            content: '◆';
+            position: absolute; top: -30px; left: 5%;
+            font-size: 220px; opacity: 0.03; color: var(--gold);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(201,168,76,0.15); color: var(--gold);
+            padding: 6px 18px; border-radius: 20px; font-size: 11px; font-weight: 800;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 22px;
+            border: 1px solid rgba(201,168,76,0.35);
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(30px, 5vw, 58px);
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 40%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p { color: rgba(255,255,255,0.6); font-size: 15px; max-width: 520px; margin: 0 auto; }
+        .hero-date { margin-top: 22px; font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* RESPONSE BADGES */
+        .hero-stats {
+            display: flex; justify-content: center; gap: 30px; margin-top: 35px;
+            flex-wrap: wrap;
+        }
+        .hero-stat {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 18px; border-radius: 30px; font-size: 12px; color: rgba(255,255,255,0.75);
+            font-weight: 600;
+        }
+        .hero-stat i { color: var(--primary); }
+
+        /* LAYOUT */
+        .container { max-width: 1080px; margin: 0 auto; padding: 60px 5%; }
+
+        /* CHANNELS GRID */
+        .channels-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+            margin-bottom: 50px;
+        }
+        @media(max-width:768px) { .channels-grid { grid-template-columns: 1fr; } }
+
+        .channel-card {
+            background: white; border-radius: 20px; padding: 36px 28px;
+            border: 1px solid var(--border); text-align: center;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .channel-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--card-color, var(--primary));
+        }
+        .channel-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
+        .channel-icon {
+            width: 64px; height: 64px; border-radius: 18px; display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 20px;
+            font-size: 26px; background: var(--icon-bg, var(--primary-light));
+            color: var(--card-color, var(--primary));
+        }
+        .channel-card h3 { font-family: 'Playfair Display', serif; font-size: 19px; margin-bottom: 10px; }
+        .channel-card p { font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
+        .channel-badge {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            background: var(--primary-light); color: var(--primary); margin-bottom: 18px;
+        }
+        .channel-badge.gold { background: var(--gold-light); color: var(--gold); }
+        .btn-channel {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 24px; border-radius: 12px; font-weight: 700; font-size: 13px;
+            background: var(--card-color, var(--primary)); color: white;
+            transition: all 0.2s; text-decoration: none; width: 100%; justify-content: center;
+        }
+        .btn-channel:hover { opacity: 0.88; transform: translateY(-2px); text-decoration: none; }
+        .channel-card.whatsapp { --card-color: #25d366; --icon-bg: rgba(37,211,102,0.1); }
+        .channel-card.chat { --card-color: var(--primary); --icon-bg: var(--primary-light); }
+        .channel-card.email { --card-color: #3b5bdb; --icon-bg: rgba(59,91,219,0.1); }
+
+        /* SECTION TITLES */
+        .section-title {
+            font-family: 'Playfair Display', serif; font-size: 26px;
+            margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+        }
+        .section-title i { color: var(--primary); font-size: 22px; }
+        .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 30px; }
+
+        /* VIP SERVICES */
+        .services-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+            margin-bottom: 50px;
+        }
+        @media(max-width:640px) { .services-grid { grid-template-columns: 1fr; } }
+
+        .service-card {
+            background: white; border-radius: 16px; padding: 30px;
+            border: 1px solid var(--border); display: flex; gap: 18px;
+            transition: box-shadow 0.2s;
+        }
+        .service-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.07); }
+        .service-icon {
+            width: 50px; height: 50px; background: var(--primary-light);
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 20px; flex-shrink: 0;
+        }
+        .service-body h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+        .service-body p { font-size: 13px; color: #555; line-height: 1.6; }
+
+        /* HOURS TABLE */
+        .hours-card {
+            background: white; border-radius: 16px; padding: 36px;
+            border: 1px solid var(--border); margin-bottom: 50px;
+        }
+        .hours-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .hours-table th {
+            text-align: left; font-size: 10px; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--muted); font-weight: 800;
+            padding: 0 0 14px; border-bottom: 1px solid var(--border);
+        }
+        .hours-table td {
+            padding: 14px 0; border-bottom: 1px solid #f5f5f5;
+            font-size: 14px; vertical-align: middle;
+        }
+        .hours-table tr:last-child td { border-bottom: none; }
+        .hours-table td:first-child { font-weight: 700; color: var(--text); }
+        .status-dot {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; color: var(--muted);
+        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; }
+        .dot.green { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+        .dot.orange { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.2); }
+
+        /* PROCEDURE STEPS */
+        .procedure-card {
+            background: white; border-radius: 16px; padding: 36px;
+            border: 1px solid var(--border); margin-bottom: 50px;
+        }
+        .steps { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+        .step { display: flex; gap: 20px; padding-bottom: 28px; position: relative; }
+        .step:not(:last-child)::after {
+            content: ''; position: absolute; left: 19px; top: 42px; bottom: 0;
+            width: 2px; background: var(--border);
+        }
+        .step-num {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--primary);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; flex-shrink: 0; position: relative; z-index: 1;
+        }
+        .step-body h5 { font-size: 15px; font-weight: 800; margin-bottom: 5px; padding-top: 8px; }
+        .step-body p { font-size: 13px; color: #555; line-height: 1.6; }
+
+        /* CONTACT FORM */
+        .form-card {
+            background: white; border-radius: 20px; padding: 44px;
+            border: 1px solid var(--border); margin-bottom: 50px;
+            position: relative; overflow: hidden;
+        }
+        .form-card::before {
+            content: ''; position: absolute; top: 0; right: 0;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,106,0,0.04) 0%, transparent 70%);
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        @media(max-width:600px) { .form-grid { grid-template-columns: 1fr; } .form-card { padding: 28px 22px; } }
+        .form-group { display: flex; flex-direction: column; gap: 7px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+            font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg); color: var(--text); transition: border-color 0.2s;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary); background: white;
+        }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .btn-submit {
+            margin-top: 24px; padding: 16px 36px; background: var(--primary);
+            color: white; border: none; border-radius: 12px; font-size: 15px;
+            font-weight: 800; cursor: pointer; display: inline-flex; align-items: center;
+            gap: 10px; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-submit:hover { background: #e65c00; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,106,0,0.3); }
+        .form-success {
+            display: none; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25);
+            border-radius: 12px; padding: 20px 24px; margin-top: 20px;
+            color: #166534; font-weight: 600; font-size: 14px;
+            align-items: center; gap: 12px;
+        }
+        .form-success.show { display: flex; }
+        .form-success i { color: #22c55e; font-size: 20px; }
+
+        /* HIGHLIGHT BOX */
+        .highlight-box {
+            background: var(--primary-light); border: 1px solid var(--primary-border);
+            border-radius: 12px; padding: 18px 22px; font-size: 13px; color: #555;
+            margin: 18px 0; display: flex; align-items: flex-start; gap: 12px;
+        }
+        .highlight-box.gold {
+            background: var(--gold-light); border-color: rgba(201,168,76,0.3); color: #78580f;
+        }
+        .highlight-box i { color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+        .highlight-box.gold i { color: var(--gold); }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 40px 5%; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); background: white; }
+        footer a { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">SLM <span>Market</span></div>
+    <a href="slm-market-enterprise.html" class="nav-back">
+        <i class="fas fa-arrow-left"></i> Retour à la boutique
+    </a>
+</nav>
+
+<div class="hero">
+    <div class="hero-badge"><i class="fas fa-crown"></i> Service d'Excellence</div>
+    <h1>Support VIP</h1>
+    <p>Une équipe dédiée à votre service, disponible pour répondre à chaque besoin avec la discrétion et l'élégance que vous méritez.</p>
+    <div class="hero-stats">
+        <div class="hero-stat"><i class="fas fa-clock"></i> Réponse en moins de 2h</div>
+        <div class="hero-stat"><i class="fas fa-shield-alt"></i> Service 7j/7</div>
+        <div class="hero-stat"><i class="fas fa-user-tie"></i> Conseiller dédié</div>
+        <div class="hero-stat"><i class="fas fa-star"></i> Satisfaction garantie</div>
+    </div>
+    <div class="hero-date">Disponible 7j/7 · Abidjan & International</div>
+</div>
+
+<div class="container">
+
+    <!-- CONTACT CHANNELS -->
+    <div style="margin-bottom: 14px;">
+        <div class="section-title"><i class="fas fa-headset"></i> Nous contacter</div>
+        <div class="section-sub">Choisissez le canal qui vous convient le mieux. Tous nos agents sont formés pour vous offrir une expérience irréprochable.</div>
+    </div>
+
+    <div class="channels-grid">
+        <div class="channel-card chat">
+            <div class="channel-badge">Recommandé</div>
+            <div class="channel-icon"><i class="fas fa-comments"></i></div>
+            <h3>Conciergerie Live</h3>
+            <p>Discutez en temps réel avec notre équipe. La solution la plus rapide pour toute demande urgente ou renseignement produit.</p>
+            <a href="../chat.html" class="btn-channel"><i class="fas fa-comments"></i> Ouvrir le chat</a>
+        </div>
+
+        <div class="channel-card whatsapp">
+            <div class="channel-badge" style="background:rgba(37,211,102,0.12);color:#1a9e4d;">WhatsApp</div>
+            <div class="channel-icon"><i class="fab fa-whatsapp"></i></div>
+            <h3>WhatsApp Direct</h3>
+            <p>Envoyez un message WhatsApp à notre conciergerie. Idéal pour partager des photos de produits ou des demandes spéciales.</p>
+            <a href="https://wa.me/2250700000000?text=Bonjour%20SLM%20Market%2C%20je%20souhaite%20obtenir%20de%20l'aide." target="_blank" class="btn-channel"><i class="fab fa-whatsapp"></i> Écrire sur WhatsApp</a>
+        </div>
+
+        <div class="channel-card email">
+            <div class="channel-badge" style="background:rgba(59,91,219,0.1);color:#3b5bdb;">Email</div>
+            <div class="channel-icon"><i class="fas fa-envelope"></i></div>
+            <h3>Support Email</h3>
+            <p>Pour les demandes détaillées, réclamations ou questions relatives à votre commande. Réponse garantie sous 72h maximum.</p>
+            <a href="mailto:support@slm-market.com" class="btn-channel"><i class="fas fa-envelope"></i> support@slm-market.com</a>
+        </div>
+    </div>
+
+    <!-- VIP SERVICES -->
+    <div style="margin-bottom: 14px;">
+        <div class="section-title"><i class="fas fa-gem"></i> Services exclusifs</div>
+        <div class="section-sub">En tant que client S.L.M Market, vous bénéficiez d'un accompagnement sur-mesure à chaque étape.</div>
+    </div>
+
+    <div class="services-grid" style="margin-bottom: 50px;">
+        <div class="service-card">
+            <div class="service-icon"><i class="fas fa-search"></i></div>
+            <div class="service-body">
+                <h4>Sourcing Personnalisé</h4>
+                <p>Vous recherchez un article introuvable ? Notre équipe le sourcera pour vous auprès de nos partenaires internationaux. Délai : 3 à 10 jours ouvrés.</p>
+            </div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"><i class="fas fa-exchange-alt"></i></div>
+            <div class="service-body">
+                <h4>Retour & Échange Facilité</h4>
+                <p>Pas satisfait ? Notre politique de retour premium vous permet d'échanger ou de retourner tout article dans les 7 jours suivant la réception.</p>
+            </div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"><i class="fas fa-box-open"></i></div>
+            <div class="service-body">
+                <h4>Emballage Cadeau Luxe</h4>
+                <p>Chaque commande peut être préparée dans un écrin cadeau premium avec carte personnalisée. Précisez votre demande lors de la commande.</p>
+            </div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"><i class="fas fa-truck-fast"></i></div>
+            <div class="service-body">
+                <h4>Livraison Express Prioritaire</h4>
+                <p>Besoin urgent ? Profitez de notre option livraison express le jour même sur Abidjan ou en 24h sur les principales villes de Côte d'Ivoire.</p>
+            </div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"><i class="fas fa-user-tie"></i></div>
+            <div class="service-body">
+                <h4>Conseiller Dédié SLM Elite</h4>
+                <p>Les membres Gold & Elite bénéficient d'un conseiller personnel attitré, joignable en priorité pour toute demande, 7j/7.</p>
+            </div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"><i class="fas fa-certificate"></i></div>
+            <div class="service-body">
+                <h4>Authentification Produits</h4>
+                <p>Nous garantissons l'authenticité de chaque article commercialisé. Un certificat d'authenticité numérique est disponible sur demande.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOURS -->
+    <div class="hours-card">
+        <div class="section-title"><i class="fas fa-clock"></i> Horaires & délais de réponse</div>
+        <div class="highlight-box gold">
+            <i class="fas fa-crown"></i>
+            Les membres <strong>SLM Elite Gold & Elite Diamant</strong> bénéficient d'une ligne prioritaire avec réponse garantie en moins de 30 minutes.
+        </div>
+        <table class="hours-table">
+            <thead>
+                <tr>
+                    <th>Canal</th>
+                    <th>Disponibilité</th>
+                    <th>Délai de réponse</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="fas fa-comments" style="color:var(--primary);margin-right:8px;"></i> Conciergerie Live</td>
+                    <td>Lun – Dim · 8h → 22h</td>
+                    <td>Immédiat</td>
+                    <td><span class="status-dot"><span class="dot green"></span> En ligne</span></td>
+                </tr>
+                <tr>
+                    <td><i class="fab fa-whatsapp" style="color:#25d366;margin-right:8px;"></i> WhatsApp</td>
+                    <td>7j/7 · 8h → 23h</td>
+                    <td>Moins de 1h</td>
+                    <td><span class="status-dot"><span class="dot green"></span> Actif</span></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-envelope" style="color:#3b5bdb;margin-right:8px;"></i> Email Support</td>
+                    <td>7j/7 · 24h/24</td>
+                    <td>Moins de 72h</td>
+                    <td><span class="status-dot"><span class="dot orange"></span> Standard</span></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-crown" style="color:var(--gold);margin-right:8px;"></i> Ligne VIP Elite</td>
+                    <td>7j/7 · 7h → 23h</td>
+                    <td>Moins de 30 min</td>
+                    <td><span class="status-dot"><span class="dot green"></span> Prioritaire</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RETURN PROCEDURE -->
+    <div class="procedure-card">
+        <div class="section-title"><i class="fas fa-undo-alt"></i> Procédure de retour & réclamation</div>
+        <div class="section-sub">Simple, rapide et sans tracas. Votre satisfaction est notre priorité absolue.</div>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <h5>Contactez notre équipe</h5>
+                    <p>Signalez votre demande via la conciergerie ou par email dans les <strong>7 jours</strong> suivant la réception de votre commande. Précisez votre numéro de commande et le motif.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <h5>Validation de votre demande</h5>
+                    <p>Notre équipe étudie votre demande sous <strong>24h ouvrées</strong> et vous confirme les modalités de retour ou d'échange. Un bon de retour vous est envoyé par email.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <h5>Retour du colis</h5>
+                    <p>Renvoyez l'article dans son emballage d'origine à l'adresse indiquée. Les frais de retour sont à notre charge pour tous les membres SLM Elite.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <h5>Remboursement ou échange</h5>
+                    <p>Dès réception et vérification, votre remboursement est traité sous <strong>3 à 5 jours ouvrés</strong>, ou votre article de remplacement est expédié immédiatement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="form-card">
+        <div class="section-title"><i class="fas fa-paper-plane"></i> Envoyer une demande</div>
+        <div class="section-sub">Remplissez ce formulaire et notre équipe vous répondra dans les meilleurs délais.</div>
+
+        <form id="supportForm" onsubmit="submitForm(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Prénom & Nom</label>
+                    <input type="text" id="f-name" placeholder="Ex : Koné Ibrahim" required>
+                </div>
+                <div class="form-group">
+                    <label>Adresse e-mail</label>
+                    <input type="email" id="f-email" placeholder="votre@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Numéro de commande (optionnel)</label>
+                    <input type="text" id="f-order" placeholder="Ex : SLM-1748293847">
+                </div>
+                <div class="form-group">
+                    <label>Type de demande</label>
+                    <select id="f-type">
+                        <option value="">— Sélectionnez —</option>
+                        <option value="suivi">Suivi de commande</option>
+                        <option value="retour">Retour / Échange</option>
+                        <option value="produit">Renseignement produit</option>
+                        <option value="sourcing">Sourcing personnalisé</option>
+                        <option value="paiement">Problème de paiement</option>
+                        <option value="elite">Programme SLM Elite</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Votre message</label>
+                    <textarea id="f-message" placeholder="Décrivez votre demande en détail..." required></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Envoyer la demande</button>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+            <i class="fas fa-check-circle"></i>
+            <div>
+                <strong>Demande envoyée avec succès !</strong><br>
+                <span style="font-weight:400;font-size:13px;">Notre équipe vous répondra dans les meilleurs délais. Merci de votre confiance.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM HIGHLIGHT -->
+    <div class="highlight-box" style="margin-bottom:20px;">
+        <i class="fas fa-info-circle"></i>
+        <span>S.L.M Market s'engage à traiter chaque demande avec sérieux et confidentialité. Vos données ne sont jamais partagées avec des tiers. Consultez notre <a href="politique-confidentialite.html">Politique de Confidentialité</a> pour en savoir plus.</span>
+    </div>
+
+</div>
+
+<footer>
+    <p>&copy; 2026 S.L.M Market — <a href="politique-confidentialite.html">Politique de confidentialité</a> • <a href="mentions-legales.html">Mentions légales</a> • <a href="faq.html">FAQ</a></p>
+</footer>
+
+<script>
+    function submitForm(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('.btn-submit');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            document.getElementById('supportForm').style.display = 'none';
+            document.getElementById('formSuccess').classList.add('show');
+        }, 1400);
+    }
+</script>
+
+</body>
+</html>

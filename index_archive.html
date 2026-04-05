@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLM MARKET | L'Épicentre du Sourcing Global</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           01. VARIABLES & DESIGN TOKENS
+           ========================================================================== */
+        :root {
+            --sm-primary: #ff6a00;
+            --sm-primary-hover: #e65c00;
+            --sm-primary-glow: rgba(255, 106, 0, 0.4);
+            --sm-black: #050505;
+            --sm-dark: #121212;
+            --sm-gray-900: #1a1a1a;
+            --sm-gray-800: #2d2d2d;
+            --sm-gray-200: #e0e0e0;
+            --sm-bg: #f8f9fc;
+            --sm-white: #ffffff;
+            --sm-text-main: #111111;
+            --sm-text-muted: #888888;
+            
+            --glass-light: rgba(255, 255, 255, 0.85);
+            --glass-dark: rgba(10, 10, 12, 0.95);
+            
+            --shadow-sm: 0 4px 10px rgba(0,0,0,0.03);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.15);
+            --shadow-xl: 0 30px 60px rgba(0,0,0,0.3);
+            
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-in-out-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.4s var(--ease-out-expo);
+            --transition-slow: 0.8s var(--ease-out-expo);
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+        }
+
+        /* ==========================================================================
+           02. RESET & BASE
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--sm-bg);
+            color: var(--sm-text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { font-family: inherit; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--sm-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--sm-gray-800); border-radius: var(--radius-full); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sm-primary); }
+
+        /* ==========================================================================
+           03. UTILITIES & LAYOUT
+           ========================================================================== */
+        .container { max-width: 1600px; margin: 0 auto; padding: 0 4%; }
+        .text-center { text-align: center; }
+        .d-flex { display: flex; }
+        .align-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        
+        .section-padding { padding: 80px 0; }
+        
+        .title-serif {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+        }
+
+        /* ==========================================================================
+           04. TOP BAR TICKER
+           ========================================================================== */
+        .top-bar {
+            background: var(--sm-black);
+            color: var(--sm-white);
+            padding: 12px 0;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-bottom: 2px solid var(--sm-primary);
+        }
+
+        .ticker-wrapper { display: inline-block; padding-left: 100%; animation: ticker 35s linear infinite; }
+        .ticker-item { display: inline-block; padding-right: 80px; }
+        .ticker-item span { color: var(--sm-primary); margin-left: 8px; }
+
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* ==========================================================================
+           05. MEGA HEADER
+           ========================================================================== */
+        header {
+            background: var(--glass-light);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-base);
+        }
+
+        .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+
+        .logo-wrapper svg { transition: var(--transition-fast); }
+        .logo-wrapper:hover svg { transform: scale(1.05); }
+
+        .search-container {
+            flex: 1; max-width: 700px; display: flex;
+            background: var(--sm-white); border: 2px solid transparent;
+            border-radius: var(--radius-full); overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+            transition: var(--transition-base);
+        }
+        .search-container:focus-within { border-color: var(--sm-primary); box-shadow: 0 0 0 5px var(--sm-primary-glow); }
+        .search-container input { flex: 1; border: none; padding: 18px 30px; background: transparent; outline: none; font-size: 14px; font-weight: 500; }
+        .search-container button {
+            background: var(--sm-black); color: var(--sm-white); border: none;
+            padding: 0 45px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1.5px; cursor: pointer; transition: var(--transition-base);
+        }
+        .search-container button:hover { background: var(--sm-primary); }
+
+        .header-actions { display: flex; align-items: center; gap: 25px; }
+
+        .btn-tracking {
+            display: flex; align-items: center; gap: 12px; padding: 14px 24px;
+            background: var(--sm-black); border: 1px solid rgba(255, 106, 0, 0.4);
+            border-radius: var(--radius-md); position: relative; overflow: hidden;
+            transition: var(--transition-base); cursor: pointer;
+        }
+        .btn-tracking span { color: var(--sm-white); font-weight: 800; font-size: 11px; letter-spacing: 1px; z-index: 2; }
+        .btn-tracking i { color: var(--sm-primary); font-size: 18px; z-index: 2; }
+        .btn-tracking .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--sm-primary); box-shadow: 0 0 15px var(--sm-primary);
+            animation: scan 2s infinite ease-in-out; z-index: 2;
+        }
+        .btn-tracking::before {
+            content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%); transition: var(--transition-base); z-index: 1;
+        }
+        .btn-tracking:hover { border-color: var(--sm-primary); transform: translateY(-3px); box-shadow: 0 10px 25px var(--sm-primary-glow); }
+        .btn-tracking:hover::before { transform: translateX(100%); }
+
+        .cart-trigger {
+            position: relative; cursor: pointer; padding: 10px;
+            display: flex; align-items: center; gap: 10px; transition: var(--transition-base);
+        }
+        .cart-trigger:hover { color: var(--sm-primary); }
+        .cart-trigger span { font-weight: 800; font-size: 15px; }
+        .cart-badge {
+            position: absolute; top: -5px; right: -15px; background: var(--sm-primary);
+            color: var(--sm-white); width: 24px; height: 24px; border-radius: var(--radius-full);
+            display: flex; align-items: center; justify-content: center; font-size: 11px;
+            font-weight: 900; border: 2px solid var(--sm-white);
+            transition: transform 0.3s var(--ease-in-out-back);
+        }
+
+        @keyframes scan { 0%, 100% { top: 0%; opacity: 0; } 50% { top: 100%; opacity: 1; } }
+
+        /* ==========================================================================
+           06. NAVIGATION CATÉGORIES
+           ========================================================================== */
+        .nav-categories { background: var(--sm-white); border-bottom: 1px solid var(--sm-gray-200); }
+        .cat-list { display: flex; justify-content: center; gap: 15px; padding: 25px 0; flex-wrap: wrap; }
+        
+        .cat-btn {
+            padding: 14px 32px; border-radius: var(--radius-full); border: 1px solid var(--sm-gray-200);
+            background: var(--sm-white); color: var(--sm-black); font-weight: 700;
+            font-size: 13px; cursor: pointer; transition: var(--transition-base);
+        }
+        .cat-btn:hover, .cat-btn.active {
+            background: var(--sm-black); color: var(--sm-white); border-color: var(--sm-black);
+            transform: translateY(-3px); box-shadow: var(--shadow-md);
+        }
+
+        .sub-cats {
+            display: none; justify-content: center; gap: 12px; padding: 20px 0;
+            background: var(--sm-bg); animation: slideDown 0.4s var(--ease-out-expo);
+        }
+        .sub-cat-tag {
+            background: var(--sm-white); border: 1px solid var(--sm-gray-200); padding: 10px 25px;
+            border-radius: var(--radius-full); font-size: 11px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1px; cursor: pointer; transition: var(--transition-base);
+        }
+        .sub-cat-tag:hover { background: var(--sm-primary); color: var(--sm-white); border-color: var(--sm-primary); transform: translateY(-2px); box-shadow: 0 5px 15px var(--sm-primary-glow); }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ==========================================================================
+           07. HERO CINÉMATIQUE
+           ========================================================================== */
+        .hero-section { padding: 30px 4%; }
+        .hero-slider {
+            height: 550px; border-radius: var(--radius-lg); position: relative;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-xl);
+        }
+        .hero-slider::before {
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 100%),
+                        url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1920');
+            background-size: cover; background-position: center; z-index: 1;
+            animation: heroZoom 30s infinite alternate ease-in-out;
+        }
+        
+        .hero-content {
+            position: relative; z-index: 2; text-align: left; padding: 60px;
+            background: rgba(20, 20, 25, 0.4); backdrop-filter: blur(15px);
+            border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.1);
+            max-width: 800px; margin-right: auto; margin-left: 5%;
+        }
+        .hero-content h1 { font-size: clamp(40px, 6vw, 75px); color: var(--sm-white); margin-bottom: 15px; line-height: 1.05; animation: fadeUp 1s ease-out; }
+        .hero-content p { font-size: clamp(16px, 2vw, 22px); color: var(--sm-primary); font-weight: 800; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 40px; animation: fadeUp 1.2s ease-out; }
+        .hero-btn {
+            background: var(--sm-white); color: var(--sm-black); padding: 20px 45px;
+            border-radius: var(--radius-full); font-weight: 900; text-transform: uppercase;
+            letter-spacing: 2px; display: inline-block; transition: var(--transition-base);
+            animation: fadeUp 1.4s ease-out; font-size: 14px;
+        }
+        .hero-btn:hover { background: var(--sm-primary); color: var(--sm-white); box-shadow: 0 15px 35px var(--sm-primary-glow); transform: translateY(-4px); }
+
+        @keyframes heroZoom { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ==========================================================================
+           08. BARRE DE CONFIANCE
+           ========================================================================== */
+        .trust-metrics {
+            background: var(--sm-white); padding: 40px 0; margin-bottom: 50px;
+            border-top: 1px solid var(--sm-gray-200); border-bottom: 1px solid var(--sm-gray-200);
+        }
+        .trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; text-align: center; }
+        .trust-item i { font-size: 35px; color: var(--sm-primary); margin-bottom: 15px; }
+        .trust-item h4 { font-size: 15px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+        .trust-item p { font-size: 12px; color: var(--sm-text-muted); }
+
+        /* ==========================================================================
+           09. GRILLE PRODUITS & CARTES (TILT 3D)
+           ========================================================================== */
+        .store-section { padding-bottom: 100px; }
+        .store-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 50px; }
+        .store-title { display: flex; align-items: center; gap: 25px; flex: 1; }
+        .store-title h2 { font-size: 42px; margin: 0; }
+        .store-title .line { flex: 1; height: 2px; background: linear-gradient(to right, var(--sm-gray-200), transparent); margin-right: 50px; }
+        
+        .sort-select {
+            padding: 15px 25px; border-radius: var(--radius-full); border: 1px solid var(--sm-gray-200);
+            background: var(--sm-white); font-family: inherit; font-weight: 600; font-size: 14px;
+            outline: none; cursor: pointer; transition: var(--transition-fast);
+        }
+        .sort-select:focus { border-color: var(--sm-primary); }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; }
+
+        .product-card {
+            background: var(--sm-white); border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius-lg);
+            position: relative; transition: var(--transition-base); box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column; overflow: hidden;
+            animation: fadeInItem 0.6s ease-out backwards;
+        }
+        .product-card:hover { transform: translateY(-15px); box-shadow: var(--shadow-xl); border-color: rgba(255, 106, 0, 0.2); z-index: 10; }
+
+        .product-badge {
+            position: absolute; top: 20px; left: 20px; background: var(--sm-black); color: var(--sm-primary);
+            padding: 8px 16px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 900;
+            letter-spacing: 2px; z-index: 5; box-shadow: var(--shadow-md); text-transform: uppercase;
+        }
+
+        .quick-view-btn {
+            position: absolute; top: 20px; right: 20px; background: var(--sm-white); color: var(--sm-black);
+            width: 45px; height: 45px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer; z-index: 5; opacity: 0; transform: translateX(20px); transition: var(--transition-base);
+            border: none; box-shadow: var(--shadow-md);
+        }
+        .product-card:hover .quick-view-btn { opacity: 1; transform: translateX(0); }
+        .quick-view-btn:hover { background: var(--sm-primary); color: var(--sm-white); }
+.image-box {
+            width: 100%; 
+            height: 240px; /* 🔽 Hauteur de la boîte réduite (avant: 320px) */
+            background: #fdfdfd; display: flex; align-items: center; justify-content: center;
+            padding: 20px; position: relative; overflow: hidden; border-bottom: 1px solid rgba(0,0,0,0.02);
+        }
+        .image-box img { 
+            max-width: 110%; /* 🔽 L'image prend moins de place pour faire plus chic (avant: 100%) */
+            max-height: 110%; 
+            object-fit: contain; transition: transform 0.8s var(--ease-out-expo); filter: drop-shadow(0 15px 25px rgba(0,0,0,0.08)); 
+        }
+        .product-card:hover .image-box img { 
+            transform: scale(1.10) rotate(-3deg); /* Zoom au survol légèrement adouci */
+        }
+        .info-box { padding: 30px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+        .info-box small { color: var(--sm-primary); font-weight: 800; letter-spacing: 3px; font-size: 11px; margin-bottom: 12px; display: block; text-transform: uppercase; }
+        .info-box h4 { margin: 0 0 15px 0; font-size: 20px; font-weight: 800; line-height: 1.4; color: var(--sm-black); }
+        
+        .rating { color: #f5c518; font-size: 12px; margin-bottom: 15px; }
+        .rating span { color: var(--sm-text-muted); font-size: 11px; margin-left: 5px; }
+
+        .price { color: var(--sm-black); font-weight: 900; font-size: 26px; margin-bottom: 25px; }
+
+        .btn-buy {
+            width: 100%; background: transparent; color: var(--sm-black); border: 2px solid var(--sm-gray-200);
+            padding: 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 14px;
+            letter-spacing: 1px; cursor: pointer; transition: var(--transition-base);
+            display: flex; justify-content: center; align-items: center; gap: 12px;
+        }
+        .btn-buy i { font-size: 16px; transition: transform 0.3s; }
+        .btn-buy:hover { background: var(--sm-black); color: var(--sm-white); border-color: var(--sm-black); box-shadow: var(--shadow-md); }
+        .btn-buy:hover i { transform: scale(1.2); color: var(--sm-primary); }
+
+        @keyframes fadeInItem { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+      /* ==========================================================================
+           10. LE COFFRE S.M. (PANIER VIP - PROPORTIONS OPTIMISÉES)
+           ========================================================================== */
+        #cart-sidebar {
+            position: fixed; 
+            right: -550px; 
+            top: 0; 
+            width: 480px; /* 👑 Largeur réajustée (ni trop grand, ni trop petit) */
+            max-width: 100vw; 
+            height: 100vh;
+            background: var(--glass-dark); backdrop-filter: blur(45px); -webkit-backdrop-filter: blur(45px);
+            z-index: 3000; display: flex; flex-direction: column; transition: 0.8s var(--ease-out-expo);
+            box-shadow: -20px 0 60px rgba(0,0,0,0.8); border-left: 1px solid rgba(255,255,255,0.05);
+        }
+        #cart-sidebar.active { right: 0; }
+
+        /* L'En-tête du panier */
+        .cart-header { 
+            padding: 30px 40px; /* Rogné pour gagner de la place */
+            border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; 
+        }
+        .cart-header h2 { font-family: 'Playfair Display', serif; color: var(--sm-white); font-size: 28px; margin: 0; letter-spacing: 2px; }
+        
+        .close-cart {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--sm-white);
+            width: 40px; height: 40px; border-radius: var(--radius-full); font-size: 16px; cursor: pointer; transition: var(--transition-base);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .close-cart:hover { background: var(--sm-primary); border-color: var(--sm-primary); transform: rotate(90deg); }
+
+        /* 👑 LA ZONE DES PRODUITS (C'est elle qui prend tout l'espace maintenant) */
+        #cart-items-container { 
+            flex: 1; /* Force cette zone à prendre tout l'espace disponible */
+            overflow-y: auto; /* Active le scroll si beaucoup de produits */
+            padding: 20px 40px; 
+        }
+
+        .cart-item {
+            display: grid; 
+            grid-template-columns: 85px 1fr auto; /* Image compacte mais visible */
+            gap: 20px; 
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+            padding: 15px; border-radius: var(--radius-md); margin-bottom: 15px; align-items: center;
+            transition: var(--transition-base); position: relative; overflow: hidden;
+        }
+        .cart-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255, 106, 0, 0.4); transform: translateX(-3px); }
+
+        .cart-item img { 
+            width: 85px; height: 85px; 
+            border-radius: var(--radius-sm); object-fit: contain; background: var(--sm-white); padding: 5px; 
+        }
+        
+        .cart-item-info { display: flex; flex-direction: column; justify-content: center; }
+        .cart-item-info b { color: var(--sm-white); font-size: 14px; margin-bottom: 5px; line-height: 1.3; font-weight: 700; }
+        .price-tag { color: var(--sm-primary); font-size: 16px; font-weight: 900; }
+
+        .qty-controls {
+            display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.6);
+            padding: 6px 12px; border-radius: var(--radius-sm); width: fit-content; margin-top: 10px;
+        }
+        .qty-btn { color: var(--sm-text-muted); cursor: pointer; font-size: 12px; transition: var(--transition-fast); }
+        .qty-btn:hover { color: var(--sm-white); }
+        .qty-val { color: var(--sm-white); font-weight: 800; font-size: 14px; min-width: 20px; text-align: center; }
+
+        .btn-remove-item { color: #ff4a4a; font-size: 18px; cursor: pointer; opacity: 0.6; transition: var(--transition-fast); padding: 10px; }
+        .btn-remove-item:hover { opacity: 1; transform: scale(1.2); }
+
+        /* 👑 LE PIED DE PAGE (Ultra-compacté pour ne pas écraser les produits) */
+        .cart-footer { 
+            padding: 25px 40px; 
+            background: var(--sm-black); border-top: 1px solid rgba(255, 106, 0, 0.3); 
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.5); /* Ombre vers le haut */
+        }
+        .summary-line { display: flex; justify-content: space-between; color: var(--sm-text-muted); font-size: 13px; margin-bottom: 10px; }
+        .total-row { display: flex; justify-content: space-between; align-items: flex-end; margin: 15px 0 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .total-row span { color: var(--sm-white); font-size: 14px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+        .total-row b { color: var(--sm-primary); font-size: 28px; line-height: 1; font-weight: 900; text-shadow: 0 0 10px var(--sm-primary-glow); }
+
+        .btn-checkout {
+            width: 100%; 
+            padding: 18px; /* Bouton moins gros verticalement */
+            background: var(--sm-white); color: var(--sm-black);
+            border: none; border-radius: var(--radius-md); font-weight: 900; font-size: 14px;
+            letter-spacing: 2px; cursor: pointer; transition: var(--transition-base); text-transform: uppercase;
+        }
+        .btn-checkout:hover { background: var(--sm-primary); color: var(--sm-white); box-shadow: 0 10px 30px var(--sm-primary-glow); transform: translateY(-3px); }
+        /* ==========================================================================
+           11. SYSTEME DE NOTIFICATIONS (TOASTS)
+           ========================================================================== */
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
+        .toast {
+            background: var(--sm-black); color: var(--sm-white); padding: 20px 30px;
+            border-radius: var(--radius-md); border-left: 6px solid var(--sm-primary);
+            font-size: 15px; font-weight: 600; box-shadow: var(--shadow-xl);
+            display: flex; align-items: center; gap: 15px;
+            animation: slideInRight 0.5s var(--ease-out-expo) forwards;
+        }
+        .toast i { color: var(--sm-primary); font-size: 20px; }
+        @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOutRight { to { transform: translateX(120%); opacity: 0; } }
+
+        /* ==========================================================================
+           12. QUICK VIEW MODAL
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 5000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: var(--sm-white); width: 90%; max-width: 1000px; border-radius: var(--radius-lg);
+            display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; position: relative;
+            transform: scale(0.95); transition: transform 0.4s var(--ease-out-expo); box-shadow: var(--shadow-xl);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        
+        .modal-close {
+            position: absolute; top: 20px; right: 20px; background: var(--sm-bg); border: none;
+            width: 40px; height: 40px; border-radius: var(--radius-full); font-size: 20px;
+            cursor: pointer; z-index: 10; transition: var(--transition-fast);
+        }
+        .modal-close:hover { background: var(--sm-black); color: var(--sm-white); }
+        
+        .modal-img { background: #f9f9f9; padding: 50px; display: flex; align-items: center; justify-content: center; }
+        .modal-img img { width: 100%; max-height: 400px; object-fit: contain; }
+        
+        .modal-info { padding: 60px 50px; display: flex; flex-direction: column; justify-content: center; }
+        .modal-cat { color: var(--sm-primary); font-weight: 800; letter-spacing: 3px; font-size: 12px; text-transform: uppercase; margin-bottom: 15px; }
+        .modal-title { font-size: 32px; font-weight: 900; color: var(--sm-black); margin-bottom: 20px; line-height: 1.2; }
+        .modal-desc { color: var(--sm-text-muted); font-size: 15px; margin-bottom: 30px; line-height: 1.8; }
+        .modal-price { font-size: 36px; font-weight: 900; color: var(--sm-primary); margin-bottom: 40px; }
+        
+        /* ==========================================================================
+           13. ADVANCED FOOTER
+           ========================================================================== */
+        footer { background: var(--sm-black); color: var(--sm-white); padding: 80px 0 30px; margin-top: 100px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 60px; margin-bottom: 60px; }
+        .footer-logo svg { margin-bottom: 25px; }
+        .footer-desc { color: var(--sm-text-muted); font-size: 14px; line-height: 1.8; max-width: 350px; }
+        
+        .footer-col h4 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 25px; letter-spacing: 1px; }
+        .footer-links li { margin-bottom: 15px; }
+        .footer-links a { color: var(--sm-text-muted); font-size: 14px; transition: var(--transition-fast); }
+        .footer-links a:hover { color: var(--sm-primary); padding-left: 5px; }
+        
+        .newsletter-box { display: flex; margin-top: 20px; border-bottom: 1px solid var(--sm-gray-800); padding-bottom: 10px; }
+        .newsletter-box input { flex: 1; background: transparent; border: none; color: var(--sm-white); outline: none; font-size: 14px; }
+        .newsletter-box button { background: transparent; border: none; color: var(--sm-primary); font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        
+        .footer-bottom { border-top: 1px solid var(--sm-gray-800); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; color: var(--sm-text-muted); font-size: 13px; }
+        .social-icons { display: flex; gap: 20px; }
+        .social-icons a { color: var(--sm-white); font-size: 18px; transition: var(--transition-fast); }
+        .social-icons a:hover { color: var(--sm-primary); transform: translateY(-3px); }
+
+        /* Media Queries pour le Responsive */
+        @media (max-width: 1200px) {
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 900px) {
+            .header-inner { flex-direction: column; gap: 20px; }
+            .search-container { max-width: 100%; }
+            .modal-content { grid-template-columns: 1fr; max-height: 90vh; overflow-y: auto; }
+            .hero-slider { height: 400px; }
+            .hero-content { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="ticker-wrapper">
+            <div class="ticker-item">NOUVELLE COLLECTION DISPONIBLE <span>S.L.M</span></div>
+            <div class="ticker-item">LIVRAISON PRIORITAIRE <span>ABIDJAN & INTERNATIONAL</span></div>
+            <div class="ticker-item">SOURCING AUTHENTIFIÉ <span>100% GARANTI</span></div>
+            <div class="ticker-item">PAIEMENT SÉCURISÉ <span>CRYPTAGE AES-256</span></div>
+        </div>
+    </div>
+
+    <header>
+        <div class="container header-inner">
+            <a href="#" class="logo-wrapper">
+                <svg width="180" height="45" viewBox="0 0 220 60">
+                    <text x="5" y="42" font-family="'Playfair Display', serif" font-size="48" font-weight="900" fill="#0a1a33">SLM</text>
+                    <text x="120" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="24" font-weight="800" fill="#ff6a00">Market</text>
+                    <path d="M5 55 Q 110 65 215 55" stroke="#ff6a00" stroke-width="3" fill="transparent"/>
+                    <circle cx="218" cy="40" r="4" fill="#ff6a00" />
+                </svg>
+            </a>
+
+            <div class="search-container">
+                <input type="text" id="mainSearch" placeholder="Rechercher une pièce d'exception, une marque..." onkeyup="liveSearch()">
+                <button onclick="liveSearch()">Explorer</button>
+            </div>
+
+            <div class="header-actions">
+                <div onclick="window.location.href='suivi.html'" class="btn-tracking">
+                    <div class="scan-line"></div>
+                    <i class="fas fa-satellite-dish"></i>
+                    <span>SUIVRE MON COLIS</span>
+                </div>
+
+                <div class="cart-trigger" onclick="toggleCart()">
+                    <i class="fas fa-shopping-bag" style="font-size: 24px;"></i>
+                    <span style="display:none;">Panier</span>
+                    <div id="cart-count" class="cart-badge">0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-categories">
+        <div class="container">
+            <div class="cat-list">
+                <button class="cat-btn active" onclick="filterCat('tous', this)">L'Intégral</button>
+                <button class="cat-btn" onclick="filterCat('luxe', this)">✨ Haute Parfumerie</button>
+                <button class="cat-btn" onclick="filterCat('cheveux', this)">👑 Mèches Raw Hair</button>
+                <button class="cat-btn" onclick="filterCat('sport', this)">👟 Sneakers Limitées</button>
+                <button class="cat-btn" onclick="filterCat('auto', this)">🚗 Mécanique Premium</button>
+                <button class="cat-btn" onclick="filterCat('vetements', this)">🧥 Prêt-à-Porter</button>
+            </div>
+
+           <div id="style-sourcing-bar" class="sub-cats" style="display: none;">
+                <button class="sub-cat-tag" onclick="filterSub('old-money')">Old Money</button>
+                <button class="sub-cat-tag" onclick="filterSub('street-luxe')">Streetwear Luxe</button>
+                <button class="sub-cat-tag" onclick="filterSub('techwear')">Techwear</button>
+                <button class="sub-cat-tag" onclick="filterSub('tailoring')">Costumes VIP</button>
+                <button class="sub-cat-tag" onclick="filterSub('casual-chic')">Casual Chic</button>
+                <button class="sub-cat-tag" onclick="filterSub('archives')">Archives & Vintage</button>
+                <button class="sub-cat-tag" onclick="filterSub('resort')">Resort / Soie</button>
+                <button class="sub-cat-tag" onclick="filterSub('athleisure')">Athleisure</button>
+                <button class="sub-cat-tag" onclick="filterSub('afritude')">Luxe Panafricain</button>
+                <button class="sub-cat-tag" onclick="filterSub('hype')">Collabs & Hype</button>
+            </div>
+           <div id="sport-sourcing-bar" class="sub-cats" style="display: none;">
+                <button class="sub-cat-tag" onclick="filterSub('jordan')">Air Jordan</button>
+                <button class="sub-cat-tag" onclick="filterSub('nike')">Nike / Collabs</button>
+                <button class="sub-cat-tag" onclick="filterSub('new-balance')">New Balance</button>
+                <button class="sub-cat-tag" onclick="filterSub('adidas')">Yeezy / Adidas</button>
+                <button class="sub-cat-tag" onclick="filterSub('asics')">Asics</button>
+                <button class="sub-cat-tag" onclick="filterSub('salomon')">Salomon</button>
+                <button class="sub-cat-tag" onclick="filterSub('balenciaga-snk')">Balenciaga</button>
+                <button class="sub-cat-tag" onclick="filterSub('lv-snk')">Louis Vuitton</button>
+                <button class="sub-cat-tag" onclick="filterSub('dior-snk')">Dior B22</button>
+                <button class="sub-cat-tag" onclick="filterSub('off-white')">Off-White</button>
+            </div>
+           <div id="parfum-sourcing-bar" class="sub-cats">
+                <button class="sub-cat-tag" onclick="filterSub('dior')">Dior</button>
+                <button class="sub-cat-tag" onclick="filterSub('creed')">Creed</button>
+                <button class="sub-cat-tag" onclick="filterSub('tom-ford')">Tom Ford</button>
+                <button class="sub-cat-tag" onclick="filterSub('baccarat')">Baccarat</button>
+                <button class="sub-cat-tag" onclick="filterSub('louis-vuitton')">Louis Vuitton</button>
+                <button class="sub-cat-tag" onclick="filterSub('marly')">Parfums de Marly</button>
+                <button class="sub-cat-tag" onclick="filterSub('kilian')">Kilian</button>
+                <button class="sub-cat-tag" onclick="filterSub('amouage')">Amouage</button>
+                <button class="sub-cat-tag" onclick="filterSub('xerjoff')">Xerjoff</button>
+            </div>
+            <div id="cheveux-sourcing-bar" class="sub-cats" style="display: none;">
+                <button class="sub-cat-tag" onclick="filterSub('straight')">Bone Straight</button>
+                <button class="sub-cat-tag" onclick="filterSub('bouncy')">Bouncy Curls</button>
+                <button class="sub-cat-tag" onclick="filterSub('deep-wave')">Deep Wave</button>
+                <button class="sub-cat-tag" onclick="filterSub('hd-lace')">HD Lace / Frontal</button>
+                <button class="sub-cat-tag" onclick="filterSub('blonde-613')">Blonde 613</button>
+                <button class="sub-cat-tag" onclick="filterSub('raw-vietnamien')">Raw Vietnamien</button>
+            </div>
+            <div id="auto-sourcing-bar" class="sub-cats" style="display: none;">
+                <button class="sub-cat-tag" onclick="filterSub('voitures')">Véhicules d'Exception</button>
+                <button class="sub-cat-tag" onclick="filterSub('pieces-moteur')">Pièces Performance</button>
+                <button class="sub-cat-tag" onclick="filterSub('jantes')">Jantes Forgées</button>
+                <button class="sub-cat-tag" onclick="filterSub('accessoires-vip')">Accessoires Intérieurs</button>
+            </div>
+
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-slider">
+                <div class="hero-content">
+                    <h1>Sourcing Global <br> Haute Couture</h1>
+                    <p>Acquérez l'inaccessible.</p>
+                    <a href="#store" class="hero-btn">Découvrir la sélection</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="trust-metrics">
+        <div class="container trust-grid">
+            <div class="trust-item">
+                <i class="fas fa-gem"></i>
+                <h4>Authenticité Garantie</h4>
+                <p>Chaque pièce est vérifiée par nos experts.</p>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-plane-departure"></i>
+                <h4>Logistique S.L.M</h4>
+                <p>Livraison sécurisée et prioritaire mondiale.</p>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <h4>Conciergerie 24/7</h4>
+                <p>Un assistant dédié à vos acquisitions.</p>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-lock"></i>
+                <h4>Paiement Crypté</h4>
+                <p>Transactions protégées de bout en bout.</p>
+            </div>
+        </div>
+    </div>
+
+    <section id="store" class="store-section">
+        <div class="container">
+            <div class="store-header">
+                <div class="store-title">
+                    <h2 id="display-title" class="title-serif">Curations S.L.M</h2>
+                    <div class="line"></div>
+                </div>
+                <select class="sort-select" onchange="sortProducts(this.value)">
+                    <option value="default">Trier par : Recommandé</option>
+                    <option value="price-asc">Prix : Croissant</option>
+                    <option value="price-desc">Prix : Décroissant</option>
+                    <option value="name">Alphabétique (A-Z)</option>
+                </select>
+            </div>
+
+            <div id="product-grid" class="product-grid">
+            </div> 
+        </div>
+    </section>
+
+    <aside id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Coffre <span style="font-weight: 300; color: var(--sm-primary);">S.M.</span></h2>
+            <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div id="cart-items-container">
+        </div>
+
+        <div class="cart-footer">
+            <div class="summary-line"><span>Sous-total</span> <span id="cart-subtotal">0 FCFA</span></div>
+            <div class="summary-line"><span>Frais de Conciergerie</span> <span style="color: #00e676;">OFFERT</span></div>
+            <div class="total-row">
+                <span>Investissement</span>
+                <b id="cart-total">0 FCFA</b>
+            </div>
+            
+            <button class="btn-checkout" onclick="finaliserAchatSMLuxe()">
+                VALIDER L'ACQUISITION
+            </button>
+            
+            <p style="text-align: center; font-size: 11px; color: #666; margin-top: 25px; letter-spacing: 2px;">
+                <i class="fas fa-shield-alt"></i> SÉCURISÉ PAR S.L.M. LOGISTICS
+            </p>
+        </div>
+    </aside>
+
+    <div id="quickViewModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeQuickView()"><i class="fas fa-times"></i></button>
+            <div class="modal-img">
+                <img id="qv-img" src="" alt="">
+            </div>
+            <div class="modal-info">
+                <div id="qv-cat" class="modal-cat"></div>
+                <h3 id="qv-title" class="modal-title"></h3>
+                <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(Avis d'experts vérifiés)</span></div>
+                <p id="qv-desc" class="modal-desc"></p>
+                <div id="qv-price" class="modal-price"></div>
+                <button id="qv-btn" class="btn-buy" style="background: var(--sm-black); color: white; border: none; padding: 20px;">
+                    <i class="fas fa-shopping-bag"></i> AJOUTER AU COFFRE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-logo">
+                    <svg width="150" height="35" viewBox="0 0 220 60">
+                        <text x="0" y="42" font-family="'Playfair Display', serif" font-size="48" font-weight="900" fill="#ffffff">SLM</text>
+                        <text x="115" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="24" font-weight="800" fill="#ff6a00">Market</text>
+                    </svg>
+                    <p class="footer-desc">L'épicentre du sourcing global. Accédez aux pièces les plus exclusives du monde entier grâce à notre réseau logistique sans faille.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Boutique</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Haute Parfumerie</a></li>
+                        <li><a href="#">Sneakers Limitées</a></li>
+                        <li><a href="#">Mèches Premium</a></li>
+                        <li><a href="#">Prêt-à-Porter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>L'Empire S.L.M</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Notre Histoire</a></li>
+                        <li><a href="#">Service Conciergerie</a></li>
+                        <li><a href="/suivi.html">Suivi Logistique</a></li>
+                        <li><a href="#">Conditions de Vente</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Accès Privilège</h4>
+                    <p class="footer-desc" style="margin-bottom: 15px;">Inscrivez-vous pour accéder aux ventes privées avant le reste du monde.</p>
+                    <div class="newsletter-box">
+                        <input type="email" placeholder="Votre adresse email exclusive">
+                        <button>Rejoindre</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SLM MARKET. Tous droits réservés par L'Empire S.L.M</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <style>
+    /* Le fond flouté (Style Apple/Luxe) */
+    .sm-modal-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        z-index: 99990;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sm-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* La fenêtre principale */
+    .sm-modal-content {
+        background: var(--sm-black, #0a0a0a);
+        width: 900px;
+        max-width: 95%;
+        border-radius: 20px;
+        display: flex;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        border: 1px solid rgba(255,255,255,0.05);
+        transform: scale(0.9) translateY(20px);
+        transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+    }
+
+    .sm-modal-overlay.active .sm-modal-content {
+        transform: scale(1) translateY(0);
+    }
+
+    /* Bouton Fermer (La Croix) */
+    .sm-close-modal {
+        position: absolute;
+        top: 20px; right: 25px;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+        z-index: 10;
+        transition: 0.2s;
+    }
+    .sm-close-modal:hover { color: var(--sm-primary, #ff6a00); transform: rotate(90deg); }
+
+    /* Moitié Gauche : Image */
+    .sm-modal-left {
+        width: 50%;
+        background: #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .sm-modal-left img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Moitié Droite : Informations */
+    .sm-modal-right {
+        width: 50%;
+        padding: 50px 40px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .sm-modal-right h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+    .sm-modal-price {
+        font-size: 24px;
+        color: var(--sm-primary, #ff6a00);
+        font-weight: 700;
+        margin-bottom: 20px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .sm-modal-desc {
+        color: #aaa;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    /* Contrôles (Taille & Quantité) */
+    .sm-modal-controls {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .sm-control-group {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+    .sm-control-group label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #888;
+        margin-bottom: 8px;
+    }
+    .sm-select, .sm-input-qty {
+        background: #151515;
+        border: 1px solid #333;
+        color: white;
+        padding: 12px 15px;
+        border-radius: 8px;
+        font-size: 16px;
+        outline: none;
+        transition: 0.2s;
+    }
+    .sm-select:focus, .sm-input-qty:focus { border-color: var(--sm-primary, #ff6a00); }
+
+    /* Bouton d'ajout */
+    .sm-btn-add {
+        background: var(--sm-primary, #ff6a00);
+        color: white;
+        border: none;
+        padding: 18px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+    .sm-btn-add:hover { background: #e65c00; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,106,0,0.3); }
+
+    /* Responsif Mobile */
+    @media (max-width: 768px) {
+        .sm-modal-content { flex-direction: column; width: 95%; max-height: 90vh; overflow-y: auto; }
+        .sm-modal-left, .sm-modal-right { width: 100%; }
+        .sm-modal-left { height: 300px; }
+        .sm-modal-right { padding: 30px 20px; }
+    }
+
+        </style>
+
+<script>
+        /**
+         * 🏰 EMPIRE S.L.M MARKET - KERNEL TITANE V5.0
+         * Moteur de routage dynamique, Base de données étendue (Parfums Niche + Raw Hair)
+         */
+
+        // --- 1. BASE DE DONNÉES SECONDAIRE (MOCK DB ÉTENDUE) ---
+       // --- 1. BASE DE DONNÉES SECONDAIRE (TITANE V5.1 - ACTUALISÉE) ---
+        const mockProducts = [
+            // 💎 LUXE / PARFUMS
+            { id: 1, nom: "Dior Sauvage Elixir 100ml", categorie: "luxe", sousCategorie: "dior", prix: 125000, image: "images/dior-sauvage-parfum.jpeg", desc: "Un parfum d'une concentration extrême, où la fraîcheur mythique de Sauvage s'enivre d'un cœur d'épices sur mesure." },
+            { id: 2, nom: "Creed Aventus Eau de Parfum", categorie: "luxe", sousCategorie: "creed", prix: 210000, image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Le parfum de la réussite et du pouvoir." },
+            { id: 17, nom: "Louis Vuitton Ombre Nomade", categorie: "luxe", sousCategorie: "louis-vuitton", prix: 250000, image: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600", desc: "Un sillage de Oud et d'encens ultra puissant, convoité dans le monde entier." },
+            { id: 18, nom: "Parfums de Marly Layton", categorie: "luxe", sousCategorie: "marly", prix: 175000, image: "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=600", desc: "Élégance royale avec des notes de pomme, vanille et bois poivré." },
+            { id: 19, nom: "Kilian Angels' Share", categorie: "luxe", sousCategorie: "kilian", prix: 145000, image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600", desc: "Une essence gourmande de cognac et de cannelle dans un flacon cristal." },
+            { id: 20, nom: "Amouage Interlude Man", categorie: "luxe", sousCategorie: "amouage", prix: 210000, image: "https://images.unsplash.com/photo-1628149462151-5110ebf63a21?w=600", desc: "La 'Bête Bleue', puissance orientale absolue de myrrhe et d'encens." },
+            { id: 21, nom: "Xerjoff 1861 Naxos", categorie: "luxe", sousCategorie: "xerjoff", prix: 155000, image: "https://images.unsplash.com/photo-1587403225263-1490215de233?w=600", desc: "Le sommet du luxe italien : tabac blond, miel doux et lavande." },
+
+            // 👟 SNEAKERS (LES 10 TENDANCES)
+            { id: 40, nom: "Air Jordan 4 Military Black", categorie: "sport", sousCategorie: "jordan", prix: 285000, image: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Cuir premium, coloris mythique, l'indispensable du moment." },
+            { id: 41, nom: "Travis Scott x Nike Dunk", categorie: "sport", sousCategorie: "nike", prix: 850000, image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600", desc: "Collaboration légendaire, stock ultra-limité." },
+            { id: 43, nom: "Yeezy Boost 350 V2 Onyx", categorie: "sport", sousCategorie: "adidas", prix: 220000, image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600", desc: "Triple black, confort Boost révolutionnaire." },
+            { id: 46, nom: "Balenciaga Track Black", categorie: "sport", sousCategorie: "balenciaga-snk", prix: 550000, image: "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=600", desc: "Design complexe, allure massive, le futur du luxe." },
+            { id: 47, nom: "LV Trainer Green White", categorie: "sport", sousCategorie: "lv-snk", prix: 850000, image: "https://images.unsplash.com/photo-1603512398579-2454b8bb6d34?w=600", desc: "Design Virgil Abloh, emblème du Street-Luxe." },
+            { id: 48, nom: "Dior B22 Black Silver", categorie: "sport", sousCategorie: "dior-snk", prix: 750000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "La running de luxe par excellence." },
+
+            // 🧥 PRÊT-À-PORTER (LES 10 STYLES)
+            { id: 50, nom: "Pull Cachemire Loro Piana", categorie: "vetements", sousCategorie: "old-money", prix: 850000, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", desc: "Quiet Luxury. Le summum de la discrétion et du confort." },
+            { id: 51, nom: "T-Shirt Balenciaga Oversize", categorie: "vetements", sousCategorie: "street-luxe", prix: 350000, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600", desc: "Coton lourd, coupe parfaite." },
+            { id: 53, nom: "Costume Tom Ford Windsor", categorie: "vetements", sousCategorie: "tailoring", prix: 2500000, image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600", desc: "Sur mesure, l'élégance ultime pour vos soirées VIP." },
+            { id: 56, nom: "Chemise Soie Casablanca", categorie: "vetements", sousCategorie: "resort", prix: 450000, image: "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600", desc: "Imprimés iconiques, soie italienne." },
+
+            // 👩🏾 CHEVEUX / MÈCHES VIP
+            { id: 13, nom: "Raw Hair Bone Straight 32\"", categorie: "cheveux", sousCategorie: "straight", prix: 280000, image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600", desc: "Fluidité totale, mèches vierges garanties." },
+            { id: 27, nom: "Closure HD Lace 5x5", categorie: "cheveux", sousCategorie: "hd-lace", prix: 85000, image: "https://images.unsplash.com/photo-1580618864180-f6d7d39b81f1?w=600", desc: "Tulle suisse invisible, pour un fini parfait." },
+            { id: 24, nom: "Raw Vietnamien Double Drawn 26\"", categorie: "cheveux", sousCategorie: "raw-vietnamien", prix: 260000, image: "https://images.unsplash.com/photo-1501699169021-3759ee435d66?w=600", desc: "Volume constant de la racine à la pointe." },
+
+            // 🏎️ AUTO / GARAGE VIP
+            { id: 30, nom: "Mercedes-AMG G 63 Dubaï", categorie: "auto", sousCategorie: "voitures", prix: 135000000, image: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "Importation VIP directe, intérieur exclusif." },
+            { id: 32, nom: "Échappement Akrapovič Titane", categorie: "auto", sousCategorie: "pieces-moteur", prix: 3500000, image: "https://images.unsplash.com/photo-1610640306385-bd9164c48bb5?w=600", desc: "Performance et sonorité hors norme." },
+            { id: 34, nom: "Jantes Brabus Monoblock Z 23\"", categorie: "auto", sousCategorie: "jantes", prix: 5800000, image: "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=600", desc: "L'équipement ultime pour votre Classe G." }
+        ];
+        let state = {
+            products: [],
+            currentFilter: 'tous',
+            cart: JSON.parse(localStorage.getItem('slm_panier_client')) || []
+        };
+
+        // --- 2. INITIALISATION & API ---
+        async function initApp() {
+            try {
+                const response = await fetch('http://localhost:3000/api/slm/produits');
+                if (!response.ok) throw new Error("API hors ligne");
+                state.products = await response.json();
+            } catch (error) {
+                console.warn("[S.l.M SYSTEM] Connexion Serveur échouée. Bascule sur la Base de Secours.");
+                state.products = mockProducts;
+            }
+            renderProducts(state.products);
+            updateCartUI();
+        }
+
+        // --- 3. MOTEUR DE ROUTAGE : CATÉGORIES & FILTRES (LA MACHINE DE GUERRE ACTUALISÉE) ---
+        function filterCat(cat, btnElement) {
+            state.currentFilter = cat;
+            
+            // 1. Gestion de l'état visuel des boutons principaux
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            // 2. Gestion de l'affichage des barres de sous-catégories (Le Routage COMPLET)
+            const allBars = [
+                'style-sourcing-bar', 
+                'sport-sourcing-bar', 
+                'parfum-sourcing-bar', 
+                'cheveux-sourcing-bar', 
+                'auto-sourcing-bar'
+            ];
+            
+            // On cache toutes les barres par défaut
+            allBars.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.style.display = 'none'; 
+            });
+
+            // Map d'activation : Quelle catégorie ouvre quelle barre ?
+            const mapBarres = {
+                'vetements': 'style-sourcing-bar',
+                'sport': 'sport-sourcing-bar',
+                'luxe': 'parfum-sourcing-bar',
+                'cheveux': 'cheveux-sourcing-bar',
+                'auto': 'auto-sourcing-bar'
+            };
+
+            // On affiche la barre correspondante si elle existe
+            if(mapBarres[cat]) {
+                const activeBar = document.getElementById(mapBarres[cat]);
+                if(activeBar) activeBar.style.display = 'flex'; 
+            }
+
+            // 3. Filtrage des produits dans la grille
+            if (cat === 'tous') {
+                renderProducts(state.products);
+                document.getElementById('display-title').innerText = "Curations S.M.";
+            } else {
+                const filtered = state.products.filter(p => p.categorie === cat);
+                renderProducts(filtered);
+                
+                // Mise à jour luxueuse du titre de la section
+                const nomsSections = {
+                    'luxe': "Haute Parfumerie",
+                    'vetements': "Prêt-à-Porter & Styles VIP",
+                    'sport': "Sneakers & Culture Streetwear",
+                    'cheveux': "Mèches Raw Hair & Perruques",
+                    'auto': "Garage & Pièces Auto d'Exception"
+                };
+                document.getElementById('display-title').innerText = nomsSections[cat] || cat.toUpperCase();
+            }
+        }
+
+        function filterSub(sub) {
+            let filtered = state.products.filter(p => p.sousCategorie === sub || p.nom.toLowerCase().includes(sub.toLowerCase()));
+            renderProducts(filtered);
+            document.getElementById('display-title').innerText = "Édition : " + sub.toUpperCase().replace('-', ' ');
+        }
+
+        function liveSearch() {
+            const query = document.getElementById('mainSearch').value.toLowerCase();
+            if(query.length < 2 && query.length > 0) return;
+            
+            let filtered = state.products.filter(p =>
+                p.nom.toLowerCase().includes(query) ||
+                p.categorie.toLowerCase().includes(query) ||
+                (p.sousCategorie && p.sousCategorie.toLowerCase().includes(query))
+            );
+            renderProducts(filtered);
+            document.getElementById('display-title').innerText = query ? `Résultats pour "${query}"` : "Curations S.M.";
+        }
+
+        function sortProducts(criteria) {
+            let currentData = [...state.products];
+            if(state.currentFilter !== 'tous') {
+                currentData = currentData.filter(p => p.categorie === state.currentFilter);
+            }
+
+            if(criteria === 'price-asc') currentData.sort((a, b) => a.prix - b.prix);
+            if(criteria === 'price-desc') currentData.sort((a, b) => b.prix - a.prix);
+            if(criteria === 'name') currentData.sort((a, b) => a.nom.localeCompare(b.nom));
+            
+            renderProducts(currentData);
+        }
+
+        // --- 4. SYSTÈME DE NOTIFICATION (TOAST) ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOutRight 0.5s forwards';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // --- 5. MOTEUR DE RENDU DES PRODUITS ---
+        function renderProducts(data) {
+            const grid = document.getElementById('product-grid');
+            if(!grid) return;
+
+            if(data.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding: 100px 20px;">
+                        <i class="fas fa-search" style="font-size: 40px; color: #ccc; margin-bottom: 20px;"></i>
+                        <h3 class="title-serif" style="font-size: 28px; color: #555;">Aucune pièce trouvée</h3>
+                        <p style="color: #888;">Notre conciergerie peut rechercher cet article pour vous.</p>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = data.map((p, index) => `
+                <div class="product-card" style="animation-delay: ${index * 0.05}s">
+                    <div class="product-badge">ÉDITION LIMITÉE</div>
+                    <button class="quick-view-btn" onclick="openQuickView(${p.id})"><i class="fas fa-eye"></i></button>
+                    <div class="image-box">
+                        <img src="${p.image}" loading="lazy" alt="${p.nom}" onerror="this.src='https://via.placeholder.com/400x400/111/ff6a00?text=S.M.+LUXE'">
+                    </div>
+                    <div class="info-box">
+                        <div>
+                            <small>${p.categorie.toUpperCase()}</small>
+                            <h4 title="${p.nom}">${p.nom}</h4>
+                        </div>
+                        <div>
+                            <div class="price">${p.prix.toLocaleString()} FCFA</div>
+                            <button class="btn-buy" onclick="addToCart(${p.id}, 1)">
+                                <i class="fas fa-shopping-bag"></i> AJOUTER
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- 6. LOGIQUE DU PANIER (LE COFFRE) ---
+        function saveCart() { localStorage.setItem('slm_panier_client', JSON.stringify(state.cart)); }
+
+        function addToCart(productId, qty = 1) {
+            const product = state.products.find(p => p.id === productId);
+            if(product) {
+                const existing = state.cart.find(i => i.id === productId);
+                if (existing) {
+                    existing.quantite += qty;
+                } else {
+                    state.cart.push({ ...product, quantite: qty });
+                }
+                
+                saveCart();
+                updateCartUI();
+                triggerCartBounce();
+                
+                const message = qty > 1 ? `<b>${qty}x ${product.nom}</b> ajoutés au coffre.` : `<b>${product.nom}</b> ajouté au coffre.`;
+                showToast(message);
+                
+                if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
+            }
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalItems = state.cart.reduce((sum, item) => sum + item.quantite, 0);
+            document.getElementById('cart-count').innerText = totalItems;
+            
+            let totalCost = 0;
+
+            if (state.cart.length === 0) {
+                container.innerHTML = `
+                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #555;">
+                        <i class="fas fa-vault" style="font-size: 60px; margin-bottom: 20px; color: #333;"></i>
+                        <h3 class="title-serif" style="color: var(--sm-white); margin-bottom: 10px;">COFFRE SÉCURISÉ VIDE</h3>
+                        <p style="font-size: 13px;">Sélectionnez vos pièces d'exception.</p>
+                    </div>`;
+                document.getElementById('cart-subtotal').innerText = "0 FCFA";
+                document.getElementById('cart-total').innerText = "0 FCFA";
+                return;
+            }
+
+            container.innerHTML = state.cart.map((item, i) => {
+                const subTotal = item.prix * item.quantite;
+                totalCost += subTotal;
+                return `
+                <div class="cart-item">
+                    <img src="${item.image}" onerror="this.src='https://via.placeholder.com/100'">
+                    <div class="cart-item-info">
+                        <b>${item.nom}</b>
+                        <div class="price-tag">${item.prix.toLocaleString()} FCFA</div>
+                        <div class="qty-controls">
+                            <i class="fas fa-minus qty-btn" onclick="changeQty(${i}, -1)"></i>
+                            <span class="qty-val">${item.quantite}</span>
+                            <i class="fas fa-plus qty-btn" onclick="changeQty(${i}, 1)"></i>
+                        </div>
+                    </div>
+                    <i class="fas fa-trash-alt btn-remove-item" onclick="removeItem(${i}, '${item.nom.replace(/'/g, "\\'")}')"></i>
+                </div>`;
+            }).join('');
+
+            document.getElementById('cart-subtotal').innerText = totalCost.toLocaleString() + " FCFA";
+            document.getElementById('cart-total').innerText = totalCost.toLocaleString() + " FCFA";
+        }
+
+        function changeQty(index, delta) {
+            if(state.cart[index].quantite + delta > 0) {
+                state.cart[index].quantite += delta;
+            } else {
+                removeItem(index, state.cart[index].nom);
+                return;
+            }
+            saveCart(); updateCartUI();
+        }
+
+        function removeItem(index, name) {
+            state.cart.splice(index, 1);
+            saveCart(); updateCartUI();
+            showToast(`Article retiré : ${name}`, 'info');
+        }
+        
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('active'); }
+
+        function triggerCartBounce() {
+            const badge = document.getElementById('cart-count');
+            badge.style.transform = 'scale(1.5)';
+            setTimeout(() => { badge.style.transform = 'scale(1)'; }, 300);
+        }
+
+       // --- 7. QUICK VIEW MODAL LOGIC (VERSION SÉCURISÉE) ---
+        function fermerQuickView() {
+            const qv = document.getElementById('sm-quickview');
+            if (qv) qv.classList.remove('active');
+        }
+
+        // On attend que le DOM soit chargé pour ajouter les écouteurs d'événements
+        window.addEventListener('DOMContentLoaded', () => {
+            initApp(); // Démarre l'application
+
+            // Vérifie si l'élément existe avant d'ajouter l'écouteur pour fermer au clic
+            const quickViewModal = document.getElementById('sm-quickview');
+            if (quickViewModal) {
+                quickViewModal.addEventListener('click', function(e) {
+                    if (e.target === this) fermerQuickView();
+                });
+            } else {
+                console.error("[S.L.M SYSTEM] Erreur : L'élément 'sm-quickview' est introuvable dans le HTML.");
+            }
+        });
+
+
+        document.getElementById('sm-quickview').addEventListener('click', function(e) {
+            if (e.target === this) fermerQuickView();
+        });
+
+        function ajouterDepuisQuickView() {
+            const quantite = parseInt(document.getElementById('qv-quantite').value);
+            
+            const btn = document.querySelector('.sm-btn-add');
+            btn.innerHTML = '<i class="fas fa-check"></i> SCELLÉ !';
+            btn.style.background = '#00e676'; 
+            
+            addToCart(produitActuelId, quantite);
+            
+            setTimeout(() => {
+                fermerQuickView();
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Ajouter à l\'Acquisition';
+                    btn.style.background = 'var(--sm-primary, #ff6a00)';
+                }, 500);
+            }, 800);
+        }
+
+        // --- 8. LIAISON TRANVERSALE (ROUTAGE VERS PANIER) ---
+        function finaliserAchatSMLuxe() {
+            if (state.cart.length === 0) {
+                showToast("Votre coffre est vide. L'acquisition ne peut aboutir.", "info");
+                return;
+            }
+            window.location.href = "/panier.html";
+        }
+
+        // --- DÉMARRAGE DU SYSTÈME ---
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+
+</body>
+</html>

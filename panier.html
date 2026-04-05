@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.L.M MARKET | Panier & Acquisition Sécurisée</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           01. VARIABLES & DESIGN TOKENS (THÈME BLANC FUSION ALIBABA x SLM)
+           ========================================================================== */
+        :root {
+            /* Couleurs S.M. */
+            --sm-primary: #ff6a00;
+            --sm-primary-hover: #e65c00;
+            --sm-primary-light: #fff0e6;
+            
+            /* Thème Blanc / Clair */
+            --bg-body: #f4f4f4; 
+            --bg-card: #ffffff;
+            
+            /* Typographie */
+            --text-main: #222222;
+            --text-dark: #000000;
+            --text-muted: #757575;
+            --text-light: #a0a0a0;
+            
+            /* UI Elements */
+            --border-color: #e5e5e5;
+            --success: #00b36b;
+            --danger: #ff3333;
+            
+            /* Ombres (Shadows) */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-float: 0 15px 35px rgba(255, 106, 0, 0.15);
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        /* ==========================================================================
+           02. RESET & BASE
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sm-primary); }
+
+        /* ==========================================================================
+           03. TOP BAR & HEADER SÉCURISÉ
+           ========================================================================== */
+        .top-bar {
+            background-color: var(--bg-body);
+            color: var(--text-muted);
+            padding: 8px 5%;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-main {
+            background-color: var(--bg-card);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-logo {
+            font-family: 'Playfair Display', serif; font-size: 32px;
+            color: var(--text-dark); letter-spacing: 2px; font-weight: 900;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .brand-logo span { color: var(--sm-primary); }
+        .brand-logo .sub {
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px;
+            font-weight: 700; color: var(--text-muted); letter-spacing: 3px;
+            margin-left: 10px; border-left: 2px solid var(--border-color); padding-left: 10px;
+        }
+
+        .checkout-steps { display: flex; align-items: center; gap: 15px; }
+        .step { display: flex; align-items: center; gap: 8px; color: var(--text-light); font-weight: 700; font-size: 13px; }
+        .step.active { color: var(--sm-primary); }
+        .step-circle {
+            width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--text-light);
+            display: flex; align-items: center; justify-content: center; font-size: 11px;
+        }
+        .step.active .step-circle { border-color: var(--sm-primary); background: var(--sm-primary); color: white; }
+        .step-line { width: 40px; height: 2px; background: var(--border-color); }
+
+        /* ==========================================================================
+           04. LAYOUT PRINCIPAL (GRILLE)
+           ========================================================================== */
+        .container {
+            max-width: 1400px; margin: 20px auto 40px; padding: 0 4%;
+            display: grid; grid-template-columns: 1fr 380px; gap: 30px;
+            align-items: start;
+        }
+
+        .btn-return {
+            display: inline-flex; align-items: center; gap: 8px; color: #888888;
+            font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            text-decoration: none; margin: 20px 4% 0; transition: all 0.3s ease; width: fit-content;
+        }
+        .btn-return:hover { color: #ff6a00; transform: translateX(-5px); }
+
+        .card-panel {
+            background: var(--bg-card); border-radius: 16px;
+            box-shadow: var(--shadow-sm); padding: 25px; margin-bottom: 20px;
+        }
+
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;
+        }
+        .panel-title { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+
+        /* ==========================================================================
+           05. LISTE DES ARTICLES 
+           ========================================================================== */
+        .custom-checkbox { display: inline-flex; align-items: center; cursor: pointer; position: relative; }
+        .custom-checkbox input { display: none; }
+        .checkmark {
+            width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition-fast); background: white;
+        }
+        .custom-checkbox input:checked + .checkmark { background: var(--sm-primary); border-color: var(--sm-primary); }
+        .checkmark i { color: white; font-size: 12px; opacity: 0; transition: var(--transition-fast); }
+        .custom-checkbox input:checked + .checkmark i { opacity: 1; }
+
+        .select-all-row { display: flex; align-items: center; gap: 15px; font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .cart-items-wrapper { display: flex; flex-direction: column; gap: 20px; }
+
+        .cart-item {
+            display: grid; 
+            grid-template-columns: auto 180px 1fr auto; 
+            gap: 25px;
+            align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+        .cart-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .cart-item:hover { background-color: #fafafa; border-radius: 10px; padding: 10px; margin: -10px; border-bottom: 1px solid transparent; }
+
+        .item-image {
+            width: 180px; height: 120px; 
+            background: #fdfdfd; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; 
+            padding: 10px; border: 1px solid rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+        }
+        .item-image img { 
+            max-width: 75%; max-height: 75%; 
+            object-fit: contain; 
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); 
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.08));
+        }
+        .cart-item:hover .item-image img { transform: scale(1.15) rotate(-3deg); }
+
+        .item-details h3 { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; line-height: 1.4; }
+        .item-details .universe { display: inline-block; background: var(--sm-primary-light); color: var(--sm-primary-hover); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; }
+        
+        .item-actions { display: flex; align-items: center; gap: 20px; }
+        
+        .qty-controls { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; background: white; }
+        .qty-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f5f5f5; cursor: pointer; color: #555; transition: 0.2s; font-size: 12px; }
+        .qty-btn:hover { background: #e0e0e0; color: black; }
+        .qty-val { width: 40px; text-align: center; font-weight: 700; font-size: 14px; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }
+
+        .btn-delete { color: var(--text-light); cursor: pointer; font-size: 18px; transition: 0.2s; }
+        .btn-delete:hover { color: var(--danger); }
+
+        .item-pricing { text-align: right; display: flex; flex-direction: column; justify-content: flex-start; height: 100%; padding-top: 10px; }
+        .price-total { font-size: 20px; font-weight: 900; color: var(--sm-primary); font-family: 'Inter', sans-serif; }
+        .price-unit { font-size: 12px; color: var(--text-muted); margin-top: 5px; text-decoration: line-through; }
+
+        /* ==========================================================================
+           06. PANNEAU DE RÉSUMÉ & FORMULAIRE (DROITE)
+           ========================================================================== */
+        .summary-wrapper { position: sticky; top: 100px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: var(--text-main); }
+        .summary-row.muted { color: var(--text-muted); }
+        .summary-row.highlight span:last-child { color: var(--success); font-weight: 700; }
+
+        .checkout-form { margin: 25px 0; padding-top: 25px; border-top: 1px dashed var(--border-color); }
+        .checkout-form h4 { font-size: 14px; font-weight: 800; margin-bottom: 15px; color: var(--text-dark); display: flex; align-items: center; gap: 8px;}
+        .form-input-group { position: relative; margin-bottom: 12px; }
+        .form-input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+        .form-input-group input { 
+            width: 100%; padding: 14px 15px 14px 40px; border: 1px solid var(--border-color); 
+            border-radius: 8px; font-family: inherit; font-size: 13px; outline: none; 
+            transition: 0.3s; background: var(--bg-body); 
+        }
+        .form-input-group input:focus { border-color: var(--sm-primary); background: white; box-shadow: 0 0 0 3px rgba(255,106,0,0.1); }
+
+        .promo-box { display: flex; gap: 10px; margin: 25px 0; border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 20px 0; }
+        .promo-box input { flex: 1; border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 8px; outline: none; font-family: inherit; font-size: 13px; }
+        .promo-box input:focus { border-color: var(--sm-primary); }
+        .promo-box button { background: var(--text-dark); color: white; border: none; padding: 0 15px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 12px; text-transform: uppercase; }
+        .promo-box button:hover { background: var(--sm-primary); }
+
+        /* STYLE VIP GANT BLANC */
+        .vip-delivery-box {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #050505; border: 1px solid rgba(255, 106, 0, 0.3);
+            border-radius: 12px; padding: 15px; margin: 20px 0; transition: all 0.3s ease;
+        }
+        .vip-delivery-box.active { background: #111; border-color: #ff6a00; box-shadow: 0 5px 20px rgba(255, 106, 0, 0.15); }
+        .vip-delivery-info { display: flex; align-items: center; gap: 12px; }
+        .vip-icon { font-size: 20px; color: #ff6a00; }
+        .vip-text h4 { color: #ffffff; font-size: 13px; margin: 0 0 4px 0; letter-spacing: 1px; text-transform: uppercase; }
+        .vip-text p { color: #888888; font-size: 11px; margin: 0; max-width: 200px; line-height: 1.3;}
+        .vip-delivery-action { display: flex; align-items: center; gap: 10px; flex-direction: column;}
+        .vip-price { color: #ff6a00; font-weight: 800; font-size: 13px; }
+        
+        .sm-toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .sm-toggle input { opacity: 0; width: 0; height: 0; }
+        .sm-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .sm-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .sm-slider { background-color: #ff6a00; }
+        input:checked + .sm-slider:before { transform: translateX(20px); }
+
+        .grand-total-box { margin-top: 20px; text-align: right; }
+        .grand-total-box span { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .grand-total-box b { display: block; font-size: 32px; color: var(--sm-primary); font-weight: 900; margin-top: 5px; }
+
+        .pay-method:hover { border-color: var(--sm-primary) !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,106,0,0.15); }
+        .pay-method.active { border-color: var(--sm-primary) !important; background: rgba(255,106,0,0.06) !important; }
+
+        .btn-checkout-main {
+            width: 100%; background: var(--sm-primary); color: white;
+            border: none; padding: 20px; border-radius: 50px;
+            font-weight: 900; font-size: 16px; letter-spacing: 1px;
+            text-transform: uppercase; margin-top: 25px; cursor: pointer;
+            transition: var(--transition-base); box-shadow: 0 8px 20px rgba(255, 106, 0, 0.3);
+        }
+        .btn-checkout-main:hover { background: var(--sm-primary-hover); transform: translateY(-3px); box-shadow: var(--shadow-float); }
+
+        .trust-badges { margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .badge { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.3; }
+        .badge i { font-size: 18px; color: var(--success); }
+
+        /* ==========================================================================
+           07. MOTEUR D'UNIVERS (SUGGESTIONS)
+           ========================================================================== */
+        .recommendation-section { max-width: 1400px; margin: 40px auto 100px; padding: 0 4%; display: none; }
+        .rec-header { text-align: center; margin-bottom: 40px; }
+        .rec-header h2 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--text-dark); margin-bottom: 10px; }
+        .rec-header p { color: var(--sm-primary); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+        .rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+        .rec-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: center; transition: var(--transition-base); cursor: pointer; }
+        .rec-card:hover { border-color: var(--sm-primary); transform: translateY(-8px); box-shadow: var(--shadow-md); }
+        .rec-img { height: 180px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; background: #fafafa; border-radius: 12px; }
+        .rec-img img { max-width: 85%; max-height: 85%; object-fit: contain; mix-blend-mode: multiply; transition: 0.5s; }
+        .rec-card:hover .rec-img img { transform: scale(1.1); }
+        .rec-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; height: 40px; overflow: hidden; }
+        .rec-price { color: var(--sm-primary); font-weight: 800; font-size: 18px; margin-bottom: 20px; }
+        
+        .btn-add-rec {
+            background: white; color: var(--sm-primary); border: 1px solid var(--sm-primary);
+            width: 100%; padding: 12px; border-radius: 50px; font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase;
+        }
+        .rec-card:hover .btn-add-rec { background: var(--sm-primary); color: white; }
+
+        /* ==========================================================================
+           08. OVERLAY DE PAIEMENT SÉCURISÉ & NOTIFICATIONS
+           ========================================================================== */
+        .checkout-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); z-index: 9999; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .loader-shield { position: relative; width: 100px; height: 100px; margin-bottom: 30px; }
+        .loader-shield i { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: var(--sm-primary); z-index: 2; }
+        .loader-ring-out { position: absolute; inset: 0; border: 3px solid #eee; border-top: 3px solid var(--sm-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-ring-in { position: absolute; inset: 15px; border: 3px solid #eee; border-bottom: 3px solid var(--sm-primary); border-radius: 50%; animation: spin 1.5s linear infinite reverse; }
+        .processing-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+        .processing-sub { font-size: 14px; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .empty-cart { text-align: center; padding: 60px 20px; }
+        .empty-cart i { font-size: 80px; color: #ddd; margin-bottom: 20px; }
+        .empty-cart h2 { font-size: 24px; color: var(--text-dark); margin-bottom: 10px; }
+        .empty-cart p { color: var(--text-muted); margin-bottom: 30px; }
+        .btn-shop { display: inline-block; background: var(--sm-primary); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 800; }
+
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
+        .toast {
+            background: #050505; color: #ffffff; padding: 20px 30px;
+            border-radius: 12px; border-left: 4px solid var(--sm-primary);
+            font-size: 14px; font-weight: 500; box-shadow: 0 15px 35px rgba(255, 106, 0, 0.2);
+            display: flex; align-items: center; gap: 15px;
+            animation: slideInRight 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        .toast i { color: var(--sm-primary); font-size: 20px; }
+        .toast b { color: var(--sm-primary); font-weight: 800; }
+        @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOutRight { to { transform: translateX(120%); opacity: 0; } }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            .summary-wrapper { position: relative; top: 0; }
+        }
+        @media (max-width: 768px) {
+            .cart-item { grid-template-columns: auto 120px 1fr; gap: 15px; } 
+            .item-image { width: 120px; height: 120px; }
+            .item-pricing { grid-column: 1 / -1; display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; border-top: 1px dashed #eee; padding-top: 15px; margin-top: 10px; }
+            .price-total { font-size: 18px; }
+            .checkout-steps { display: none; }
+        }
+        /* BADGES D'ORIGINE */
+        .badge-origine {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 8px; border-radius: 4px; font-size: 10px; 
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            margin-left: 10px; vertical-align: middle;
+        }
+        .badge-local {
+            background: rgba(0, 179, 107, 0.1); color: var(--success);
+            border: 1px solid rgba(0, 179, 107, 0.2);
+        }
+        .badge-intl {
+            background: var(--sm-primary-light); color: var(--sm-primary);
+            border: 1px solid rgba(255, 106, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div>Plateforme B2C & VIP Sourcing</div>
+        <div><i class="fas fa-shield-alt"></i> Protocole S.L.M 256-bit</div>
+    </div>
+
+    <header class="header-main">
+        <a href="/frontend/slm-market-enterprise.html" class="brand-logo">
+            SLM <span>Market</span> <div class="sub">CHECKOUT</div>
+        </a>
+        <div class="checkout-steps">
+            <div class="step active"><div class="step-circle">1</div> Panier</div>
+            <div class="step-line"></div>
+            <div class="step active"><div class="step-circle">2</div> Paiement</div>
+            <div class="step-line"></div>
+            <div class="step"><div class="step-circle"><i class="fas fa-check"></i></div> Validation</div>
+        </div>
+    </header>
+
+    <a href="/frontend/slm-market-enterprise.html" class="btn-return">
+        <i class="fas fa-arrow-left"></i> Continuer vos achats
+    </a>
+
+    <main class="container">
+        
+        <div class="card-panel">
+            <div class="panel-header">
+                <div class="panel-title">Articles d'Exception (<span id="header-count">0</span>)</div>
+            </div>
+            <div id="cart-engine-container"></div>
+        </div>
+
+        <aside class="summary-wrapper">
+            <div class="card-panel">
+                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">Résumé de l'Acquisition</h2>
+                
+                <div class="summary-row muted">
+                    <span>Articles Sélectionnés (<span id="summary-count">0</span>)</span>
+                    <span id="fin-subtotal">0 FCFA</span>
+                </div>
+                
+                <div class="summary-row highlight">
+                    <span>Frais de logistique (Jet S.L.M)</span>
+                    <span>OFFERT</span>
+                </div>
+
+                <div class="checkout-form">
+                    <h4><i class="fas fa-address-card" style="color: var(--sm-primary); margin-right: 5px;"></i> Données Logistiques</h4>
+                    <div class="form-input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="clientNom" placeholder="Nom et Prénom de l'acquéreur" required>
+                    </div>
+                    <div class="form-input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="clientTel" placeholder="Numéro de Téléphone" required>
+                    </div>
+                    <div class="form-input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="clientEmail" placeholder="Adresse E-mail pour le suivi" required>
+                    </div>
+                </div>
+
+                <div class="promo-box">
+                    <input type="text" id="promo-code" placeholder="Entrez un code privilège">
+                    <button id="btn-promo-apply">Appliquer</button>
+                </div>
+
+                <div class="vip-delivery-box" id="vipDeliveryBox">
+                    <div class="vip-delivery-info">
+                        <i class="fa-solid fa-gem vip-icon"></i>
+                        <div class="vip-text">
+                            <h4>Service "Gant Blanc" S.L.M</h4>
+                            <p>Remise en main propre par coursier VIP, véhicule sécurisé, packaging scellé à la cire.</p>
+                        </div>
+                    </div>
+                    <div class="vip-delivery-action">
+                        <span class="vip-price">+ 15 000 FCFA</span>
+                        <label class="sm-toggle">
+                            <input type="checkbox" id="gantBlancToggle">
+                            <span class="sm-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grand-total-box">
+                    <span>Total de la commande</span>
+                    <b id="fin-total">0 FCFA</b>
+                </div>
+
+                <!-- MODES DE PAIEMENT -->
+                <div style="margin-top:20px;">
+                    <p style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-muted); margin-bottom:12px;">Mode de paiement</p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;" id="paymentMethods">
+                        <div class="pay-method active" data-method="mobile" onclick="selectPayMethod(this)" style="border:2px solid var(--sm-primary); border-radius:12px; padding:14px 10px; text-align:center; cursor:pointer; background:rgba(255,106,0,0.05); transition:all 0.2s;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Orange_logo.svg/512px-Orange_logo.svg.png" alt="Orange Money" style="height:22px; object-fit:contain; display:block; margin:0 auto 6px;">
+                            <div style="font-size:11px; font-weight:700; color:var(--text-main);">Orange Money</div>
+                        </div>
+                        <div class="pay-method" data-method="wave" onclick="selectPayMethod(this)" style="border:2px solid var(--border-color); border-radius:12px; padding:14px 10px; text-align:center; cursor:pointer; background:white; transition:all 0.2s;">
+                            <i class="fas fa-wave-square" style="font-size:22px; color:#0066ff; display:block; margin-bottom:6px;"></i>
+                            <div style="font-size:11px; font-weight:700; color:var(--text-main);">Wave</div>
+                        </div>
+                        <div class="pay-method" data-method="card" onclick="selectPayMethod(this)" style="border:2px solid var(--border-color); border-radius:12px; padding:14px 10px; text-align:center; cursor:pointer; background:white; transition:all 0.2s;">
+                            <i class="fas fa-credit-card" style="font-size:22px; color:#1a1a2e; display:block; margin-bottom:6px;"></i>
+                            <div style="font-size:11px; font-weight:700; color:var(--text-main);">Carte Bancaire</div>
+                        </div>
+                        <div class="pay-method" data-method="crypto" onclick="selectPayMethod(this)" style="border:2px solid var(--border-color); border-radius:12px; padding:14px 10px; text-align:center; cursor:pointer; background:white; transition:all 0.2s;">
+                            <i class="fab fa-bitcoin" style="font-size:22px; color:#f7931a; display:block; margin-bottom:6px;"></i>
+                            <div style="font-size:11px; font-weight:700; color:var(--text-main);">Crypto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-checkout-main" id="btn-checkout-main">
+                    <i class="fas fa-lock" style="margin-right:8px;"></i> Procéder au paiement
+                </button>
+
+                <div class="trust-badges">
+                    <div class="badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Paiement<br>Sécurisé</span>
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-shield-check"></i>
+                        <span>Protection<br>Acheteur S.L.M</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <section class="recommendation-section" id="universe-section">
+        <div class="rec-header">
+            <h2>Recommandations Privées</h2>
+            <p id="universe-name">Inspiré par vos sélections</p>
+        </div>
+        <div id="universe-grid" class="rec-grid"></div>
+    </section>
+
+    <div id="processing-ui" class="checkout-overlay">
+        <div class="loader-shield">
+            <div class="loader-ring-out"></div>
+            <div class="loader-ring-in"></div>
+            <i class="fas fa-shield-alt" id="proc-icon"></i>
+        </div>
+        <div class="processing-text" id="proc-title">Vérification de la commande</div>
+        <div class="processing-sub" id="proc-log">Sécurisation de la transaction...</div>
+    </div>
+    
+    <div id="toast-container"></div>
+    
+    <script>
+        class CartEngineClass {
+            constructor() {
+                this.storageKey = 'slm_panier_client';
+                this.cart = [];
+                this.discount = 0;
+                this.vipService = false;
+                this.vipCost = 15000;
+                
+                this.init();
+                this.setupListeners(); // 🛡️ Initialisation du Radar Invisible
+            }
+
+            init() {
+                try {
+                    const data = localStorage.getItem(this.storageKey);
+                    let rawCart = data ? JSON.parse(data) : [];
+                    if (!Array.isArray(rawCart)) rawCart = [];
+                    
+                    this.cart = rawCart.map(item => ({ ...item, selected: item.selected !== false }));
+                } catch(e) { 
+                    this.cart = []; 
+                }
+                
+                this.render();
+            }
+
+            // 🛡️ NOUVEAU : LA DÉLÉGATION D'ÉVÉNEMENTS (100% SÉCURISÉ)
+            setupListeners() {
+                // Écoute des clics globaux
+                document.addEventListener('click', (e) => {
+                    if (e.target.id === 'btn-promo-apply') this.applyPromo();
+                    if (e.target.id === 'btn-checkout-main') this.initiateCheckout();
+                    
+                    const btnMinus = e.target.closest('.qty-minus');
+                    if (btnMinus) this.updateQty(parseInt(btnMinus.dataset.index), -1);
+
+                    const btnPlus = e.target.closest('.qty-plus');
+                    if (btnPlus) this.updateQty(parseInt(btnPlus.dataset.index), 1);
+
+                    const btnDelete = e.target.closest('.item-delete');
+                    if (btnDelete) this.removeItem(parseInt(btnDelete.dataset.index));
+
+                    const btnAddRec = e.target.closest('.suggestion-add');
+                    if (btnAddRec) this.addSuggestion(parseInt(btnAddRec.dataset.id));
+                });
+
+                // Écoute des changements (cases à cocher)
+                document.addEventListener('change', (e) => {
+                    if (e.target.id === 'toggle-all-checkbox') this.toggleAll(e.target.checked);
+                    if (e.target.id === 'gantBlancToggle') this.toggleVIP();
+                    if (e.target.classList.contains('item-checkbox')) this.toggleItem(parseInt(e.target.dataset.index));
+                });
+            }
+
+            save() {
+                localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
+                this.render();
+            }
+
+            render() {
+                const container = document.getElementById('cart-engine-container');
+                const selectedItems = this.cart.filter(i => i.selected);
+                const totalCost = selectedItems.reduce((sum, item) => sum + (item.prix * item.quantite), 0);
+                const totalQty = selectedItems.reduce((sum, item) => sum + item.quantite, 0);
+
+                document.getElementById('header-count').innerText = this.cart.length;
+                document.getElementById('summary-count').innerText = totalQty;
+
+                if (this.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h2>Votre panier est vide</h2>
+                            <p>Découvrez nos collections pour commencer votre sélection.</p>
+                            <a href="/index.html" class="btn-shop">Explorer S.M. Market</a>
+                        </div>`;
+                    this.updateFinances(0);
+                    document.getElementById('universe-section').style.display = 'none';
+                    return;
+                }
+
+                const allSelected = this.cart.every(i => i.selected);
+
+                // 🛡️ Modification ici : Suppression de onchange, utilisation de id et class
+                let html = `
+                    <div class="select-all-row" style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="toggle-all-checkbox" ${allSelected ? 'checked' : ''}>
+                            <span class="checkmark"><i class="fas fa-check"></i></span>
+                            <span style="margin-left: 10px;">Tout sélectionner</span>
+                        </label>
+                    </div>
+                    <div class="cart-items-wrapper">
+                `;
+
+                this.cart.forEach((item, index) => {
+                    const subtotal = item.prix * item.quantite;
+                    const itemUniverse = item.universe || "Catalogue S.M.";
+                    
+                    // 🛡️ Modification ici : Remplacement de tous les onclick/onchange par des classes et des data-index
+                    html += `
+                    <div class="cart-item">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="item-checkbox" data-index="${index}" ${item.selected ? 'checked' : ''}>
+                            <span class="checkmark"><i class="fas fa-check"></i></span>
+                        </label>
+                        
+                        <div class="item-image"><img src="${item.image}" onerror="this.src='https://via.placeholder.com/150'"></div>
+                        
+                        <div class="item-details">
+                            <h3>${item.nom}</h3>
+                            <span class="universe">${itemUniverse}</span>
+                            <div class="item-actions">
+                                <div class="qty-controls">
+                                    <div class="qty-btn qty-minus" data-index="${index}"><i class="fas fa-minus"></i></div>
+                                    <div class="qty-val">${item.quantite}</div>
+                                    <div class="qty-btn qty-plus" data-index="${index}"><i class="fas fa-plus"></i></div>
+                                </div>
+                                <i class="fas fa-trash-alt btn-delete item-delete" data-index="${index}" title="Supprimer"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="item-pricing">
+                            <div class="price-total">${subtotal.toLocaleString()} FCFA</div>
+                            <div class="price-unit">${item.prix.toLocaleString()} FCFA / unité</div>
+                        </div>
+                    </div>`;
+                });
+
+                html += `</div>`;
+                container.innerHTML = html;
+
+                this.updateFinances(totalCost);
+                this.analyzeAndSuggestUniverse();
+            }
+
+            toggleAll(isChecked) {
+                this.cart.forEach(item => item.selected = isChecked);
+                this.save();
+            }
+
+            toggleItem(index) {
+                this.cart[index].selected = !this.cart[index].selected;
+                this.save();
+            }
+            
+            toggleVIP() {
+                const toggle = document.getElementById('gantBlancToggle');
+                const box = document.getElementById('vipDeliveryBox');
+                this.vipService = toggle.checked;
+                
+                if (this.vipService) {
+                    box.classList.add('active');
+                    this.showToast('Service VIP "Gant Blanc" ajouté avec succès.', 'success');
+                } else {
+                    box.classList.remove('active');
+                }
+                this.render(); // Recalcule avec ou sans VIP
+            }
+
+            updateFinances(subtotal) {
+                let finalTotal = subtotal - this.discount;
+                if (this.vipService && finalTotal > 0) {
+                    finalTotal += this.vipCost;
+                }
+                
+                document.getElementById('fin-subtotal').innerText = subtotal.toLocaleString() + " FCFA";
+                document.getElementById('fin-total').innerText = finalTotal > 0 ? finalTotal.toLocaleString() + " FCFA" : "0 FCFA";
+                this.currentTotal = finalTotal > 0 ? finalTotal : 0;
+            }
+
+            showToast(message, type = 'success') {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+                
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                const icon = type === 'success' ? 'fa-gem' : 'fa-info-circle';
+                
+                toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.animation = 'fadeOutRight 0.5s forwards';
+                    setTimeout(() => toast.remove(), 500);
+                }, 4000);
+            }
+
+            updateQty(index, delta) {
+                const itemName = this.cart[index].nom;
+                const nouvelleQuantite = this.cart[index].quantite + delta;
+
+                if (nouvelleQuantite > 0) {
+                    this.cart[index].quantite = nouvelleQuantite;
+                    this.save();
+                    
+                    if (delta > 0) {
+                        const phrasesVIP = [
+                            `Excellente décision. Un <b>${itemName}</b> supplémentaire ajouté.`,
+                            `Un choix de maître. Quantité augmentée avec succès.`,
+                            `L'excellence confirmée pour <b>${itemName}</b>.`,
+                            `Sublime acquisition. Votre coffre a été mis à jour.`
+                        ];
+                        const randomPhrase = phrasesVIP[Math.floor(Math.random() * phrasesVIP.length)];
+                        this.showToast(randomPhrase, 'success');
+                    }
+                } else {
+                    this.cart.splice(index, 1);
+                    this.save();
+                    this.showToast(`<b>${itemName}</b> a été retiré de votre sélection.`, 'info');
+                }
+            }
+
+            removeItem(index) {
+                const itemName = this.cart[index].nom;
+                if(confirm("Retirer cet article de la liste d'achats ?")) {
+                    this.cart.splice(index, 1);
+                    this.save();
+                    this.showToast(`<b>${itemName}</b> a été retiré du coffre.`, 'info');
+                }
+            }
+
+            applyPromo() {
+                const code = document.getElementById('promo-code').value.toUpperCase();
+                if(code === 'SLM2026') {
+                    this.discount = 25000;
+                    this.showToast("Bon privilège appliqué avec succès (-25 000 FCFA)", 'success');
+                    this.render();
+                } else {
+                    alert("Code promotionnel non valide ou expiré.");
+                }
+            }
+
+            analyzeAndSuggestUniverse() {
+                const selectedItems = this.cart.filter(i => i.selected);
+                if(selectedItems.length === 0) {
+                    document.getElementById('universe-section').style.display = 'none';
+                    return;
+                }
+
+                let db = typeof mockDB !== 'undefined' ? mockDB : [];
+                if (db.length === 0) return; 
+
+                let universeCount = {};
+                selectedItems.forEach(item => {
+                    let u = item.universe || "Luxe";
+                    universeCount[u] = (universeCount[u] || 0) + 1;
+                });
+
+                let dominantUniverse = Object.keys(universeCount).reduce((a, b) => universeCount[a] > universeCount[b] ? a : b);
+                
+                let suggestions = db.filter(p => p.universe === dominantUniverse && !this.cart.some(c => c.id === p.id)).slice(0, 4);
+
+                if(suggestions.length === 0) {
+                    suggestions = db.filter(p => !this.cart.some(c => c.id === p.id)).slice(0, 4);
+                }
+
+                const section = document.getElementById('universe-section');
+                const grid = document.getElementById('universe-grid');
+                
+                if(suggestions.length > 0) {
+                    section.style.display = 'block';
+                    document.getElementById('universe-name').innerText = `Tendance actuelle : ${dominantUniverse}`;
+                    
+                    // 🛡️ Modification ici : Remplacement du onclick par une classe et un data-id
+                    grid.innerHTML = suggestions.map(p => `
+                        <div class="rec-card">
+                            <div class="rec-img"><img src="${p.image}"></div>
+                            <div class="rec-title">${p.nom}</div>
+                            <div class="rec-price">${p.prix.toLocaleString()} FCFA</div>
+                            <button class="btn-add-rec suggestion-add" data-id="${p.id}">
+                                <i class="fas fa-cart-plus"></i> Ajouter au panier
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            addSuggestion(id) {
+                let db = typeof mockDB !== 'undefined' ? mockDB : [];
+                const product = db.find(p => p.id === id);
+                if(product) {
+                    this.cart.push({...product, quantite: 1, selected: true});
+                    this.save();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    this.showToast(`<b>${product.nom}</b> ajouté à votre sélection.`, 'success');
+                }
+            }
+
+            async initiateCheckout() {
+                const selectedItems = this.cart.filter(i => i.selected);
+                
+                if (selectedItems.length === 0) {
+                    alert("Veuillez sélectionner au moins un article pour procéder au paiement.");
+                    return;
+                }
+
+                const clientName = document.getElementById('clientNom').value.trim();
+                const clientTel = document.getElementById('clientTel').value.trim();
+                const clientEmail = document.getElementById('clientEmail').value.trim();
+
+                if (!clientName || !clientTel || !clientEmail) {
+                    alert("Veuillez remplir toutes vos informations de livraison (Nom, Téléphone et E-mail).");
+                    return;
+                }
+
+                const ui = document.getElementById('processing-ui');
+                const title = document.getElementById('proc-title');
+                const log = document.getElementById('proc-log');
+                const icon = document.getElementById('proc-icon');
+                
+                ui.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                const sequence = [
+                    { t: "Connexion sécurisée", l: "Établissement du canal crypté AES-256...", d: 1000 },
+                    { t: "Vérification des stocks", l: "Réservation de vos articles auprès du vendeur...", d: 1200 },
+                    { t: "Transmission au serveur", l: "Synchronisation avec la base de données S.L.M...", d: 1000 }
+                ];
+
+                for(let step of sequence) {
+                    title.innerText = step.t;
+                    log.innerText = step.l;
+                    await new Promise(r => setTimeout(r, step.d));
+                }
+
+                try {
+                    const payload = {
+                        clientNom: clientName,
+                        telephone: clientTel,
+                        email: clientEmail,
+                        articles: selectedItems,
+                        total: this.currentTotal
+                    };
+
+                    // 🛡️ L'adresse complète est remise pour la communication Live Server -> Node.js
+                    const response = await fetch('http://localhost:5000/api/slm/commandes', { // Mettez bien 5000 si le terminal dit 5000
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        title.innerText = "Paiement réussi";
+                        title.style.color = "var(--success)";
+                        log.innerText = `Acquisition scellée (Tracking: ${data.trackingId}). Redirection...`;
+                        icon.className = "fas fa-check-circle";
+                        icon.style.color = "var(--success)";
+                        
+                        localStorage.setItem('slm_dernier_tracking', data.trackingId);
+
+                        // Email de confirmation Brevo (online path)
+                        sendPanierConfirmationEmail(clientName, clientEmail, selectedItems, this.currentTotal, data.trackingId);
+
+                        // Sauvegarder la commande pour l'admin
+                        const adminOrders = JSON.parse(localStorage.getItem('slm_admin_orders') || '[]');
+                        const articlesLabel = selectedItems.map(i => `${i.quantite}x ${i.nom}`).join(', ');
+                        adminOrders.unshift({
+                            id: data.trackingId || ('SLM-' + Date.now()),
+                            client: clientName,
+                            telephone: clientTel,
+                            email: clientEmail,
+                            articles: articlesLabel,
+                            montant: this.currentTotal,
+                            statut: 'reçue',
+                            date: new Date().toISOString(),
+                            priority: this.currentTotal >= 1000000 ? 'critical' : this.currentTotal >= 500000 ? 'high' : 'medium'
+                        });
+                        localStorage.setItem('slm_admin_orders', JSON.stringify(adminOrders));
+
+                        this.cart = this.cart.filter(i => !i.selected);
+                        localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
+
+                        setTimeout(() => {
+                            window.location.href = "suivi.html";
+                        }, 2000);
+
+                    } else {
+                        throw new Error(data.error || "Erreur renvoyée par le serveur.");
+                    }
+
+                } catch (error) {
+                    console.error("Erreur Checkout:", error);
+
+                    // Même sans backend, sauvegarder la commande pour l'admin (mode hors-ligne)
+                    try {
+                        const clientName2 = document.getElementById('clientNom').value.trim();
+                        const clientTel2 = document.getElementById('clientTel').value.trim();
+                        const clientEmail2 = document.getElementById('clientEmail').value.trim();
+                        const adminOrders2 = JSON.parse(localStorage.getItem('slm_admin_orders') || '[]');
+                        const articlesLabel2 = selectedItems.map(i => `${i.quantite}x ${i.nom}`).join(', ');
+                        const trackId = 'SLM-' + Date.now();
+                        adminOrders2.unshift({
+                            id: trackId,
+                            client: clientName2,
+                            telephone: clientTel2,
+                            email: clientEmail2,
+                            articles: articlesLabel2,
+                            montant: this.currentTotal,
+                            statut: 'reçue',
+                            date: new Date().toISOString(),
+                            priority: this.currentTotal >= 1000000 ? 'critical' : this.currentTotal >= 500000 ? 'high' : 'medium'
+                        });
+                        localStorage.setItem('slm_admin_orders', JSON.stringify(adminOrders2));
+                        localStorage.setItem('slm_dernier_tracking', trackId);
+
+                        // Email de confirmation Brevo (offline path)
+                        sendPanierConfirmationEmail(clientName2, clientEmail2, selectedItems, this.currentTotal, trackId);
+
+                        title.innerText = "Commande enregistrée";
+                        title.style.color = "var(--success)";
+                        log.innerText = `Commande ${trackId} sauvegardée localement. Redirection...`;
+                        icon.className = "fas fa-check-circle";
+                        icon.style.color = "var(--success)";
+
+                        this.cart = this.cart.filter(i => !i.selected);
+                        localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
+
+                        setTimeout(() => { window.location.href = "suivi.html"; }, 2000);
+                        return;
+                    } catch(e) { /* ignore */ }
+
+                    title.innerText = "Échec de Connexion";
+                    title.style.color = "var(--danger)";
+                    log.innerText = "Impossible de contacter le serveur S.M. Vérifiez votre connexion.";
+                    icon.className = "fas fa-exclamation-triangle";
+                    icon.style.color = "var(--danger)";
+
+                    setTimeout(() => {
+                        ui.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }, 4000);
+                }
+            }
+        }
+
+        const CartEngine = new CartEngineClass();
+
+        // ── Brevo : email de confirmation depuis panier.html ──────────────
+        async function sendPanierConfirmationEmail(clientName, clientEmail, articles, total, trackId) {
+            const apiKey    = localStorage.getItem('slm_brevo_key') || '';
+            const sender    = localStorage.getItem('slm_brevo_sender') || 'contact@slm-market.com';
+            if (!apiKey || apiKey.length < 10 || !clientEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail)) return;
+
+            const rows = articles.map(a =>
+                `<tr><td style="padding:8px 0;font-size:14px;">${a.nom}</td>
+                 <td style="padding:8px 0;text-align:right;font-weight:700;color:#ff6a00;">${(a.prix * (a.quantite||1)).toLocaleString()} FCFA</td></tr>`
+            ).join('');
+
+            const html = `
+                <div style="font-family:'Segoe UI',sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                    <div style="background:linear-gradient(135deg,#ff6a00,#ff9a3c);padding:40px;text-align:center;color:white;">
+                        <h1 style="margin:0;font-size:26px;letter-spacing:2px;">S.L.M MARKET</h1>
+                        <p style="margin:10px 0 0;opacity:0.9;font-size:14px;">Votre commande est confirmée ✅</p>
+                    </div>
+                    <div style="padding:35px;">
+                        <h2 style="color:#111;margin-bottom:5px;">Bonjour ${clientName} 👋</h2>
+                        <p style="color:#666;font-size:14px;">Votre acquisition S.L.M est enregistrée et en cours de préparation.</p>
+                        <p style="color:#888;font-size:12px;margin-bottom:20px;">N° de suivi : <b style="color:#ff6a00;">${trackId}</b></p>
+                        <table style="width:100%;border-collapse:collapse;margin:20px 0;border-top:2px solid #ff6a00;border-bottom:2px solid #ff6a00;">${rows}</table>
+                        <div style="text-align:right;font-size:22px;font-weight:900;color:#ff6a00;">Total : ${total.toLocaleString()} FCFA</div>
+                        <div style="margin-top:28px;padding:18px;background:#fffbf5;border-radius:12px;border-left:4px solid #ff6a00;">
+                            <p style="margin:0;font-size:13px;color:#555;">
+                                Suivez l'avancement sur
+                                <a href="suivi.html" style="color:#ff6a00;font-weight:700;">S.L.M Suivi</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="background:#f9f9f9;padding:16px;text-align:center;color:#aaa;font-size:11px;">
+                        © 2026 S.L.M Market — Abidjan, Côte d'Ivoire
+                    </div>
+                </div>`;
+
+            try {
+                const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+                    method: 'POST',
+                    headers: { 'accept': 'application/json', 'content-type': 'application/json', 'api-key': apiKey },
+                    body: JSON.stringify({
+                        sender: { name: 'S.L.M Market', email: sender },
+                        to: [{ email: clientEmail, name: clientName }],
+                        subject: `✅ Commande S.L.M confirmée — ${total.toLocaleString()} FCFA`,
+                        htmlContent: html
+                    })
+                });
+                if (res.ok) console.log('[BREVO Panier] ✅ Email envoyé à', clientEmail);
+                else console.warn('[BREVO Panier] ❌ Erreur', res.status);
+            } catch(e) { console.warn('[BREVO Panier] Réseau:', e.message); }
+        }
+
+        let selectedPayMethod = 'mobile';
+        function selectPayMethod(el) {
+            document.querySelectorAll('.pay-method').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            selectedPayMethod = el.dataset.method;
+        }
+    </script>
+</body>
+</html>

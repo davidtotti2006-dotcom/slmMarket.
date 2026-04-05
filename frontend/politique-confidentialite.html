@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de Confidentialité — S.L.M Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6a00;
+            --bg: #fafafa;
+            --white: #ffffff;
+            --text: #1a1a1a;
+            --muted: #777;
+            --border: #eee;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* NAV */
+        nav {
+            background: white; border-bottom: 1px solid var(--border);
+            padding: 18px 5%; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--text); }
+        .nav-logo span { color: var(--primary); }
+        .nav-back { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--muted); transition: color 0.2s; }
+        .nav-back:hover { color: var(--primary); text-decoration: none; }
+        .nav-back i { transition: transform 0.2s; }
+        .nav-back:hover i { transform: translateX(-3px); }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #050505 0%, #1a0e00 100%);
+            padding: 80px 5%;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '🔒';
+            position: absolute; top: -20px; right: 5%;
+            font-size: 200px; opacity: 0.04;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,106,0,0.15); color: var(--primary);
+            padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+            border: 1px solid rgba(255,106,0,0.3);
+        }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 52px); margin-bottom: 15px; }
+        .hero p { color: rgba(255,255,255,0.6); font-size: 15px; max-width: 550px; margin: 0 auto; }
+        .hero-date { margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* LAYOUT */
+        .page-layout { display: grid; grid-template-columns: 260px 1fr; gap: 40px; max-width: 1100px; margin: 60px auto; padding: 0 5%; }
+        @media(max-width:768px) { .page-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+
+        /* SIDEBAR */
+        .sidebar { position: sticky; top: 90px; height: fit-content; }
+        .sidebar-card { background: white; border-radius: 16px; padding: 25px; border: 1px solid var(--border); }
+        .sidebar-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 15px; }
+        .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+        .sidebar-nav a {
+            display: block; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+            color: var(--text); transition: all 0.2s; text-decoration: none;
+        }
+        .sidebar-nav a:hover { background: rgba(255,106,0,0.07); color: var(--primary); }
+        .sidebar-contact { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .sidebar-contact p { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+        .btn-contact {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 12px; background: var(--primary); color: white;
+            border-radius: 10px; font-weight: 700; font-size: 13px; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-contact:hover { background: #e65c00; text-decoration: none; transform: translateY(-1px); }
+
+        /* CONTENT */
+        .content { display: flex; flex-direction: column; gap: 0; }
+        .section-card {
+            background: white; border-radius: 16px; padding: 40px;
+            border: 1px solid var(--border); margin-bottom: 20px;
+        }
+        .section-card h2 {
+            font-family: 'Playfair Display', serif; font-size: 22px;
+            color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+        }
+        .section-card h2 .icon {
+            width: 38px; height: 38px; background: rgba(255,106,0,0.1);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 16px; flex-shrink: 0;
+        }
+        .section-card p { color: #555; font-size: 14px; margin-bottom: 14px; }
+        .section-card p:last-child { margin-bottom: 0; }
+        .section-card ul { list-style: none; display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+        .section-card ul li {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 14px; color: #555; padding: 10px 14px;
+            background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0;
+        }
+        .section-card ul li i { color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+        .highlight-box {
+            background: rgba(255,106,0,0.05); border: 1px solid rgba(255,106,0,0.2);
+            border-radius: 10px; padding: 16px 20px; font-size: 13px; color: #555;
+            margin: 14px 0; display: flex; align-items: flex-start; gap: 12px;
+        }
+        .highlight-box i { color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 40px 5%; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); background: white; }
+        footer a { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">SLM <span>Market</span></div>
+    <a href="slm-market-enterprise.html" class="nav-back">
+        <i class="fas fa-arrow-left"></i> Retour à la boutique
+    </a>
+</nav>
+
+<div class="hero">
+    <div class="hero-badge"><i class="fas fa-shield-alt"></i> Conformité RGPD</div>
+    <h1>Politique de Confidentialité</h1>
+    <p>Comment S.L.M Market collecte, utilise et protège vos données personnelles.</p>
+    <div class="hero-date">Dernière mise à jour : Janvier 2026</div>
+</div>
+
+<div class="page-layout">
+    <aside class="sidebar">
+        <div class="sidebar-card">
+            <div class="sidebar-title">Sur cette page</div>
+            <ul class="sidebar-nav">
+                <li><a href="#collecte"><i class="fas fa-database" style="width:16px;"></i> Données collectées</a></li>
+                <li><a href="#utilisation"><i class="fas fa-cogs" style="width:16px;"></i> Utilisation</a></li>
+                <li><a href="#stockage"><i class="fas fa-lock" style="width:16px;"></i> Stockage & sécurité</a></li>
+                <li><a href="#cookies"><i class="fas fa-cookie-bite" style="width:16px;"></i> Cookies</a></li>
+                <li><a href="#droits"><i class="fas fa-user-shield" style="width:16px;"></i> Vos droits</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope" style="width:16px;"></i> Nous contacter</a></li>
+            </ul>
+            <div class="sidebar-contact">
+                <p>Une question sur vos données ?</p>
+                <a href="../chat.html" class="btn-contact"><i class="fas fa-comments"></i> Contacter le support</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content">
+
+        <div class="section-card" id="collecte">
+            <h2><span class="icon"><i class="fas fa-database"></i></span> Données que nous collectons</h2>
+            <p>Lors de votre utilisation de S.L.M Market, nous collectons uniquement les données nécessaires à la bonne exécution de vos commandes et à l'amélioration de votre expérience.</p>
+            <ul>
+                <li><i class="fas fa-user"></i> <strong>Identité :</strong> Nom, prénom, adresse e-mail, numéro de téléphone</li>
+                <li><i class="fas fa-map-marker-alt"></i> <strong>Adresse de livraison :</strong> Ville, quartier, point de repère</li>
+                <li><i class="fas fa-shopping-bag"></i> <strong>Historique d'achat :</strong> Articles commandés, montants, dates</li>
+                <li><i class="fas fa-chart-bar"></i> <strong>Données de navigation :</strong> Pages consultées, recherches effectuées (anonymisées)</li>
+            </ul>
+            <div class="highlight-box">
+                <i class="fas fa-info-circle"></i>
+                Nous ne collectons <strong>jamais</strong> vos données bancaires complètes. Les paiements sont traités par des prestataires sécurisés certifiés PCI DSS.
+            </div>
+        </div>
+
+        <div class="section-card" id="utilisation">
+            <h2><span class="icon"><i class="fas fa-cogs"></i></span> Utilisation de vos données</h2>
+            <p>Vos données sont utilisées exclusivement dans le cadre de nos services :</p>
+            <ul>
+                <li><i class="fas fa-check"></i> Traitement et suivi de vos commandes</li>
+                <li><i class="fas fa-check"></i> Communication relative à vos achats (confirmations, mises à jour)</li>
+                <li><i class="fas fa-check"></i> Amélioration de votre expérience sur la plateforme</li>
+                <li><i class="fas fa-check"></i> Envoi d'offres exclusives (uniquement si vous y avez consenti)</li>
+                <li><i class="fas fa-check"></i> Respect des obligations légales et comptables</li>
+            </ul>
+            <p>Vos données ne sont <strong>jamais vendues</strong> à des tiers. Nous ne partageons vos informations qu'avec nos partenaires logistiques strictement nécessaires à la livraison.</p>
+        </div>
+
+        <div class="section-card" id="stockage">
+            <h2><span class="icon"><i class="fas fa-lock"></i></span> Stockage & Sécurité</h2>
+            <p>La protection de vos données est notre priorité absolue. Nous appliquons des mesures de sécurité de niveau entreprise :</p>
+            <ul>
+                <li><i class="fas fa-shield-alt"></i> Chiffrement AES-256 pour toutes les transmissions de données</li>
+                <li><i class="fas fa-server"></i> Serveurs sécurisés avec accès restreint et journalisé</li>
+                <li><i class="fas fa-clock"></i> Conservation des données limitée à la durée légale applicable</li>
+                <li><i class="fas fa-trash-alt"></i> Suppression définitive sur demande (délai de 30 jours)</li>
+            </ul>
+        </div>
+
+        <div class="section-card" id="cookies">
+            <h2><span class="icon"><i class="fas fa-cookie-bite"></i></span> Cookies & traceurs</h2>
+            <p>S.L.M Market utilise des cookies techniques nécessaires au bon fonctionnement de la plateforme (panier, session, préférences). Nous utilisons également :</p>
+            <ul>
+                <li><i class="fas fa-chart-pie"></i> <strong>Cookies analytiques :</strong> Pour mesurer les performances (données anonymisées)</li>
+                <li><i class="fas fa-star"></i> <strong>Cookies de personnalisation :</strong> Pour sauvegarder vos préférences de navigation</li>
+            </ul>
+            <p>Vous pouvez gérer vos préférences cookies à tout moment via les paramètres de votre navigateur. Le refus des cookies non essentiels n'affecte pas votre accès à la boutique.</p>
+        </div>
+
+        <div class="section-card" id="droits">
+            <h2><span class="icon"><i class="fas fa-user-shield"></i></span> Vos droits</h2>
+            <p>Conformément au RGPD et aux lois applicables en Côte d'Ivoire, vous disposez des droits suivants :</p>
+            <ul>
+                <li><i class="fas fa-eye"></i> <strong>Droit d'accès :</strong> Obtenir une copie de vos données</li>
+                <li><i class="fas fa-edit"></i> <strong>Droit de rectification :</strong> Corriger des données inexactes</li>
+                <li><i class="fas fa-trash"></i> <strong>Droit à l'effacement :</strong> Demander la suppression de vos données</li>
+                <li><i class="fas fa-ban"></i> <strong>Droit d'opposition :</strong> Vous opposer au traitement pour des raisons légitimes</li>
+                <li><i class="fas fa-download"></i> <strong>Portabilité :</strong> Recevoir vos données dans un format lisible</li>
+            </ul>
+            <div class="highlight-box">
+                <i class="fas fa-envelope"></i>
+                Pour exercer vos droits, contactez-nous via la conciergerie ou à l'adresse : <strong>privacy@slm-market.com</strong>
+            </div>
+        </div>
+
+        <div class="section-card" id="contact">
+            <h2><span class="icon"><i class="fas fa-envelope"></i></span> Nous contacter</h2>
+            <p>Pour toute question relative à cette politique ou à l'exercice de vos droits :</p>
+            <ul>
+                <li><i class="fas fa-envelope"></i> <strong>Email :</strong> privacy@slm-market.com</li>
+                <li><i class="fas fa-comments"></i> <strong>Conciergerie :</strong> <a href="../chat.html">Chat en direct</a></li>
+                <li><i class="fas fa-clock"></i> <strong>Délai de réponse :</strong> 72 heures maximum</li>
+            </ul>
+        </div>
+
+    </main>
+</div>
+
+<footer>
+    <p>&copy; 2026 S.L.M Market — Tous droits réservés • <a href="mentions-legales.html">Mentions légales</a> • <a href="faq.html">FAQ</a></p>
+</footer>
+
+</body>
+</html>
