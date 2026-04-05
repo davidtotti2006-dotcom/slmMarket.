@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "outputDirectory": "frontend",
+  "rewrites": [
+    { "source": "/panier",                    "destination": "/panier.html" },
+    { "source": "/suivi",                     "destination": "/suivi.html" },
+    { "source": "/login",                     "destination": "/login.html" },
+    { "source": "/admin",                     "destination": "/admin.html" },
+    { "source": "/chat",                      "destination": "/chat.html" },
+    { "source": "/faq",                       "destination": "/faq.html" },
+    { "source": "/mon-compte",                "destination": "/mon-compte.html" },
+    { "source": "/support-vip",               "destination": "/support-vip.html" },
+    { "source": "/politique-confidentialite", "destination": "/politique-confidentialite.html" },
+    { "source": "/mentions-legales",          "destination": "/mentions-legales.html" },
+    { "source": "/boutique",                  "destination": "/slm-market-enterprise.html" },
+    { "source": "/admin",                     "destination": "/admin.html" },
+    { "source": "/chat",                      "destination": "/chat.html" }
+  ]
+}

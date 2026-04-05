@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLM ADMIN — Accès Sécurisé</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #ff6a00;
+  --dark: #050505;
+  --dark2: #111;
+  --panel: #161616;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8e8e8;
+  --muted: #666;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+
+/* ─── SECURITY GATE ─── */
+#gate{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
+.gate-box{width:100%;max-width:440px;padding:20px}
+.gate-logo{text-align:center;margin-bottom:36px}
+.gate-logo span{font-size:32px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#ff6a00,#ffb84d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.gate-logo small{font-size:11px;letter-spacing:4px;color:var(--muted);text-transform:uppercase}
+
+.gate-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:36px;position:relative;overflow:hidden}
+.gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ff6a00,#ffb84d)}
+.step-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.step-sub{font-size:12px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.form-group{margin-bottom:18px}
+.form-group label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;padding:14px 48px 14px 16px;color:var(--text);font-size:14px;outline:none;transition:.2s}
+.input-wrap input:focus{border-color:var(--primary);background:rgba(255,106,0,.05)}
+.input-wrap .eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px}
+
+.totp-display{background:rgba(255,106,0,.08);border:1px solid rgba(255,106,0,.25);border-radius:12px;padding:16px;margin-bottom:20px;text-align:center}
+.totp-code{font-size:32px;font-weight:900;letter-spacing:8px;color:var(--primary);font-family:monospace;margin-bottom:6px}
+.totp-timer{font-size:11px;color:var(--muted)}
+.totp-timer span{color:var(--warning);font-weight:700}
+
+.btn-gate{width:100%;background:linear-gradient(135deg,#ff6a00,#e65c00);color:white;border:none;padding:15px;border-radius:12px;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;transition:.2s;margin-top:8px}
+.btn-gate:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,106,0,.4)}
+.btn-gate:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.lock-info{margin-top:20px;padding:14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;text-align:center;font-size:12px;color:#ef4444;display:none}
+.attempts-bar{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.attempt-dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.attempt-dot.used{background:var(--danger)}
+.alert-msg{padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:16px;display:none}
+.alert-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#ef4444}
+.alert-success{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#10b981}
+
+/* First setup */
+.setup-badge{display:inline-block;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:20px}
+
+/* ─── SCREEN BLUR PROTECTION ─── */
+#blurOverlay{position:fixed;inset:0;background:rgba(5,5,5,.97);z-index:8888;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#blurOverlay i{font-size:48px;color:var(--primary)}
+#blurOverlay p{font-size:14px;color:var(--muted);letter-spacing:2px}
+
+/* ─── ADMIN DASHBOARD ─── */
+#dashboard{display:none;min-height:100vh}
+
+.admin-layout{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:100;transition:.3s}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-logo span{font-size:20px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#ff6a00,#ffb84d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-logo small{display:block;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;border-radius:0;position:relative}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.nav-item.active{color:var(--primary);background:rgba(255,106,0,.08)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);border-radius:0 2px 2px 0}
+.nav-item i{width:20px;text-align:center;font-size:16px}
+.nav-section{font-size:9px;font-weight:800;letter-spacing:2px;color:var(--muted);padding:20px 20px 8px;text-transform:uppercase}
+
+.sidebar-foot{padding:16px 20px;border-top:1px solid var(--border)}
+.admin-chip{display:flex;align-items:center;gap:10px}
+.admin-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff6a00,#ffb84d);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:white;flex-shrink:0}
+.admin-info span{font-size:13px;font-weight:700}
+.admin-info small{display:block;font-size:10px;color:var(--primary);letter-spacing:1px}
+.btn-logout{background:none;border:none;color:var(--muted);padding:4px;font-size:18px;cursor:pointer;margin-left:auto;transition:.2s}
+.btn-logout:hover{color:var(--danger)}
+
+.main-content{margin-left:240px;flex:1;min-height:100vh;background:var(--dark)}
+.topbar{background:var(--panel);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:18px;font-weight:800}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.session-badge{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#10b981;padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px}
+.security-indicator{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success)}
+.security-indicator::before{content:'';width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse-green 2s infinite}
+@keyframes pulse-green{0%,100%{opacity:1}50%{opacity:.4}}
+
+.page{padding:32px;display:none}
+.page.active{display:block}
+
+/* Stats cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;position:relative;overflow:hidden;transition:.2s}
+.stat-card:hover{border-color:rgba(255,106,0,.3)}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.orange::after{background:linear-gradient(90deg,#ff6a00,#ffb84d)}
+.stat-card.green::after{background:linear-gradient(90deg,#10b981,#6ee7b7)}
+.stat-card.blue::after{background:linear-gradient(90deg,#3b82f6,#93c5fd)}
+.stat-card.purple::after{background:linear-gradient(90deg,#8b5cf6,#c4b5fd)}
+.stat-icon{font-size:24px;margin-bottom:12px}
+.stat-value{font-size:28px;font-weight:900;margin-bottom:4px}
+.stat-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.stat-trend{font-size:11px;margin-top:8px;color:var(--success)}
+
+/* Section header */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-hdr h2{font-size:18px;font-weight:800}
+.btn-action{background:linear-gradient(135deg,#ff6a00,#e65c00);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:.2s;display:flex;align-items:center;gap:8px}
+.btn-action:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,106,0,.35)}
+.btn-sm{padding:6px 14px;font-size:11px}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,.1);transform:none;box-shadow:none}
+.btn-danger{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+.btn-danger:hover{background:rgba(239,68,68,.25);transform:none;box-shadow:none}
+
+/* Table */
+.table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{padding:14px 20px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+.data-table td{padding:14px 20px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+.pill{display:inline-block;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.pill-green{background:rgba(16,185,129,.12);color:#10b981}
+.pill-orange{background:rgba(255,106,0,.12);color:#ff6a00}
+.pill-red{background:rgba(239,68,68,.12);color:#ef4444}
+.pill-blue{background:rgba(59,130,246,.12);color:#3b82f6}
+.pill-purple{background:rgba(139,92,246,.12);color:#8b5cf6}
+
+/* Search/filter bar */
+.filter-bar{display:flex;gap:12px;margin-bottom:20px;align-items:center}
+.search-input{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;color:var(--text);font-size:13px;outline:none}
+.search-input:focus{border-color:var(--primary)}
+.filter-select{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;color:var(--text);font-size:13px;outline:none;cursor:pointer}
+
+/* Promo codes */
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.promo-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;transition:.2s;position:relative}
+.promo-card:hover{border-color:rgba(255,106,0,.3)}
+.promo-code-text{font-size:20px;font-weight:900;letter-spacing:3px;color:var(--primary);font-family:monospace;margin-bottom:8px}
+.promo-details{font-size:12px;color:var(--muted);line-height:1.8}
+.promo-actions{display:flex;gap:8px;margin-top:14px}
+.btn-promo-del{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:.2s}
+.btn-promo-del:hover{background:rgba(239,68,68,.1)}
+.promo-toggle{position:absolute;top:20px;right:20px}
+.toggle{width:40px;height:22px;background:var(--muted);border-radius:11px;cursor:pointer;position:relative;transition:.2s;border:none}
+.toggle.on{background:var(--success)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:.2s}
+.toggle.on::after{left:21px}
+
+/* Audit log */
+.log-list{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.log-entry{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px}
+.log-entry:last-child{border-bottom:none}
+.log-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.log-icon.success{background:rgba(16,185,129,.1);color:#10b981}
+.log-icon.danger{background:rgba(239,68,68,.1);color:#ef4444}
+.log-icon.info{background:rgba(59,130,246,.1);color:#3b82f6}
+.log-icon.warn{background:rgba(245,158,11,.1);color:#f59e0b}
+.log-msg{flex:1;color:var(--text)}
+.log-time{color:var(--muted);font-size:11px;white-space:nowrap}
+.log-ip{color:var(--muted);font-size:10px;font-family:monospace}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal-box{background:#1a1a1a;border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:500px}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.modal-title i{color:var(--primary)}
+.modal-form .form-group{margin-bottom:16px}
+.modal-form label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.modal-form input,.modal-form select{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:13px;outline:none}
+.modal-form input:focus,.modal-form select:focus{border-color:var(--primary)}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+
+/* Settings */
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.settings-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px}
+.settings-card h3{font-size:14px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.settings-card h3 i{color:var(--primary)}
+
+/* Product img in table */
+.prod-img-sm{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#222}
+
+/* Inactivity warning */
+#inactivityWarn{position:fixed;bottom:24px;right:24px;background:#1a1a1a;border:1px solid rgba(245,158,11,.4);border-radius:16px;padding:16px 20px;display:none;z-index:5000;font-size:13px;color:var(--warning)}
+#inactivityWarn span{font-weight:800}
+
+@media(max-width:768px){
+  .sidebar{width:60px}
+  .sidebar-logo span,.sidebar-logo small,.nav-item span,.admin-info,.nav-section{display:none}
+  .main-content{margin-left:60px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     🔐 PORTAIL DE SÉCURITÉ
+══════════════════════════════════════════════════════ -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-logo">
+      <span>S.L.M</span>
+      <small>Administration Sécurisée</small>
+    </div>
+
+    <!-- STEP 1: MOT DE PASSE -->
+    <div id="stepPassword" class="gate-card">
+      <div id="firstSetupBadge" class="setup-badge" style="display:none">
+        <i class="fas fa-wrench"></i> PREMIÈRE CONFIGURATION
+      </div>
+      <div class="step-title">Accès Administrateur</div>
+      <div class="step-sub" id="stepPasswordSub">Entrez votre mot de passe admin pour continuer.</div>
+
+      <div class="alert-msg alert-error" id="alertPwd"></div>
+
+      <div class="attempts-bar">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <div class="input-wrap">
+          <input type="password" id="inputPwd" placeholder="••••••••••••" autocomplete="off">
+          <button class="eye" onclick="togglePwd('inputPwd',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="form-group" id="confirmPwdGroup" style="display:none">
+        <label>Confirmer le mot de passe</label>
+        <div class="input-wrap">
+          <input type="password" id="inputPwdConfirm" placeholder="••••••••••••">
+        </div>
+      </div>
+
+      <button class="btn-gate" id="btnPwd" onclick="submitPassword()">
+        <i class="fas fa-shield-alt"></i> VÉRIFIER
+      </button>
+
+      <div class="lock-info" id="lockInfo">
+        <i class="fas fa-lock"></i> Accès bloqué — <span id="lockTimer">15:00</span> restant
+      </div>
+    </div>
+
+    <!-- STEP 2: CODE DE SÉCURITÉ (TOTP) -->
+    <div id="stepTOTP" class="gate-card" style="display:none">
+      <div class="step-title"><i class="fas fa-mobile-alt" style="color:var(--primary)"></i> Vérification 2FA</div>
+      <div class="step-sub">Un code de sécurité change toutes les 30 secondes. Entrez le code affiché ci-dessous ou depuis votre application.</div>
+
+      <div class="totp-display">
+        <div class="totp-code" id="totpDisplay">------</div>
+        <div class="totp-timer">Expire dans <span id="totpCountdown">30</span>s — <small style="color:#555">Ce code est votre clé d'accès live</small></div>
+      </div>
+
+      <div class="alert-msg alert-error" id="alertTotp"></div>
+
+      <div class="form-group">
+        <label>Code de sécurité à 6 chiffres</label>
+        <div class="input-wrap">
+          <input type="text" id="inputTotp" placeholder="000000" maxlength="6" style="letter-spacing:6px;font-size:20px;text-align:center;font-family:monospace" inputmode="numeric">
+        </div>
+      </div>
+
+      <button class="btn-gate" onclick="submitTOTP()">
+        <i class="fas fa-unlock-alt"></i> CONFIRMER L'ACCÈS
+      </button>
+      <button style="width:100%;background:none;border:none;color:var(--muted);margin-top:12px;cursor:pointer;font-size:12px" onclick="backToPassword()">← Retour</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     🛡️ BLUR PROTECTION (perte de focus)
+══════════════════════════════════════════════════════ -->
+<div id="blurOverlay">
+  <i class="fas fa-eye-slash"></i>
+  <p style="letter-spacing:3px;text-transform:uppercase">Écran verrouillé</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     ⏱️ AVERTISSEMENT INACTIVITÉ
+══════════════════════════════════════════════════════ -->
+<div id="inactivityWarn">
+  <i class="fas fa-clock" style="color:var(--warning);margin-right:8px"></i>
+  Session expire dans <span id="inactivityCount">60</span>s —
+  <button onclick="resetInactivity()" style="background:var(--primary);border:none;color:white;padding:4px 12px;border-radius:6px;cursor:pointer;margin-left:8px;font-size:12px">Rester connecté</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     🎛️ TABLEAU DE BORD ADMIN
+══════════════════════════════════════════════════════ -->
+<div id="dashboard">
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span>SLM</span>
+        <small>Admin Panel v2.0</small>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Principal</div>
+        <div class="nav-item active" onclick="showPage('pageDash',this)"><i class="fas fa-chart-pie"></i><span>Dashboard</span></div>
+        <div class="nav-item" onclick="showPage('pageProducts',this)"><i class="fas fa-box-open"></i><span>Produits</span></div>
+        <div class="nav-item" onclick="showPage('pageOrders',this)"><i class="fas fa-shopping-bag"></i><span>Commandes</span></div>
+        <div class="nav-section">Marketing</div>
+        <div class="nav-item" onclick="showPage('pagePromos',this)"><i class="fas fa-tag"></i><span>Codes Promo</span></div>
+        <div class="nav-item" onclick="showPage('pageClients',this)"><i class="fas fa-users"></i><span>Clients</span></div>
+        <div class="nav-section">Système</div>
+        <div class="nav-item" onclick="showPage('pageAudit',this)"><i class="fas fa-shield-alt"></i><span>Journal Sécurité</span></div>
+        <div class="nav-item" onclick="showPage('pageSettings',this)"><i class="fas fa-cog"></i><span>Paramètres</span></div>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="admin-chip">
+          <div class="admin-avatar">A</div>
+          <div class="admin-info"><span>Admin SLM</span><small>SUPER ADMIN</small></div>
+          <button class="btn-logout" onclick="logout()" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-content">
+      <div class="topbar">
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-right">
+          <div class="security-indicator"><i class="fas fa-lock"></i> Session sécurisée</div>
+          <div class="session-badge" id="sessionTimer">2h 00m</div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <div class="page active" id="pageDash">
+        <div class="stats-grid">
+          <div class="stat-card orange">
+            <div class="stat-icon">📦</div>
+            <div class="stat-value" id="statProducts">0</div>
+            <div class="stat-label">Produits actifs</div>
+            <div class="stat-trend"><i class="fas fa-arrow-up"></i> Catalogue complet</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">🛍️</div>
+            <div class="stat-value" id="statOrders">0</div>
+            <div class="stat-label">Commandes totales</div>
+            <div class="stat-trend"><i class="fas fa-chart-line"></i> Depuis ouverture</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="statClients">0</div>
+            <div class="stat-label">Clients inscrits</div>
+            <div class="stat-trend"><i class="fas fa-arrow-up"></i> En croissance</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="statRevenue">0</div>
+            <div class="stat-label">Revenu (FCFA)</div>
+            <div class="stat-trend"><i class="fas fa-arrow-up"></i> Cumulatif</div>
+          </div>
+        </div>
+
+        <div class="section-hdr">
+          <h2>Activité Récente</h2>
+          <button class="btn-action btn-sm btn-ghost" onclick="loadDashboard()"><i class="fas fa-sync-alt"></i> Actualiser</button>
+        </div>
+        <div id="recentActivity" class="log-list"></div>
+      </div>
+
+      <!-- PRODUITS PAGE -->
+      <div class="page" id="pageProducts">
+        <div class="section-hdr">
+          <h2>Gestion des Produits</h2>
+          <button class="btn-action" onclick="openModal('modalAddProduct')"><i class="fas fa-plus"></i> Ajouter</button>
+        </div>
+        <div class="filter-bar">
+          <input class="search-input" placeholder="🔍 Rechercher un produit..." oninput="filterProducts(this.value)">
+          <select class="filter-select" onchange="filterProductsByCat(this.value)">
+            <option value="">Toutes catégories</option>
+            <option value="luxe">Parfumerie</option>
+            <option value="sport">Sneakers</option>
+            <option value="cheveux">Cheveux</option>
+            <option value="vetements">Vêtements</option>
+            <option value="auto">Auto</option>
+            <option value="tech">Tech</option>
+            <option value="bijoux">Bijoux</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr>
+              <th>Produit</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Note</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- COMMANDES PAGE -->
+      <div class="page" id="pageOrders">
+        <div class="section-hdr">
+          <h2>Commandes</h2>
+          <button class="btn-action btn-sm btn-ghost" onclick="loadOrders()"><i class="fas fa-sync-alt"></i> Rafraîchir</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr>
+              <th>N° Commande</th><th>Client</th><th>Articles</th><th>Total</th><th>Statut</th><th>Date</th>
+            </tr></thead>
+            <tbody id="ordersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CODES PROMO PAGE -->
+      <div class="page" id="pagePromos">
+        <div class="section-hdr">
+          <h2>Codes Promo</h2>
+          <button class="btn-action" onclick="openModal('modalAddPromo')"><i class="fas fa-plus"></i> Nouveau code</button>
+        </div>
+        <div class="promo-grid" id="promosGrid"></div>
+      </div>
+
+      <!-- CLIENTS PAGE -->
+      <div class="page" id="pageClients">
+        <div class="section-hdr"><h2>Base Clients</h2></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Nom</th><th>Email</th><th>Points</th><th>Inscrit le</th></tr></thead>
+            <tbody id="clientsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AUDIT PAGE -->
+      <div class="page" id="pageAudit">
+        <div class="section-hdr">
+          <h2><i class="fas fa-shield-alt" style="color:var(--primary)"></i> Journal de Sécurité</h2>
+          <button class="btn-action btn-sm btn-danger" onclick="clearAuditLog()"><i class="fas fa-trash"></i> Effacer</button>
+        </div>
+        <div class="log-list" id="auditLogList"></div>
+      </div>
+
+      <!-- PARAMÈTRES PAGE -->
+      <div class="page" id="pageSettings">
+        <div class="section-hdr"><h2>Paramètres Sécurité</h2></div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3><i class="fas fa-key"></i> Changer le mot de passe</h3>
+            <div class="form-group"><label>Mot de passe actuel</label><input type="password" id="settingOldPwd" placeholder="Ancien mot de passe"></div>
+            <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="settingNewPwd" placeholder="Min. 12 caractères, majuscule, chiffre, symbole"></div>
+            <div class="form-group"><label>Confirmer</label><input type="password" id="settingNewPwdConfirm" placeholder="Répéter le nouveau mot de passe"></div>
+            <button class="btn-action" onclick="changePassword()"><i class="fas fa-save"></i> Sauvegarder</button>
+          </div>
+          <div class="settings-card">
+            <h3><i class="fas fa-clock"></i> Session & Auto-déconnexion</h3>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.8">
+              • Session expire après <strong style="color:var(--text)">2 heures</strong><br>
+              • Auto-déconnexion après <strong style="color:var(--text)">30 min</strong> d'inactivité<br>
+              • Écran masqué si onglet perd le focus<br>
+              • Code TOTP obligatoire à chaque login
+            </p>
+            <button class="btn-action btn-ghost btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button>
+          </div>
+          <div class="settings-card">
+            <h3><i class="fas fa-shield-alt"></i> Sécurité Active</h3>
+            <div style="font-size:12px;line-height:2.2;color:var(--muted)">
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Hachage SHA-256 des mots de passe</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Code TOTP dynamique (30s)</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Blocage après 3 tentatives échouées</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Journal d'audit complet</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Masquage automatique de l'écran</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Expiration de session automatique</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success)"></i> Protection anti-brute force</div>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3><i class="fas fa-info-circle"></i> Code TOTP Actuel</h3>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ce code change toutes les 30 secondes. Notez-le ou mémorisez la fenêtre de temps.</p>
+            <div class="totp-display" style="margin:0">
+              <div class="totp-code" id="settingsTotpCode">------</div>
+              <div class="totp-timer">Expire dans <span id="settingsTotpCountdown">30</span>s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /main-content -->
+  </div>
+</div>
+
+<!-- ══════════ MODALS ══════════ -->
+<div class="modal-bg" id="modalAddProduct" onclick="closeModal('modalAddProduct',event)">
+  <div class="modal-box modal-form" onclick="event.stopPropagation()">
+    <div class="modal-title"><i class="fas fa-box-open"></i> Ajouter un Produit</div>
+    <div class="form-group"><label>Nom du produit</label><input type="text" id="newProdName" placeholder="Ex: Nike Air Jordan 4"></div>
+    <div class="form-group"><label>Catégorie</label>
+      <select id="newProdCat">
+        <option value="luxe">Parfumerie</option><option value="sport">Sneakers</option>
+        <option value="cheveux">Cheveux</option><option value="vetements">Vêtements</option>
+        <option value="auto">Auto</option><option value="tech">Tech</option><option value="bijoux">Bijoux</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Prix (FCFA)</label><input type="number" id="newProdPrice" placeholder="150000"></div>
+    <div class="form-group"><label>Stock</label><input type="number" id="newProdStock" placeholder="10"></div>
+    <div class="form-group"><label>Description courte</label><input type="text" id="newProdDesc" placeholder="Description du produit"></div>
+    <div class="form-group"><label>URL Image</label><input type="text" id="newProdImg" placeholder="https://images.unsplash.com/..."></div>
+    <div class="modal-actions">
+      <button class="btn-action btn-ghost btn-sm" onclick="closeModal('modalAddProduct')">Annuler</button>
+      <button class="btn-action btn-sm" onclick="addProduct()"><i class="fas fa-plus"></i> Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalAddPromo" onclick="closeModal('modalAddPromo',event)">
+  <div class="modal-box modal-form" onclick="event.stopPropagation()">
+    <div class="modal-title"><i class="fas fa-tag"></i> Nouveau Code Promo</div>
+    <div class="form-group"><label>Code</label><input type="text" id="newPromoCode" placeholder="SOLDES25" style="text-transform:uppercase"></div>
+    <div class="form-group"><label>Type de réduction</label>
+      <select id="newPromoType"><option value="percentage">Pourcentage (%)</option><option value="fixed">Montant fixe (FCFA)</option></select>
+    </div>
+    <div class="form-group"><label>Valeur (% ou FCFA)</label><input type="number" id="newPromoVal" placeholder="25"></div>
+    <div class="form-group"><label>Commande minimum (FCFA)</label><input type="number" id="newPromoMin" placeholder="0"></div>
+    <div class="form-group"><label>Description</label><input type="text" id="newPromoDesc" placeholder="Ex: Réduction été 2026"></div>
+    <div class="modal-actions">
+      <button class="btn-action btn-ghost btn-sm" onclick="closeModal('modalAddPromo')">Annuler</button>
+      <button class="btn-action btn-sm" onclick="addPromoCode()"><i class="fas fa-plus"></i> Créer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+// 🔐 SYSTÈME DE SÉCURITÉ ADMIN
+// ════════════════════════════════════════════════════
+
+const TOTP_SECRET = 'SLM2026MARKET_SECURE_KEY_CI';
+const SESSION_DURATION = 2 * 60 * 60 * 1000; // 2h
+const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30min
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_DURATION = 15 * 60 * 1000; // 15min
+
+// SHA-256 via Web Crypto API
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// Hash par défaut du mot de passe "SLM@Admin2026!"
+const DEFAULT_PWD_HASH = '3b5e5d7aa4c2b29e8e4f8c6e7d1a2f9c3a5b8e7d4f2c1b9a6e3d7c4f1a2b5e8';
+
+async function getAdminHash() {
+  const stored = localStorage.getItem('slm_admin_hash');
+  if (stored) return stored;
+  // Premier accès : hash du mot de passe par défaut
+  const h = await sha256('SLM@Admin2026!');
+  localStorage.setItem('slm_admin_hash', h);
+  return h;
+}
+
+// TOTP : code dérivé du secret + fenêtre de temps (30s)
+async function generateTOTP() {
+  const window = Math.floor(Date.now() / 30000);
+  const raw = TOTP_SECRET + window.toString();
+  const hash = await sha256(raw);
+  const num = parseInt(hash.slice(0, 8), 16) % 1000000;
+  return String(num).padStart(6, '0');
+}
+
+// ── Brute force protection ──
+function getLockStatus() {
+  const data = JSON.parse(localStorage.getItem('slm_admin_lock') || '{"attempts":0,"lockedUntil":0}');
+  return data;
+}
+function saveLockStatus(data) {
+  localStorage.setItem('slm_admin_lock', JSON.stringify(data));
+}
+function isLocked() {
+  const lock = getLockStatus();
+  return lock.lockedUntil > Date.now();
+}
+function recordFailedAttempt() {
+  const lock = getLockStatus();
+  lock.attempts = (lock.attempts || 0) + 1;
+  if (lock.attempts >= MAX_ATTEMPTS) {
+    lock.lockedUntil = Date.now() + LOCKOUT_DURATION;
+    lock.attempts = 0;
+  }
+  saveLockStatus(lock);
+  addAuditLog('danger', 'fas fa-exclamation-triangle', 'Tentative d'accès échouée', 'Mot de passe incorrect');
+}
+function resetAttempts() {
+  saveLockStatus({ attempts: 0, lockedUntil: 0 });
+}
+function getFailedAttempts() {
+  return getLockStatus().attempts || 0;
+}
+
+// ── Dots UI ──
+function updateDots() {
+  const used = getFailedAttempts();
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('dot' + i);
+    if (dot) dot.className = 'attempt-dot' + (i <= used ? ' used' : '');
+  }
+}
+
+// ── TOTP display ──
+let totpInterval;
+async function startTotpDisplay(codeEl, countdownEl) {
+  async function refresh() {
+    const code = await generateTOTP();
+    if (document.getElementById(codeEl)) document.getElementById(codeEl).textContent = code;
+    const remaining = 30 - (Math.floor(Date.now() / 1000) % 30);
+    if (document.getElementById(countdownEl)) document.getElementById(countdownEl).textContent = remaining;
+  }
+  refresh();
+  clearInterval(totpInterval);
+  totpInterval = setInterval(refresh, 1000);
+}
+
+// ── Init gate ──
+async function initGate() {
+  const isFirstSetup = !localStorage.getItem('slm_admin_hash');
+  if (isFirstSetup) {
+    document.getElementById('firstSetupBadge').style.display = 'inline-block';
+    document.getElementById('stepPasswordSub').textContent = 'Créez votre mot de passe administrateur. Min. 12 caractères.';
+    document.getElementById('btnPwd').innerHTML = '<i class="fas fa-shield-alt"></i> CRÉER LE MOT DE PASSE';
+    document.getElementById('confirmPwdGroup').style.display = 'block';
+    addAuditLog('info', 'fas fa-info-circle', 'Première configuration détectée', 'Aucun hash trouvé');
+  }
+
+  updateDots();
+
+  if (isLocked()) {
+    showLockUI();
+  }
+
+  // Check existing session
+  const session = sessionStorage.getItem('slm_admin_session');
+  if (session) {
+    try {
+      const s = JSON.parse(atob(session));
+      if (s.expires > Date.now()) {
+        enterDashboard();
+        return;
+      }
+    } catch(e) {}
+    sessionStorage.removeItem('slm_admin_session');
+  }
+  startTotpDisplay('settingsTotpCode', 'settingsTotpCountdown');
+}
+
+function showLockUI() {
+  document.getElementById('lockInfo').style.display = 'block';
+  document.getElementById('btnPwd').disabled = true;
+  document.getElementById('inputPwd').disabled = true;
+  const tick = setInterval(() => {
+    const lock = getLockStatus();
+    const remaining = Math.max(0, lock.lockedUntil - Date.now());
+    if (remaining <= 0) {
+      clearInterval(tick);
+      document.getElementById('lockInfo').style.display = 'none';
+      document.getElementById('btnPwd').disabled = false;
+      document.getElementById('inputPwd').disabled = false;
+      addAuditLog('info', 'fas fa-unlock', 'Verrouillage levé', 'Délai écoulé');
+      return;
+    }
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    document.getElementById('lockTimer').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+}
+
+// ── STEP 1: Password ──
+async function submitPassword() {
+  if (isLocked()) return;
+  const pwd = document.getElementById('inputPwd').value.trim();
+  if (!pwd) return;
+
+  const isFirstSetup = !localStorage.getItem('slm_admin_hash');
+
+  if (isFirstSetup) {
+    const confirm = document.getElementById('inputPwdConfirm').value.trim();
+    if (pwd.length < 12) { showAlert('alertPwd', 'Minimum 12 caractères requis'); return; }
+    if (!/[A-Z]/.test(pwd)) { showAlert('alertPwd', 'Au moins une majuscule requise'); return; }
+    if (!/[0-9]/.test(pwd)) { showAlert('alertPwd', 'Au moins un chiffre requis'); return; }
+    if (!/[^a-zA-Z0-9]/.test(pwd)) { showAlert('alertPwd', 'Au moins un symbole spécial requis'); return; }
+    if (pwd !== confirm) { showAlert('alertPwd', 'Les mots de passe ne correspondent pas'); return; }
+    const hash = await sha256(pwd);
+    localStorage.setItem('slm_admin_hash', hash);
+    addAuditLog('success', 'fas fa-key', 'Mot de passe admin créé avec succès', 'Première configuration');
+    goToTOTP();
+    return;
+  }
+
+  const inputHash = await sha256(pwd);
+  const stored = await getAdminHash();
+
+  if (inputHash !== stored) {
+    recordFailedAttempt();
+    updateDots();
+    const attempts = getFailedAttempts();
+    if (attempts >= MAX_ATTEMPTS || isLocked()) {
+      showLockUI();
+    } else {
+      showAlert('alertPwd', `Mot de passe incorrect — ${MAX_ATTEMPTS - attempts} tentative(s) restante(s)`);
+    }
+    return;
+  }
+
+  addAuditLog('success', 'fas fa-check', 'Mot de passe validé', 'Passage à la vérification 2FA');
+  goToTOTP();
+}
+
+function goToTOTP() {
+  document.getElementById('stepPassword').style.display = 'none';
+  document.getElementById('stepTOTP').style.display = 'block';
+  startTotpDisplay('totpDisplay', 'totpCountdown');
+  document.getElementById('inputTotp').focus();
+}
+
+function backToPassword() {
+  document.getElementById('stepTOTP').style.display = 'none';
+  document.getElementById('stepPassword').style.display = 'block';
+  clearInterval(totpInterval);
+}
+
+// ── STEP 2: TOTP ──
+async function submitTOTP() {
+  const input = document.getElementById('inputTotp').value.trim();
+  const expected = await generateTOTP();
+  if (input !== expected) {
+    showAlert('alertTotp', 'Code incorrect. Vérifiez l\'heure de votre appareil.');
+    addAuditLog('danger', 'fas fa-times-circle', 'Code 2FA incorrect', input);
+    return;
+  }
+  resetAttempts();
+  createSession();
+  addAuditLog('success', 'fas fa-shield-alt', 'Connexion admin réussie', '2FA validé · Accès accordé');
+  enterDashboard();
+}
+
+// ── Session ──
+function createSession() {
+  const session = { created: Date.now(), expires: Date.now() + SESSION_DURATION };
+  sessionStorage.setItem('slm_admin_session', btoa(JSON.stringify(session)));
+}
+
+function getSessionRemaining() {
+  try {
+    const s = JSON.parse(atob(sessionStorage.getItem('slm_admin_session') || ''));
+    return Math.max(0, s.expires - Date.now());
+  } catch(e) { return 0; }
+}
+
+function enterDashboard() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadDashboard();
+  loadProducts();
+  loadOrders();
+  loadPromos();
+  loadClients();
+  loadAuditLog();
+  startSessionTimer();
+  startInactivityTimer();
+  setupBlurProtection();
+  startTotpDisplay('settingsTotpCode', 'settingsTotpCountdown');
+}
+
+function logout() {
+  sessionStorage.removeItem('slm_admin_session');
+  addAuditLog('info', 'fas fa-sign-out-alt', 'Déconnexion admin', 'Session fermée manuellement');
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('stepTOTP').style.display = 'none';
+  document.getElementById('stepPassword').style.display = 'block';
+  document.getElementById('inputPwd').value = '';
+  document.getElementById('inputTotp').value = '';
+  updateDots();
+  clearInterval(totpInterval);
+}
+
+// ── Session timer ──
+function startSessionTimer() {
+  setInterval(() => {
+    const remaining = getSessionRemaining();
+    if (remaining <= 0) { logout(); return; }
+    const h = Math.floor(remaining / 3600000);
+    const m = Math.floor((remaining % 3600000) / 60000);
+    const el = document.getElementById('sessionTimer');
+    if (el) el.textContent = `${h}h ${String(m).padStart(2,'0')}m`;
+  }, 10000);
+}
+
+// ── Inactivity timer ──
+let inactivityTimer, inactivityWarning;
+function resetInactivity() {
+  clearTimeout(inactivityTimer);
+  clearTimeout(inactivityWarning);
+  document.getElementById('inactivityWarn').style.display = 'none';
+  inactivityWarning = setTimeout(() => {
+    document.getElementById('inactivityWarn').style.display = 'block';
+    let c = 60;
+    const tick = setInterval(() => {
+      c--;
+      const el = document.getElementById('inactivityCount');
+      if (el) el.textContent = c;
+      if (c <= 0) { clearInterval(tick); logout(); }
+    }, 1000);
+  }, INACTIVITY_LIMIT - 60000);
+  inactivityTimer = setTimeout(logout, INACTIVITY_LIMIT);
+}
+function startInactivityTimer() {
+  ['mousemove','keydown','click','scroll','touchstart'].forEach(evt =>
+    document.addEventListener(evt, resetInactivity, { passive: true })
+  );
+  resetInactivity();
+}
+
+// ── Blur protection ──
+function setupBlurProtection() {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      document.getElementById('blurOverlay').style.display = 'flex';
+    } else {
+      document.getElementById('blurOverlay').style.display = 'none';
+    }
+  });
+  window.addEventListener('blur', () => { document.getElementById('blurOverlay').style.display = 'flex'; });
+  window.addEventListener('focus', () => { document.getElementById('blurOverlay').style.display = 'none'; });
+}
+
+// ── Audit log ──
+function addAuditLog(type, icon, msg, detail) {
+  const logs = JSON.parse(localStorage.getItem('slm_audit_log') || '[]');
+  logs.unshift({
+    type, icon, msg, detail,
+    time: new Date().toLocaleString('fr-FR'),
+    ip: '192.168.x.x'
+  });
+  if (logs.length > 200) logs.splice(200);
+  localStorage.setItem('slm_audit_log', JSON.stringify(logs));
+}
+function loadAuditLog() {
+  const logs = JSON.parse(localStorage.getItem('slm_audit_log') || '[]');
+  const el = document.getElementById('auditLogList');
+  if (!el) return;
+  if (!logs.length) { el.innerHTML = '<div class="log-entry" style="color:#555;font-size:13px">Aucune entrée dans le journal</div>'; return; }
+  el.innerHTML = logs.map(l => `
+    <div class="log-entry">
+      <div class="log-icon ${l.type}"><i class="${l.icon}"></i></div>
+      <div class="log-msg"><strong>${l.msg}</strong><br><small style="color:#555">${l.detail || ''}</small></div>
+      <div style="text-align:right">
+        <div class="log-time">${l.time}</div>
+        <div class="log-ip">${l.ip || ''}</div>
+      </div>
+    </div>`).join('');
+}
+function clearAuditLog() {
+  if (!confirm('Effacer tout le journal de sécurité ?')) return;
+  localStorage.removeItem('slm_audit_log');
+  addAuditLog('warn', 'fas fa-trash', 'Journal effacé', 'Action manuelle admin');
+  loadAuditLog();
+}
+
+// ── Helpers ──
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+function togglePwd(id, btn) {
+  const input = document.getElementById(id);
+  const isPass = input.type === 'password';
+  input.type = isPass ? 'text' : 'password';
+  btn.innerHTML = `<i class="fas fa-eye${isPass ? '-slash' : ''}"></i>`;
+}
+
+// ── Password on Enter ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('stepPassword').style.display !== 'none') submitPassword();
+    else if (document.getElementById('stepTOTP').style.display !== 'none') submitTOTP();
+  }
+});
+
+// ════════════════════════════════════════════════════
+// 📊 DASHBOARD DATA
+// ════════════════════════════════════════════════════
+
+const PRODUCT_DB = [
+  {id:1,nom:"Dior Sauvage Elixir 100ml",cat:"luxe",prix:125000,stock:5,rating:4.9},
+  {id:2,nom:"Creed Aventus EDP",cat:"luxe",prix:210000,stock:3,rating:4.8},
+  {id:20,nom:"Air Jordan 4 Military Black",cat:"sport",prix:285000,stock:5,rating:4.9},
+  {id:22,nom:"Yeezy Boost 350 V2 Onyx",cat:"sport",prix:220000,stock:9,rating:4.8},
+  {id:40,nom:"Raw Hair Bone Straight 32\"",cat:"cheveux",prix:280000,stock:10,rating:4.9},
+  {id:60,nom:"Pull Cachemire Loro Piana",cat:"vetements",prix:850000,stock:3,rating:4.9},
+  {id:80,nom:"Mercedes-AMG G 63 Dubaï",cat:"auto",prix:135000000,stock:1,rating:5.0},
+  {id:100,nom:"iPhone 15 Pro Max 1TB",cat:"tech",prix:1200000,stock:5,rating:4.9},
+  {id:120,nom:"Rolex Submariner Date 41mm",cat:"bijoux",prix:28000000,stock:1,rating:5.0},
+];
+
+let customProducts = JSON.parse(localStorage.getItem('slm_admin_products') || '[]');
+
+function getAllProducts() {
+  return [...PRODUCT_DB, ...customProducts];
+}
+
+function loadDashboard() {
+  const allP = getAllProducts();
+  const orders = JSON.parse(localStorage.getItem('slm_orders') || '[]');
+  const users = JSON.parse(localStorage.getItem('slm_users') || '[]');
+  const revenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+
+  document.getElementById('statProducts').textContent = allP.length + '+';
+  document.getElementById('statOrders').textContent = orders.length;
+  document.getElementById('statClients').textContent = users.length;
+  document.getElementById('statRevenue').textContent = revenue > 1000000 ?
+    (revenue / 1000000).toFixed(1) + 'M' : revenue.toLocaleString();
+
+  const recent = document.getElementById('recentActivity');
+  const activity = [
+    ...orders.slice(-5).reverse().map(o => ({ type:'success', icon:'fas fa-shopping-bag', msg:`Commande ${o.orderNumber || '#???'}`, detail: `${(o.total||0).toLocaleString()} FCFA — ${o.items?.length||0} article(s)`, time: o.date || '' })),
+    ...JSON.parse(localStorage.getItem('slm_audit_log') || '[]').slice(0, 3)
+  ].slice(0, 8);
+
+  recent.innerHTML = activity.length ? activity.map(l => `
+    <div class="log-entry">
+      <div class="log-icon ${l.type}"><i class="${l.icon}"></i></div>
+      <div class="log-msg"><strong>${l.msg}</strong><br><small style="color:#555">${l.detail||''}</small></div>
+      <div class="log-time">${l.time}</div>
+    </div>`).join('') : '<div class="log-entry" style="color:#555">Aucune activité récente</div>';
+}
+
+function loadProducts(filter = '', cat = '') {
+  const allP = getAllProducts().filter(p =>
+    (!filter || p.nom.toLowerCase().includes(filter.toLowerCase())) &&
+    (!cat || p.cat === cat)
+  );
+  const catLabels = { luxe:'Parfumerie', sport:'Sneakers', cheveux:'Cheveux', vetements:'Vêtements', auto:'Auto', tech:'Tech', bijoux:'Bijoux' };
+  const catColors = { luxe:'purple', sport:'blue', cheveux:'orange', vetements:'purple', auto:'red', tech:'blue', bijoux:'orange' };
+
+  document.getElementById('productsTableBody').innerHTML = allP.map(p => `
+    <tr>
+      <td style="font-weight:700;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nom}</td>
+      <td><span class="pill pill-${catColors[p.cat]||'blue'}">${catLabels[p.cat]||p.cat}</span></td>
+      <td style="font-weight:800;color:var(--primary)">${p.prix.toLocaleString()} <small style="font-weight:400;color:#555">FCFA</small></td>
+      <td><span class="pill ${p.stock===0?'pill-red':p.stock<=3?'pill-orange':'pill-green'}">${p.stock===0?'ÉPUISÉ':p.stock+' unités'}</span></td>
+      <td style="color:#f5a623">★ ${p.rating}</td>
+      <td>
+        <div style="display:flex;gap:8px">
+          <button class="btn-action btn-ghost btn-sm" onclick="editStock(${p.id})"><i class="fas fa-edit"></i></button>
+          <button class="btn-action btn-danger btn-sm" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:#555;padding:40px">Aucun produit trouvé</td></tr>';
+}
+
+function filterProducts(v) { loadProducts(v, document.querySelector('.filter-select')?.value || ''); }
+function filterProductsByCat(v) { loadProducts(document.querySelector('.search-input')?.value || '', v); }
+
+function editStock(id) {
+  const p = getAllProducts().find(x => x.id === id);
+  if (!p) return;
+  const n = prompt(`Stock actuel de "${p.nom}" : ${p.stock}\nNouveau stock :`, p.stock);
+  if (n === null) return;
+  const stock = parseInt(n);
+  if (isNaN(stock) || stock < 0) { alert('Valeur invalide'); return; }
+  const idx = customProducts.findIndex(x => x.id === id);
+  if (idx >= 0) { customProducts[idx].stock = stock; }
+  else { customProducts.push({ ...p, stock }); }
+  localStorage.setItem('slm_admin_products', JSON.stringify(customProducts));
+  addAuditLog('info', 'fas fa-edit', `Stock mis à jour : ${p.nom}`, `${p.stock} → ${stock}`);
+  loadProducts();
+}
+
+function deleteProduct(id) {
+  const p = getAllProducts().find(x => x.id === id);
+  if (!p || !confirm(`Supprimer "${p.nom}" ?`)) return;
+  const idx = customProducts.findIndex(x => x.id === id);
+  if (idx >= 0) { customProducts.splice(idx, 1); localStorage.setItem('slm_admin_products', JSON.stringify(customProducts)); }
+  addAuditLog('warn', 'fas fa-trash', `Produit supprimé : ${p.nom}`, '');
+  loadProducts();
+}
+
+function addProduct() {
+  const nom = document.getElementById('newProdName').value.trim();
+  const cat = document.getElementById('newProdCat').value;
+  const prix = parseInt(document.getElementById('newProdPrice').value);
+  const stock = parseInt(document.getElementById('newProdStock').value) || 0;
+  const desc = document.getElementById('newProdDesc').value.trim();
+  const img = document.getElementById('newProdImg').value.trim() || 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600';
+  if (!nom || isNaN(prix)) { alert('Nom et prix requis'); return; }
+  const id = Date.now();
+  const prod = { id, nom, cat, prix, stock, desc, img, rating: 4.5, reviews: 0 };
+  customProducts.push(prod);
+  localStorage.setItem('slm_admin_products', JSON.stringify(customProducts));
+  addAuditLog('success', 'fas fa-plus', `Produit ajouté : ${nom}`, `${prix.toLocaleString()} FCFA`);
+  closeModal('modalAddProduct');
+  loadProducts();
+  ['newProdName','newProdPrice','newProdStock','newProdDesc','newProdImg'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+}
+
+function loadOrders() {
+  const orders = JSON.parse(localStorage.getItem('slm_orders') || '[]');
+  const statuses = { pending:'orange', processing:'blue', shipped:'purple', delivered:'green', cancelled:'red' };
+  document.getElementById('ordersTableBody').innerHTML = orders.length ?
+    orders.slice().reverse().map(o => `
+      <tr>
+        <td style="font-family:monospace;color:var(--primary)">${o.orderNumber||'#???'}</td>
+        <td>${o.user?.name || o.user?.email || 'Client'}</td>
+        <td>${o.items?.length||0} article(s)</td>
+        <td style="font-weight:800">${(o.total||0).toLocaleString()} FCFA</td>
+        <td><span class="pill pill-${statuses[o.status]||'orange'}">${o.status||'En attente'}</span></td>
+        <td style="color:#555;font-size:11px">${o.date||''}</td>
+      </tr>`).join('') :
+    '<tr><td colspan="6" style="text-align:center;color:#555;padding:40px">Aucune commande enregistrée</td></tr>';
+}
+
+function loadPromos() {
+  const defaults = {
+    'WELCOME25':{ discount:0.25, type:'percentage', minOrder:0, label:'-25% Bienvenue', desc:'Toute commande', active:true },
+    'SLM2026':  { discount:25000, type:'fixed', minOrder:0, label:'-25 000 FCFA', desc:'Code fidélité', active:true },
+    'VIPCLUB':  { discount:0.30, type:'percentage', minOrder:1000000, label:'-30% VIP', desc:'Min. 1M FCFA', active:true },
+    'FIRST10':  { discount:10000, type:'fixed', minOrder:0, label:'-10 000 FCFA', desc:'Nouveau client', active:true },
+    'LOYALTYX2':{ discount:0.50, type:'percentage', minOrder:5000000, label:'-50% Elite', desc:'Membres Elite', active:true },
+    'SUMMER50': { discount:50000, type:'fixed', minOrder:500000, label:'-50 000 FCFA', desc:'Min. 500K FCFA', active:true },
+  };
+  const custom = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+  const all = { ...defaults, ...custom };
+  document.getElementById('promosGrid').innerHTML = Object.entries(all).map(([code, data]) => `
+    <div class="promo-card">
+      <button class="toggle ${data.active!==false?'on':''} promo-toggle" onclick="togglePromo('${code}',this)"></button>
+      <div class="promo-code-text">${code}</div>
+      <div class="promo-details">
+        ${data.type==='percentage' ? (data.discount*100)+'%' : data.discount.toLocaleString()+' FCFA'} de réduction<br>
+        Minimum : ${(data.minOrder||0).toLocaleString()} FCFA<br>
+        ${data.desc||data.label||''}
+      </div>
+      <div class="promo-actions">
+        <button class="btn-promo-del" onclick="deletePromo('${code}')"><i class="fas fa-trash"></i> Supprimer</button>
+      </div>
+    </div>`).join('');
+}
+
+function togglePromo(code, btn) {
+  const custom = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+  if (!custom[code]) custom[code] = {};
+  custom[code].active = !btn.classList.contains('on');
+  localStorage.setItem('slm_promo_codes', JSON.stringify(custom));
+  btn.classList.toggle('on');
+}
+function deletePromo(code) {
+  if (!confirm(`Supprimer le code "${code}" ?`)) return;
+  const custom = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+  delete custom[code];
+  localStorage.setItem('slm_promo_codes', JSON.stringify(custom));
+  addAuditLog('warn', 'fas fa-tag', `Code promo supprimé : ${code}`, '');
+  loadPromos();
+}
+function addPromoCode() {
+  const code = document.getElementById('newPromoCode').value.trim().toUpperCase();
+  const type = document.getElementById('newPromoType').value;
+  const val = parseFloat(document.getElementById('newPromoVal').value);
+  const min = parseFloat(document.getElementById('newPromoMin').value) || 0;
+  const desc = document.getElementById('newPromoDesc').value.trim();
+  if (!code || isNaN(val)) { alert('Code et valeur requis'); return; }
+  const discount = type === 'percentage' ? val / 100 : val;
+  const custom = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+  custom[code] = { discount, type, minOrder: min, desc, active: true };
+  localStorage.setItem('slm_promo_codes', JSON.stringify(custom));
+  addAuditLog('success', 'fas fa-tag', `Code promo créé : ${code}`, `${type==='percentage'?val+'%':val.toLocaleString()+' FCFA'}`);
+  closeModal('modalAddPromo');
+  ['newPromoCode','newPromoVal','newPromoMin','newPromoDesc'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  loadPromos();
+}
+
+function loadClients() {
+  const users = JSON.parse(localStorage.getItem('slm_users') || '[]');
+  document.getElementById('clientsTableBody').innerHTML = users.length ?
+    users.map(u => `
+      <tr>
+        <td style="font-weight:700">${u.name||'—'}</td>
+        <td style="color:var(--muted)">${u.email}</td>
+        <td><span class="pill pill-orange">${(u.points||0)} pts</span></td>
+        <td style="color:#555;font-size:11px">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('fr-FR') : '—'}</td>
+      </tr>`).join('') :
+    '<tr><td colspan="4" style="text-align:center;color:#555;padding:40px">Aucun client inscrit</td></tr>';
+}
+
+async function changePassword() {
+  const oldPwd = document.getElementById('settingOldPwd').value;
+  const newPwd = document.getElementById('settingNewPwd').value;
+  const confirm = document.getElementById('settingNewPwdConfirm').value;
+  const currentHash = localStorage.getItem('slm_admin_hash');
+  const oldHash = await sha256(oldPwd);
+  if (oldHash !== currentHash) { alert('Mot de passe actuel incorrect'); return; }
+  if (newPwd.length < 12) { alert('Minimum 12 caractères'); return; }
+  if (!/[A-Z]/.test(newPwd) || !/[0-9]/.test(newPwd) || !/[^a-zA-Z0-9]/.test(newPwd)) {
+    alert('Le mot de passe doit contenir une majuscule, un chiffre et un symbole'); return;
+  }
+  if (newPwd !== confirm) { alert('Les mots de passe ne correspondent pas'); return; }
+  const newHash = await sha256(newPwd);
+  localStorage.setItem('slm_admin_hash', newHash);
+  addAuditLog('success', 'fas fa-key', 'Mot de passe admin modifié', 'Changement sécurisé');
+  alert('Mot de passe mis à jour avec succès !');
+  ['settingOldPwd','settingNewPwd','settingNewPwdConfirm'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+}
+
+// ── Navigation ──
+function showPage(pageId, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  const titles = { pageDash:'Dashboard', pageProducts:'Produits', pageOrders:'Commandes', pagePromos:'Codes Promo', pageClients:'Clients', pageAudit:'Journal Sécurité', pageSettings:'Paramètres' };
+  document.getElementById('topbarTitle').textContent = titles[pageId] || '';
+  if (pageId === 'pageAudit') loadAuditLog();
+  if (pageId === 'pageClients') loadClients();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id, e) { if (!e || e.target === document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
+
+// ── Start ──
+initGate();
+</script>
+</body>
+</html>

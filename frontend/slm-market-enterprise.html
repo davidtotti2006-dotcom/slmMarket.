@@ -586,16 +586,10 @@
  
         .sort-select:focus, .price-filter:focus { border-color: var(--sm-primary); }
  
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 40px;
-        }
- 
         /* ═══ PRODUCT GRID ═══ */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 28px;
         }
 
@@ -861,6 +855,203 @@
             color: #999;
             cursor: not-allowed;
         }
+
+        /* ── Bouton Négocier ── */
+        .btn-negotiate {
+            width: 100%;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: var(--transition-base);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .btn-negotiate:hover {
+            background: linear-gradient(135deg, #6d28d9, #4c1d95);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(109,40,217,0.4);
+        }
+        .negotiated-price {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(109,40,217,0.08);
+            border: 1.5px dashed rgba(109,40,217,0.4);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #7c3aed;
+            margin-top: 6px;
+        }
+        .negotiated-price.show { display: flex; }
+
+        /* ── Prix barré style Jumia ── */
+        .price-tag { display: flex; flex-direction: column; gap: 2px; }
+        .price-jumia-main { font-size: 22px; font-weight: 900; color: var(--sm-black); }
+        .price-jumia-row { display: flex; align-items: center; gap: 8px; }
+        .price-jumia-orig { font-size: 12px; color: #bbb; text-decoration: line-through; }
+        .price-jumia-disc { background: #ef4444; color: white; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 900; }
+        .price-free-ship { font-size: 10px; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 3px; }
+
+        /* ── Modal Négociateur IA ── */
+        .neg-modal-bg {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            z-index: 9500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .neg-modal-bg.open { display: flex; }
+        .neg-modal {
+            background: #0d0d0d;
+            border: 1px solid rgba(109,40,217,0.3);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+        }
+        .neg-header {
+            background: linear-gradient(135deg, #1e1b4b, #2e1065);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .neg-avatar {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 0 6px rgba(124,58,237,0.15);
+            animation: negPulse 2s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes negPulse {
+            0%,100% { box-shadow: 0 0 0 6px rgba(124,58,237,0.15); }
+            50% { box-shadow: 0 0 0 12px rgba(124,58,237,0.05); }
+        }
+        .neg-header-info { flex: 1 }
+        .neg-title { font-size: 16px; font-weight: 800; color: white }
+        .neg-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+        .neg-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .neg-close:hover { background: rgba(255,255,255,0.2); }
+
+        .neg-product-info {
+            padding: 14px 24px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+        .neg-product-info img { width: 48px; height: 48px; object-fit: cover; border-radius: 10px; }
+        .neg-prod-name { font-weight: 700; color: #e8e8e8; font-size: 13px; }
+        .neg-prod-price { color: #ff6a00; font-weight: 900; font-size: 15px; margin-top: 2px; }
+
+        .neg-chat {
+            height: 260px;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .neg-chat::-webkit-scrollbar { width: 3px; }
+        .neg-chat::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); }
+
+        .neg-msg { display: flex; gap: 10px; align-items: flex-end; animation: negMsgIn 0.3s ease-out; max-width: 90%; }
+        .neg-msg.right { align-self: flex-end; flex-direction: row-reverse; }
+        @keyframes negMsgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+        .neg-msg-avatar {
+            width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 13px;
+        }
+        .neg-bubble {
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #e8e8e8;
+            max-width: 100%;
+        }
+        .neg-msg.left .neg-bubble { background: #1e1e1e; border: 1px solid rgba(255,255,255,0.07); border-bottom-left-radius: 4px; }
+        .neg-msg.right .neg-bubble { background: linear-gradient(135deg,#7c3aed,#5b21b6); border-bottom-right-radius: 4px; }
+        .neg-msg.system .neg-bubble { background: rgba(255,106,0,0.08); border: 1px solid rgba(255,106,0,0.2); color: #ff9a3c; font-size: 12px; text-align: center; width: 100%; max-width: 100%; }
+        .neg-msg.system { max-width: 100%; }
+
+        .neg-typing { display: none; padding: 4px 0; }
+        .neg-typing.show { display: flex; align-items: flex-end; gap: 10px; }
+        .neg-typing-dots {
+            background: #1e1e1e; border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; border-bottom-left-radius: 4px;
+            padding: 10px 14px; display: flex; gap: 4px;
+        }
+        .neg-typing-dots span { width: 6px; height: 6px; background: #666; border-radius: 50%; animation: typingBounce 1s ease-in-out infinite; }
+        .neg-typing-dots span:nth-child(2) { animation-delay: .15s; }
+        .neg-typing-dots span:nth-child(3) { animation-delay: .3s; }
+
+        .neg-footer {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            background: #111;
+        }
+        .neg-result {
+            display: none;
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05));
+            border: 1.5px solid rgba(16,185,129,0.3);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+        .neg-result.show { display: block; }
+        .neg-result-title { font-size: 16px; font-weight: 900; color: #10b981; margin-bottom: 8px; }
+        .neg-result-code {
+            font-size: 22px; font-weight: 900; letter-spacing: 4px; color: #ff6a00;
+            font-family: monospace; background: rgba(255,106,0,0.08);
+            border: 1.5px dashed rgba(255,106,0,0.4); border-radius: 10px;
+            padding: 10px 20px; margin: 10px 0; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .neg-result-code:hover { background: rgba(255,106,0,0.15); transform: scale(1.02); }
+        .neg-result-saving { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+        .neg-progress {
+            height: 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .neg-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .neg-status-text { font-size: 11px; color: rgba(255,255,255,0.4); text-align: center; margin-bottom: 8px; }
+        .neg-apply-btn {
+            width: 100%; background: linear-gradient(135deg, #10b981, #059669);
+            color: white; border: none; padding: 12px; border-radius: 10px;
+            font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 10px;
+            letter-spacing: 1px; transition: all 0.2s;
+        }
+        .neg-apply-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
 
         .btn-wishlist {
             width: 46px;
@@ -1525,7 +1716,7 @@
             </div>
  
             <div class="header-actions">
-                <a href="../suivi.html" class="btn-tracking">
+                <a href="suivi.html" class="btn-tracking">
                     <div class="scan-line"></div>
                     <i class="fas fa-satellite-dish"></i>
                     <span>SUIVRE MON COLIS</span>
@@ -1566,6 +1757,8 @@
                 <button class="cat-btn" onclick="filterCategory('sport', this)">👟 Sneakers</button>
                 <button class="cat-btn" onclick="filterCategory('vetements', this)">🧥 Prêt-à-Porter</button>
                 <button class="cat-btn" onclick="filterCategory('auto', this)">🚗 Garage Premium</button>
+                <button class="cat-btn" onclick="filterCategory('tech', this)">📱 Tech & Gadgets</button>
+                <button class="cat-btn" onclick="filterCategory('bijoux', this)">💎 Horlogerie & Bijoux</button>
             </div>
 
             <!-- Sous-filtres Parfums -->
@@ -1615,6 +1808,22 @@
                 <button class="sub-cat-tag" onclick="filterSubCat('pieces')">Pièces Performance</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('jantes')">Jantes Forgées</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('interieur')">Accessoires Intérieurs</button>
+            </div>
+
+            <!-- Sous-filtres Tech -->
+            <div id="sub-tech" class="sub-cats">
+                <button class="sub-cat-tag" onclick="filterSubCat('smartphones')">Smartphones</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('audio')">Audio Premium</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('ordinateurs')">Ordinateurs</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('tablettes')">Tablettes & Objets</button>
+            </div>
+
+            <!-- Sous-filtres Bijoux -->
+            <div id="sub-bijoux" class="sub-cats">
+                <button class="sub-cat-tag" onclick="filterSubCat('montres')">Montres de Luxe</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('bracelets')">Bracelets</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('colliers')">Colliers & Bagues</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('chevaliere')">Chevalières & Or</button>
             </div>
         </div>
     </nav>
@@ -1939,10 +2148,10 @@
                 <div class="footer-col">
                     <h4>Support</h4>
                     <ul class="footer-links">
-                        <li><a href="../suivi.html">Suivi de colis</a></li>
+                        <li><a href="suivi.html">Suivi de colis</a></li>
                         <li><a href="support-vip.html">Support VIP</a></li>
                         <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="../chat.html">Conciergerie</a></li>
+                        <li><a href="chat.html">Conciergerie</a></li>
                         <li><a href="mon-compte.html">Mon Compte</a></li>
                     </ul>
                 </div>
@@ -2082,7 +2291,93 @@
             { id: 82, nom: "Jantes Brabus Monoblock 23\"", cat: "auto", prix: 5800000, img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "L'équipement ultime Classe G", stock: 2, rating: 4.8, reviews: 89 },
             { id: 83, nom: "Intérieur Cuir Nappa Custom", cat: "auto", prix: 2200000, img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "Personnalisation luxe complète", stock: 3, rating: 4.9, reviews: 145 },
  
-            // AJOUTER D'AUTRES PRODUITS ICI (Pour atteindre 200+)
+            // ── PARFUMS LUXE (suite) ──────────────────────────────────────────
+            { id: 9,  nom: "Chanel No.5 EDP 100ml",           cat: "luxe", prix: 165000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "L'icône absolue de la parfumerie mondiale",      stock: 6,  rating: 4.9, reviews: 1024 },
+            { id: 10, nom: "YSL Black Opium 90ml",             cat: "luxe", prix: 120000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Café & vanille, séduction addictive",            stock: 8,  rating: 4.7, reviews: 678 },
+            { id: 11, nom: "Givenchy L'Interdit Rouge 80ml",   cat: "luxe", prix: 115000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Floral rebelle et audacieux",                    stock: 10, rating: 4.6, reviews: 312 },
+            { id: 12, nom: "Maison Margiela Jazz Club 100ml",  cat: "luxe", prix: 140000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Rhum, cuir & tabac blond — vie nocturne",        stock: 5,  rating: 4.8, reviews: 445 },
+            { id: 13, nom: "Parfums de Marly Layton 125ml",   cat: "luxe", prix: 185000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Pomme verte, bergamote, magnolia raffiné",      stock: 4,  rating: 4.9, reviews: 523 },
+            { id: 14, nom: "Roja Parfums Elysium Pour Homme",  cat: "luxe", prix: 320000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Agrumes précieux, sillage légendaire",          stock: 2,  rating: 5.0, reviews: 189 },
+            { id: 15, nom: "Memo Paris African Leather",       cat: "luxe", prix: 260000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Safran, santal, cuir — voyage sensoriel",      stock: 3,  rating: 4.8, reviews: 234 },
+            { id: 16, nom: "Initio Side Effect 90ml",          cat: "luxe", prix: 175000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Vanille & rhum envoûtant, force addictive",    stock: 5,  rating: 4.7, reviews: 367 },
+            { id: 17, nom: "Montale Intense Café 100ml",       cat: "luxe", prix: 135000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Café, roses, musk — harmonie orientale",       stock: 9,  rating: 4.6, reviews: 291 },
+            { id: 18, nom: "Juliette Has a Gun Not A Perf",   cat: "luxe", prix: 125000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Musk universel, peau propre sublimatoire",      stock: 7,  rating: 4.7, reviews: 402 },
+
+            // ── SNEAKERS / SPORT (suite) ──────────────────────────────────────
+            { id: 27, nom: "Off-White x Nike AF1 OW",          cat: "sport", prix: 620000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Virgil Abloh — concept révolutionnaire",         stock: 1,  rating: 5.0, reviews: 1567 },
+            { id: 28, nom: "Adidas x Gucci Gazelle Collab",    cat: "sport", prix: 580000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Fusion streetwear & maroquinerie italienne",    stock: 2,  rating: 4.9, reviews: 834 },
+            { id: 29, nom: "Prada Cloudbust Thunder 43",       cat: "sport", prix: 450000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Futurisme chunky, luxe sportif",                stock: 3,  rating: 4.8, reviews: 456 },
+            { id: 30, nom: "Rick Owens DRKSHDW GETH",          cat: "sport", prix: 680000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Avant-garde radicale, semelle plateforme",      stock: 2,  rating: 4.9, reviews: 378 },
+            { id: 31, nom: "Bottega Veneta Puddle Boot",       cat: "sport", prix: 490000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Caoutchouc luxe — statement piece ultime",      stock: 4,  rating: 4.7, reviews: 312 },
+            { id: 32, nom: "Nike Air Max 95 OG Neon",          cat: "sport", prix: 195000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Classique 95 — jaune néon iconique",            stock: 8,  rating: 4.8, reviews: 712 },
+            { id: 33, nom: "Jordan 1 High OG Chicago 2022",    cat: "sport", prix: 380000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Retro OG — Blanc/Noir/Rouge historique",        stock: 3,  rating: 5.0, reviews: 2134 },
+            { id: 34, nom: "Salomon XT-6 Advanced Black",      cat: "sport", prix: 220000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Trail luxury — technique & exclusivité",        stock: 6,  rating: 4.6, reviews: 445 },
+            { id: 35, nom: "Asics Gel-Kayano 14 White",        cat: "sport", prix: 185000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Silhouette running 2000s premium",               stock: 9,  rating: 4.7, reviews: 567 },
+            { id: 36, nom: "Saucony Shadow 6000 Tan",          cat: "sport", prix: 175000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Heritage running américain modernisé",          stock: 7,  rating: 4.6, reviews: 389 },
+            { id: 37, nom: "Converse x CDG Play Hi White",     cat: "sport", prix: 155000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Collab légendaire Comme des Garçons",           stock: 11, rating: 4.8, reviews: 891 },
+            { id: 38, nom: "New Balance 2002R Protection Pack", cat: "sport", prix: 210000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Nubuck premium tons neutres raffinés",           stock: 5,  rating: 4.7, reviews: 634 },
+
+            // ── CHEVEUX (suite) ────────────────────────────────────────────────
+            { id: 45, nom: "Body Wave 26\" Perruque HD",        cat: "cheveux", prix: 210000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Ondulation naturelle souple et brillante",  stock: 8,  rating: 4.8, reviews: 312 },
+            { id: 46, nom: "Water Wave 5x5 HD Lace 24\"",       cat: "cheveux", prix: 240000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Vague aquatique, résistante & naturelle",   stock: 6,  rating: 4.9, reviews: 267 },
+            { id: 47, nom: "Kinky Curly 20\" Glueless",         cat: "cheveux", prix: 190000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Frisé naturel afro-américain, zéro colle",  stock: 9,  rating: 4.7, reviews: 445 },
+            { id: 48, nom: "Frontal 13x4 Raw Indien Straight",  cat: "cheveux", prix: 145000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Tulle transparent, nœuds blanchis",          stock: 14, rating: 4.6, reviews: 189 },
+            { id: 49, nom: "Raw Cambodgien Loose Wave 28\"",    cat: "cheveux", prix: 270000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Volume généreux, texture soyeuse",           stock: 5,  rating: 4.9, reviews: 356 },
+            { id: 50, nom: "Tape In Extensions 20\" Chocolat",  cat: "cheveux", prix: 120000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Adhésif invisible, pose rapide & légère",   stock: 12, rating: 4.5, reviews: 278 },
+            { id: 51, nom: "Blonde 613 Straight HD Wig 22\"",   cat: "cheveux", prix: 295000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Blond platine — glamour absolu",             stock: 4,  rating: 4.8, reviews: 423 },
+            { id: 52, nom: "Bob Wig Pixie Cut HD Lace",         cat: "cheveux", prix: 155000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Coupe courte moderne, frontal 13x4",        stock: 7,  rating: 4.7, reviews: 334 },
+            { id: 53, nom: "Highlight Wig #4/27 30\"",          cat: "cheveux", prix: 310000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Mèches caramel & chocolat ultra tendance",  stock: 3,  rating: 4.9, reviews: 198 },
+            { id: 54, nom: "Raw Birman Wavy 32\" Glueless",     cat: "cheveux", prix: 285000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Vague birmane — rareté et douceur absolue",  stock: 4,  rating: 5.0, reviews: 145 },
+
+            // ── VÊTEMENTS (suite) ─────────────────────────────────────────────
+            { id: 65, nom: "Hoodie Chrome Hearts OG Cross",    cat: "vetements", prix: 750000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coton lourd gothique — pièce culte",        stock: 2,  rating: 4.9, reviews: 567 },
+            { id: 66, nom: "Pantalon Palm Angels Track",       cat: "vetements", prix: 380000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Bande latérale, fit parfait luxe sport",    stock: 4,  rating: 4.7, reviews: 312 },
+            { id: 67, nom: "Doudoune Moncler Maya Black",      cat: "vetements", prix: 1800000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Duvet d'oie premium, icône hivernale",       stock: 3,  rating: 5.0, reviews: 289 },
+            { id: 68, nom: "Jean Fear of God Essentials",      cat: "vetements", prix: 220000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coupe ample, délavage délicat parfait",     stock: 6,  rating: 4.6, reviews: 445 },
+            { id: 69, nom: "Robe Dior Bar Veste Longue",       cat: "vetements", prix: 2200000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Silhouette New Look — haute couture",        stock: 1,  rating: 5.0, reviews: 67 },
+            { id: 70, nom: "Short Off-White Arrow Ss23",       cat: "vetements", prix: 290000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Twill coton, imprimé signature flèche",     stock: 5,  rating: 4.7, reviews: 234 },
+            { id: 71, nom: "Knitwear Bottega Veneta Vert",     cat: "vetements", prix: 680000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Intreccio knit, couleur maison exclusive",   stock: 2,  rating: 4.9, reviews: 178 },
+            { id: 72, nom: "Blouson Alpha Industries x Supreme", cat: "vetements", prix: 450000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "MA-1 collab, badge Supreme brodé",          stock: 3,  rating: 4.8, reviews: 389 },
+            { id: 73, nom: "Trench Burberry Heritage Check",   cat: "vetements", prix: 1400000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Gabardine coton, carreaux iconiques",        stock: 2,  rating: 4.9, reviews: 445 },
+            { id: 74, nom: "Polo Ralph Lauren Purple Label",   cat: "vetements", prix: 320000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coton pima double fil, élégance prep",      stock: 5,  rating: 4.7, reviews: 312 },
+            { id: 75, nom: "Veste Jacquemus Le Ovalo",         cat: "vetements", prix: 560000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coupe sculptée, lin structuré été",         stock: 4,  rating: 4.8, reviews: 267 },
+
+            // ── AUTO (suite) ──────────────────────────────────────────────────
+            { id: 84, nom: "Porsche 911 Carrera S Import",     cat: "auto", prix: 185000000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "992.2 — Flat-6 450ch, importation directe", stock: 1, rating: 5.0, reviews: 18 },
+            { id: 85, nom: "BMW M4 Competition xDrive",        cat: "auto", prix: 95000000,  img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "510ch, biturbo inline-6, AWD",               stock: 1, rating: 4.9, reviews: 24 },
+            { id: 86, nom: "Range Rover Sport HSE Dynamic",    cat: "auto", prix: 120000000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "SUV luxe ultime — terrain & prestige",       stock: 1, rating: 5.0, reviews: 31 },
+            { id: 87, nom: "Kit Carrosserie Mansory Classe G",  cat: "auto", prix: 12500000,  img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Fibre carbone complète, look radical",       stock: 2, rating: 4.9, reviews: 56 },
+            { id: 88, nom: "Sièges Racing Recaro Pole Position", cat: "auto", prix: 2800000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Baquet homologué FIA, cuir alcantara",       stock: 3, rating: 4.8, reviews: 89 },
+            { id: 89, nom: "Système Audio Burmester 3D High-End", cat: "auto", prix: 4500000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "24 HP 1590W — expérience concert live",      stock: 2, rating: 5.0, reviews: 45 },
+            { id: 90, nom: "Jantes Vossen HF-3 22\" Noir",     cat: "auto", prix: 3200000,  img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Forgées flow-form, légèreté maximale",       stock: 4, rating: 4.8, reviews: 112 },
+            { id: 91, nom: "Tapis Sol Velours sur-mesure",      cat: "auto", prix: 850000,   img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Velours premium brodé, logo custom",         stock: 8, rating: 4.7, reviews: 167 },
+            { id: 92, nom: "Vitres Teintées Suntek CXP 80%",   cat: "auto", prix: 650000,   img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Film céramique, protection UV totale",       stock: 10,rating: 4.8, reviews: 234 },
+
+            // ── TECH & GADGETS ────────────────────────────────────────────────
+            { id: 100, nom: "iPhone 15 Pro Max 1TB Natural Ti", cat: "tech", prix: 1200000, img: "https://images.unsplash.com/photo-1711458228035-6a8bf7e33f1c?w=600", desc: "Titane naturel, puce A17 Pro, camera 48MP",  stock: 5,  rating: 4.9, reviews: 1234 },
+            { id: 101, nom: "Samsung Galaxy S24 Ultra 512GB",   cat: "tech", prix: 950000,  img: "https://images.unsplash.com/photo-1711458228035-6a8bf7e33f1c?w=600", desc: "Galaxy AI, S Pen intégré, 200MP",           stock: 7,  rating: 4.8, reviews: 876 },
+            { id: 102, nom: "MacBook Pro M3 Max 16\" 36GB",     cat: "tech", prix: 2800000, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600", desc: "Puce M3 Max, GPU 40 cœurs, autonomie pro",  stock: 3,  rating: 5.0, reviews: 456 },
+            { id: 103, nom: "Apple Watch Ultra 2 Titanium",     cat: "tech", prix: 850000,  img: "https://images.unsplash.com/photo-1711458228035-6a8bf7e33f1c?w=600", desc: "GPS double, boîtier 49mm, plongée 100m",   stock: 4,  rating: 4.9, reviews: 567 },
+            { id: 104, nom: "AirPods Max Midnight 2024",        cat: "tech", prix: 380000,  img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600", desc: "ANC computationnel, Hi-Res Audio USB-C",     stock: 6,  rating: 4.8, reviews: 789 },
+            { id: 105, nom: "Sony WH-1000XM5 Noir",            cat: "tech", prix: 280000,  img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600", desc: "Meilleure ANC marché, 30h autonomie",        stock: 9,  rating: 4.8, reviews: 1123 },
+            { id: 106, nom: "iPad Pro M4 13\" Wi-Fi + 5G 1TB", cat: "tech", prix: 1450000, img: "https://images.unsplash.com/photo-1544244015-0df4592c8b0a?w=600", desc: "Écran Ultra Retina XDR OLED, ultra fin",    stock: 3,  rating: 4.9, reviews: 312 },
+            { id: 107, nom: "DJI Air 3 Combo Plus Drone",       cat: "tech", prix: 950000,  img: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600", desc: "Caméra 4K/60fps, 46 min vol, omnidirect.",  stock: 4,  rating: 4.8, reviews: 234 },
+            { id: 108, nom: "GoPro Hero 13 Black Creator Ed.", cat: "tech", prix: 420000,  img: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600", desc: "HyperSmooth 7.0, 5.3K, magnétique MagSafe", stock: 7,  rating: 4.7, reviews: 445 },
+            { id: 109, nom: "Dell XPS 15 OLED RTX 4070",       cat: "tech", prix: 2200000, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600", desc: "Intel i9-13900H, 32GB DDR5, 4K OLED",      stock: 2,  rating: 4.8, reviews: 189 },
+            { id: 110, nom: "Bose QuietComfort Ultra Earbuds",  cat: "tech", prix: 240000,  img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600", desc: "ANC immersif, audio spatial, IP54",         stock: 8,  rating: 4.7, reviews: 567 },
+
+            // ── HORLOGERIE & BIJOUX ───────────────────────────────────────────
+            { id: 120, nom: "Rolex Submariner Date 41mm",       cat: "bijoux", prix: 28000000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Oystersteel, lunette céramique, mouvement 3235", stock: 1, rating: 5.0, reviews: 145 },
+            { id: 121, nom: "Audemars Piguet Royal Oak 37mm",   cat: "bijoux", prix: 65000000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Or rose 18k, cadran Grande Tapisserie",       stock: 1, rating: 5.0, reviews: 67 },
+            { id: 122, nom: "Omega Seamaster 300M 42mm",        cat: "bijoux", prix: 8500000,  img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Co-Axial Master Chronometer, 600M",          stock: 2, rating: 4.9, reviews: 234 },
+            { id: 123, nom: "Cartier Love Bracelet Or Rose",    cat: "bijoux", prix: 4500000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Or 18k, 4 diamants, tournevis iconique",    stock: 3, rating: 5.0, reviews: 389 },
+            { id: 124, nom: "Van Cleef Vintage Alhambra 20M",   cat: "bijoux", prix: 8500000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "20 motifs trèfle, nacre & or jaune",        stock: 2, rating: 5.0, reviews: 178 },
+            { id: 125, nom: "Bague Chopard Happy Diamonds",     cat: "bijoux", prix: 12000000, img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Diamants mobiles en sertissage libre",      stock: 1, rating: 5.0, reviews: 89 },
+            { id: 126, nom: "Chevalière Hermès Or Jaune 18k",   cat: "bijoux", prix: 3800000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "H en or massif, finition polie satinée",    stock: 3, rating: 4.9, reviews: 145 },
+            { id: 127, nom: "Bracelet Tiffany HardWear Gold",   cat: "bijoux", prix: 2600000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Or jaune 18k, maillon bold New York",       stock: 4, rating: 4.9, reviews: 267 },
+            { id: 128, nom: "TAG Heuer Carrera Chronographe",   cat: "bijoux", prix: 5500000,  img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "COSC Chronographe, verre saphir, 100m",     stock: 2, rating: 4.8, reviews: 312 },
+            { id: 129, nom: "Collier Messika Move Uno Pavé",    cat: "bijoux", prix: 3200000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Diamants mobiles, chaîne or blanc",         stock: 3, rating: 4.9, reviews: 198 },
+            { id: 130, nom: "IWC Portugieser Automatique 40mm", cat: "bijoux", prix: 15000000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Acier inox, bracelet cuir brun, cal.82100",  stock: 1, rating: 4.9, reviews: 134 },
         ];
  
         // ═══════════════════════════════════════════════════════════════════
@@ -2501,7 +2796,7 @@
                             </table>
                             <div style="text-align:right; font-size:22px; font-weight:900; color:#ff6a00;">Total : ${total.toLocaleString()} FCFA</div>
                             <div style="margin-top:30px; padding:20px; background:#fffbf5; border-radius:12px; border-left:4px solid #ff6a00;">
-                                <p style="margin:0; font-size:14px; color:#555;">Suivez votre commande sur <a href="../suivi.html" style="color:#ff6a00; font-weight:700;">S.L.M Suivi</a></p>
+                                <p style="margin:0; font-size:14px; color:#555;">Suivez votre commande sur <a href="suivi.html" style="color:#ff6a00; font-weight:700;">S.L.M Suivi</a></p>
                             </div>
                         </div>
                         <div style="background:#f9f9f9; padding:20px; text-align:center; color:#aaa; font-size:12px;">
@@ -2659,18 +2954,26 @@
                                 ${colorsHtml}
                             </div>
                             <div class="info-bottom">
-                                <div class="price-row">
-                                    <div class="price">${p.prix.toLocaleString()} FCFA</div>
+                                <div class="price-tag">
+                                    <div class="price-jumia-main">${p.prix.toLocaleString()} <small style="font-size:13px;font-weight:600">FCFA</small></div>
+                                    <div class="price-jumia-row">
+                                        <span class="price-jumia-orig">${(Math.round(p.prix * (1.12 + (p.id % 7) * 0.02) / 1000) * 1000).toLocaleString()} FCFA</span>
+                                        <span class="price-jumia-disc">-${10 + (p.id % 8)}%</span>
+                                    </div>
+                                    ${p.prix >= 500000 ? '<div class="price-free-ship"><i class="fas fa-truck"></i> Livraison offerte</div>' : ''}
                                 </div>
                                 <div class="card-actions">
                                     <button class="btn-buy" onclick="addToCart(${p.id}); event.stopPropagation();" ${isOutOfStock ? 'disabled' : ''}>
-                                        <i class="fas fa-shopping-bag"></i> ${isOutOfStock ? 'ÉPUISÉ' : 'AJOUTER AU PANIER'}
+                                        <i class="fas fa-shopping-bag"></i> ${isOutOfStock ? 'ÉPUISÉ' : 'PANIER'}
                                     </button>
                                     <button class="btn-wishlist ${isInWishlist ? 'added' : ''}"
                                             onclick="toggleWishlistItem(${p.id}); event.stopPropagation();" title="Wishlist">
                                         <i class="fas fa-heart"></i>
                                     </button>
                                 </div>
+                                <button class="btn-negotiate" onclick="openNegotiator(${p.id}); event.stopPropagation();">
+                                    🤖 NÉGOCIER MON PRIX
+                                </button>
                             </div>
                         </div>
                     </div>`;
@@ -2705,7 +3008,9 @@
                 'sport': 'Sneakers & Streetwear',
                 'vetements': 'Prêt-à-Porter Luxury',
                 'cheveux': 'Mèches Raw Hair Premium',
-                'auto': 'Garage & Pièces Auto'
+                'auto': 'Garage & Pièces Auto',
+                'tech': 'Tech & Gadgets Premium',
+                'bijoux': 'Horlogerie & Bijoux de Luxe'
             };
             document.getElementById('sectionTitle').textContent = titles[cat] || cat;
 
@@ -2761,8 +3066,15 @@
                 return;
             }
  
-            const [min, max] = range.split('-').map(v => v === '+' ? Infinity : parseInt(v));
-            filtered = filtered.filter(p => p.prix >= min && (max === Infinity ? true : p.prix <= max));
+            let min = 0, max = Infinity;
+            if (range.endsWith('+')) {
+                min = parseInt(range);
+            } else {
+                const parts = range.split('-');
+                min = parseInt(parts[0]) || 0;
+                max = parseInt(parts[1]) || Infinity;
+            }
+            filtered = filtered.filter(p => p.prix >= min && p.prix <= max);
  
             renderProducts(filtered);
         }
@@ -3011,7 +3323,7 @@
 
             showToast("Redirection vers le panier...", 'success');
             setTimeout(() => {
-                window.location.href = '../panier.html';
+                window.location.href = 'panier.html';
             }, 800);
         }
  
@@ -3280,5 +3592,211 @@
         </div>
     </div>
 
+    <!-- 🤖 MODAL SLM ORACLE NÉGOCIATEUR IA -->
+    <div class="neg-modal-bg" id="negModal" onclick="closeNegModal(event)">
+      <div class="neg-modal" onclick="event.stopPropagation()">
+        <div class="neg-header">
+          <div class="neg-avatar">🤖</div>
+          <div class="neg-header-info">
+            <div class="neg-title">SLM Oracle Négociateur</div>
+            <div class="neg-subtitle">IA exclusive • Négocie le prix en temps réel pour vous</div>
+          </div>
+          <button class="neg-close" onclick="document.getElementById('negModal').classList.remove('open')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="neg-product-info" id="negProductInfo">
+          <img id="negProductImg" src="" alt="">
+          <div>
+            <div class="neg-prod-name" id="negProductName">—</div>
+            <div class="neg-prod-price" id="negProductPrice">—</div>
+          </div>
+        </div>
+        <div class="neg-chat" id="negChat">
+          <div class="neg-typing" id="negTyping">
+            <div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div>
+            <div class="neg-typing-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+        <div class="neg-footer">
+          <div class="neg-progress" id="negProgress"><div class="neg-progress-bar" id="negProgressBar"></div></div>
+          <div class="neg-status-text" id="negStatusText">Initialisation de la négociation...</div>
+          <div class="neg-result" id="negResult">
+            <div class="neg-result-title">✅ Accord obtenu !</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px">Code promo exclusif — usage unique</div>
+            <div class="neg-result-code" id="negResultCode" onclick="copyNegCode()">NEG-XXXXX</div>
+            <div class="neg-result-saving" id="negResultSaving">Vous économisez 0 FCFA</div>
+            <button class="neg-apply-btn" onclick="applyNegotiatedCode()">
+              <i class="fas fa-tag"></i> APPLIQUER ET COMMANDER
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    // ════════════════════════════════════════════════════
+    // 🤖 SLM ORACLE NÉGOCIATEUR IA
+    // Fonctionnalité 100% unique — aucun Amazon/Alibaba/Jumia ne propose ça
+    // ════════════════════════════════════════════════════
+
+    let negCurrentProduct = null;
+    let negGeneratedCode = null;
+
+    function openNegotiator(productId) {
+        const p = productDatabase.find(x => x.id === productId);
+        if (!p) return;
+        negCurrentProduct = p;
+        negGeneratedCode = null;
+
+        // Reset UI
+        document.getElementById('negProductImg').src = p.img;
+        document.getElementById('negProductName').textContent = p.nom;
+        document.getElementById('negProductPrice').textContent = p.prix.toLocaleString() + ' FCFA';
+        document.getElementById('negChat').innerHTML = `
+            <div class="neg-typing" id="negTyping">
+                <div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div>
+                <div class="neg-typing-dots"><span></span><span></span><span></span></div>
+            </div>`;
+        document.getElementById('negProgressBar').style.width = '0%';
+        document.getElementById('negStatusText').textContent = 'Initialisation...';
+        document.getElementById('negResult').classList.remove('show');
+        document.getElementById('negModal').classList.add('open');
+
+        // Lance le script de négociation
+        runNegotiationScript(p);
+    }
+
+    function closeNegModal(e) {
+        if (e && e.target !== document.getElementById('negModal')) return;
+        document.getElementById('negModal').classList.remove('open');
+    }
+
+    async function runNegotiationScript(p) {
+        // Calcul du discount selon catégorie
+        const discountRates = {
+            luxe: [0.07, 0.12], sport: [0.06, 0.10],
+            cheveux: [0.08, 0.15], vetements: [0.07, 0.12],
+            auto: [0.03, 0.06], tech: [0.05, 0.09], bijoux: [0.04, 0.08]
+        };
+        const [minD, maxD] = discountRates[p.cat] || [0.06, 0.10];
+        const discountRate = minD + Math.random() * (maxD - minD);
+        const saving = Math.round(p.prix * discountRate / 100) * 100;
+        const newPrice = p.prix - saving;
+
+        // Prix de marché simulés
+        const usdRate = 1650;
+        const eur = ((p.prix / usdRate) * 0.92).toFixed(0);
+        const usd = (p.prix / usdRate).toFixed(0);
+        const amazPrice = Math.round(p.prix * 1.08 / 100) * 100;
+        const aliPrice = Math.round(p.prix * 0.95 / 100) * 100;
+
+        const steps = [
+            { delay: 600,  who: 'ai',     text: `🔍 Analyse du marché mondial pour "${p.nom}"...` },
+            { delay: 1800, who: 'system', text: `📊 Comparaison des prix globaux` },
+            { delay: 2600, who: 'ai',     text: `📈 Amazon US: $${amazPrice > 0 ? Math.round(amazPrice/usdRate) : usd} | Alibaba: $${Math.round(aliPrice/usdRate)} | Marché Abidjan: ${Math.round(p.prix*1.1).toLocaleString()} FCFA\n\n💡 Notre prix SLM est compétitif. Je vais négocier un tarif encore plus bas pour vous.` },
+            { delay: 4200, who: 'supplier', text: `Bonjour SLM, quel est le contexte de cette commande ?` },
+            { delay: 5400, who: 'ai',     text: `Client fidèle SLM Market, historique d'achats premium. Cherche "${p.nom}" — prêt à commander immédiatement si prix négocié.` },
+            { delay: 6800, who: 'supplier', text: `Compris. Meilleure offre possible sur ce produit ?` },
+            { delay: 7800, who: 'ai',     text: `Le marché mondial indique une marge fournisseur de 18–22% sur ce type de produit. Je propose ${newPrice.toLocaleString()} FCFA (économie de ${saving.toLocaleString()} FCFA) pour commande immédiate.` },
+            { delay: 9400, who: 'supplier', text: `... Un instant, je consulte mon responsable...` },
+            { delay: 11500, who: 'supplier', text: `✅ Accord. Prix final accordé pour commande dans les 24h : ${newPrice.toLocaleString()} FCFA. Code unique généré.` },
+            { delay: 12800, who: 'ai',    text: `🎉 Excellent ! Accord conclu avec le fournisseur.\n\nVotre code promo personnel a été généré. Il est valable 24h et s'applique uniquement sur "${p.nom}".` },
+        ];
+
+        let msgCount = 0;
+        for (const step of steps) {
+            await wait(step.delay - (msgCount > 0 ? 0 : 0));
+            showNegTyping(step.who);
+            await wait(900);
+            hideNegTyping();
+            addNegMessage(step.who, step.text);
+            msgCount++;
+            const progress = (msgCount / steps.length) * 85;
+            document.getElementById('negProgressBar').style.width = progress + '%';
+            document.getElementById('negStatusText').textContent = negStatusLabel(step.who, msgCount, steps.length);
+        }
+
+        // Générer le code unique
+        const code = 'NEG' + p.id + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        negGeneratedCode = code;
+
+        // Enregistrer le code promo dans le système
+        const custom = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
+        custom[code] = {
+            discount: saving,
+            type: 'fixed',
+            minOrder: 0,
+            desc: `Prix négocié IA pour ${p.nom}`,
+            active: true,
+            expiresAt: Date.now() + 24 * 60 * 60 * 1000
+        };
+        localStorage.setItem('slm_promo_codes', JSON.stringify(custom));
+
+        await wait(400);
+        document.getElementById('negProgressBar').style.width = '100%';
+        document.getElementById('negStatusText').textContent = '✅ Négociation terminée avec succès !';
+        document.getElementById('negResultCode').textContent = code;
+        document.getElementById('negResultSaving').textContent = `Vous économisez ${saving.toLocaleString()} FCFA · Prix final : ${newPrice.toLocaleString()} FCFA`;
+        document.getElementById('negResult').classList.add('show');
+    }
+
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function negStatusLabel(who, step, total) {
+        const labels = ['Analyse du marché...', 'Comparaison des prix...', 'Évaluation de la marge...', 'Contacting le fournisseur...', 'Négociation en cours...', 'Arguments présentés...', 'Discussion avancée...', 'En attente de réponse...', 'Accord en cours de finalisation...', 'Code promo généré !'];
+        return labels[Math.min(step - 1, labels.length - 1)];
+    }
+
+    function showNegTyping(who) {
+        const chat = document.getElementById('negChat');
+        const typingEl = document.getElementById('negTyping');
+        if (typingEl) typingEl.remove();
+        const row = document.createElement('div');
+        row.id = 'negTyping';
+        row.className = 'neg-typing show';
+        const avatars = { ai: '🤖', supplier: '🏭', system: '📊' };
+        const colors = { ai: 'linear-gradient(135deg,#7c3aed,#5b21b6)', supplier: 'linear-gradient(135deg,#059669,#047857)', system: 'linear-gradient(135deg,#ff6a00,#e65c00)' };
+        row.innerHTML = `<div class="neg-msg-avatar" style="background:${colors[who]||colors.ai}">${avatars[who]||'🤖'}</div><div class="neg-typing-dots"><span></span><span></span><span></span></div>`;
+        chat.appendChild(row);
+        chat.scrollTop = chat.scrollHeight;
+    }
+    function hideNegTyping() {
+        const t = document.getElementById('negTyping');
+        if (t) t.classList.remove('show');
+    }
+
+    function addNegMessage(who, text) {
+        const chat = document.getElementById('negChat');
+        const typingEl = document.getElementById('negTyping');
+        const row = document.createElement('div');
+        const avatars = { ai: '🤖', supplier: '🏭', system: '⚡' };
+        const colors = { ai: 'linear-gradient(135deg,#7c3aed,#5b21b6)', supplier: 'linear-gradient(135deg,#059669,#047857)', system: 'linear-gradient(135deg,#ff6a00,#e65c00)' };
+        const isRight = who === 'ai';
+        const isSystem = who === 'system';
+
+        row.className = 'neg-msg ' + (isSystem ? 'system' : isRight ? 'right' : 'left');
+        if (!isSystem) {
+            const avatarEl = `<div class="neg-msg-avatar" style="background:${colors[who]||colors.ai}">${avatars[who]||'?'}</div>`;
+            row.innerHTML = `${isRight ? '' : avatarEl}<div class="neg-bubble">${text.replace(/\n/g,'<br>')}</div>${isRight ? avatarEl : ''}`;
+        } else {
+            row.innerHTML = `<div class="neg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+        }
+        if (typingEl) chat.insertBefore(row, typingEl);
+        else chat.appendChild(row);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function copyNegCode() {
+        if (!negGeneratedCode) return;
+        navigator.clipboard.writeText(negGeneratedCode).catch(() => {});
+        showToast('Code copié : ' + negGeneratedCode, 'success');
+    }
+
+    function applyNegotiatedCode() {
+        if (!negGeneratedCode) return;
+        document.getElementById('negModal').classList.remove('open');
+        applyCoupon(negGeneratedCode);
+        toggleCart();
+    }
+    </script>
 </body>
 </html>
