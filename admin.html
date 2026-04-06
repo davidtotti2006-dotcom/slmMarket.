@@ -594,7 +594,7 @@
                         3. Aller dans <b>SMTP & API</b> → copier votre clé API ci-dessous
                     </p>
                     <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <input type="text" id="brevoKeyInput" placeholder="xkeysib-xxxxxxxxxxxx" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none; font-family:monospace;" value="${localStorage.getItem('slm_brevo_key') || ''}">
+                        <input type="text" id="brevoKeyInput" placeholder="xkeysib-xxxxxxxxxxxx" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none; font-family:monospace;">
                         <button onclick="saveBrevoKey()" style="background:var(--sm-primary); color:var(--sm-dark); border:none; padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer;">Sauvegarder</button>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center;">
@@ -1247,7 +1247,11 @@
             App.toast(`Email expéditeur défini : ${email}`, 'success');
         }
 
-        document.addEventListener('DOMContentLoaded', () => { renderPromosAdmin(); });
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPromosAdmin();
+            const inp = document.getElementById('brevoKeyInput');
+            if (inp) inp.value = localStorage.getItem('slm_brevo_key') || '';
+        });
 
         // Initialisation
         App.init();

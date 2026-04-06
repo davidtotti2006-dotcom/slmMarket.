@@ -1666,23 +1666,118 @@
             .footer-grid { grid-template-columns: 1fr 1fr; }
         }
  
-        @media (max-width: 900px) {
-            .header-inner { flex-direction: column; gap: 20px; }
-            .search-container { max-width: 100%; }
-            .hero-slider { height: 400px; }
-            .hero-content { padding: 30px; }
-            .cart-sidebar, .wishlist-sidebar { width: 95vw; }
-            .store-header { flex-direction: column; align-items: flex-start; }
+        /* ── TABLET ── */
+        @media (max-width: 1024px) {
+            .header-inner { gap: 20px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
         }
- 
+
+        /* ── MOBILE LARGE (tablette portrait / grand smartphone) ── */
+        @media (max-width: 900px) {
+            .container { padding: 0 12px; }
+            .header-inner { flex-wrap: wrap; gap: 12px; }
+            .search-container { order: 3; width: 100%; max-width: 100%; }
+            .search-container input { padding: 14px 20px; font-size: 14px; }
+            .search-container button { padding: 0 24px; font-size: 12px; }
+            .header-actions { gap: 16px; }
+            .btn-tracking span { display: none; }
+            .btn-tracking { padding: 10px 14px; }
+            .cat-list { gap: 8px; padding: 14px 0; justify-content: flex-start; flex-wrap: nowrap; }
+            .cat-btn { padding: 10px 20px; font-size: 12px; white-space: nowrap; }
+            .nav-categories { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-categories::-webkit-scrollbar { display: none; }
+            .hero-slider { height: 340px; }
+            .hero-content { padding: 24px; }
+            .hero-content h1 { font-size: 28px; }
+            .cart-sidebar, .wishlist-sidebar { width: 95vw; }
+            .store-header { flex-direction: column; align-items: flex-start; gap: 14px; }
+            .store-title h2 { font-size: 28px; }
+        }
+
+        /* ── SMARTPHONE ── */
         @media (max-width: 600px) {
-            .container { padding: 0 3%; }
-            .product-grid { grid-template-columns: 1fr; }
-            .filter-container { flex-direction: column; width: 100%; }
-            .sort-select, .price-filter { width: 100%; }
-            .header-actions { gap: 15px; }
+            /* Layout général */
+            .container { padding: 0 10px; }
+
+            /* Header compact 2 lignes */
+            .header-inner { flex-wrap: wrap; gap: 10px; padding: 0; }
+            .logo-wrapper svg { width: 130px; height: 36px; }
+            .header-actions { gap: 12px; margin-left: auto; }
+            .search-container { order: 3; width: 100%; max-width: 100%; border-radius: 12px; }
+            .search-container input { padding: 12px 16px; font-size: 14px; }
+            .search-container button { padding: 0 18px; font-size: 11px; letter-spacing: 0.5px; }
+
+            /* Bouton suivi — icône seule */
+            .btn-tracking span { display: none; }
+            .btn-tracking { padding: 9px 12px; border-radius: 10px; }
+
+            /* Mon Compte — masqué sur mobile (accessible via avatar) */
+            .mon-compte-btn { display: none; }
+
+            /* Nav catégories — scroll horizontal */
+            .cat-list { flex-wrap: nowrap; gap: 8px; padding: 12px 0; justify-content: flex-start; }
+            .cat-btn { padding: 9px 16px; font-size: 11px; flex-shrink: 0; }
+            .sub-cat-tag { padding: 7px 14px; font-size: 10px; }
+
+            /* GRILLE PRODUITS — 2 colonnes comme Alibaba/Jumia */
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            /* Cartes produit compactes sur mobile */
+            .product-card { border-radius: 12px; }
+            .image-box { height: 160px; padding: 12px; }
+            .info-box { padding: 10px 12px 14px; gap: 6px; }
+            .info-box h4 { font-size: 12px; line-height: 1.3; }
+            .info-box small { font-size: 9px; }
+            .product-desc { font-size: 11px; -webkit-line-clamp: 1; }
+            .rating { font-size: 10px; gap: 4px; }
+            .rating .verified { display: none; }
+            .size-picker, .color-picker { display: none; } /* masqués sur mobile, visibles en quick-view */
+            .price-jumia-main { font-size: 14px !important; }
+            .price-jumia-main small { font-size: 10px !important; }
+            .price-jumia-row { gap: 4px; }
+            .price-jumia-orig { font-size: 10px; }
+            .price-jumia-disc { font-size: 9px; padding: 1px 5px; }
+            .price-free-ship { font-size: 9px; }
+            .card-actions { gap: 6px; }
+            .btn-buy { padding: 9px 8px; font-size: 10px; letter-spacing: 0; gap: 4px; border-radius: 8px; }
+            .btn-wishlist { width: 36px; height: 36px; font-size: 14px; border-radius: 8px; }
+            .btn-negotiate { font-size: 9px; padding: 7px 8px; border-radius: 8px; }
+            .quick-view-btn { display: none; }
+            .stock-indicator { font-size: 8px; padding: 3px 7px; top: 8px; right: 8px; }
+            .badges-stack { top: 8px; left: 8px; }
+            .product-badge { font-size: 8px; padding: 3px 8px; }
+
+            /* Filtres */
+            .store-header { gap: 12px; }
+            .store-title h2 { font-size: 22px; }
+            .filter-container { flex-wrap: nowrap; overflow-x: auto; gap: 8px; scrollbar-width: none; }
+            .filter-container::-webkit-scrollbar { display: none; }
+            .sort-select, .price-filter { flex-shrink: 0; padding: 10px 14px; font-size: 12px; border-radius: 20px; }
+            .trend-btn { flex-shrink: 0; font-size: 12px; padding: 10px 14px; }
+
+            /* Panier & Wishlist */
+            .cart-sidebar, .wishlist-sidebar { width: 100%; border-radius: 0; }
+
+            /* Footer */
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+
+            /* Misc */
             .cart-sidebar, .wishlist-sidebar { width: 100%; }
             .review-summary { flex-direction: column; gap: 20px; }
+            .trust-bar { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Très petits écrans (iPhone SE etc.) */
+        @media (max-width: 380px) {
+            .product-grid { gap: 8px; }
+            .image-box { height: 140px; }
+            .info-box h4 { font-size: 11px; }
+            .btn-buy { font-size: 9px; }
         }
     </style>
 </head>
@@ -2722,9 +2817,14 @@
         //  Note : en attendant le domaine custom, utiliser votre Gmail vérifié
         //  comme expéditeur suffit pour les tests.
         // ═══════════════════════════════════════════════════════════════
+        // ── Brevo : l'email expéditeur vient de ton .env (a2ce51001@smtp-brevo.com)
+        //    La clé API REST (format xkeysib-...) se configure UNE SEULE FOIS
+        //    dans Admin → Paramètres → "Clé API Brevo".
+        //    Récupère-la sur : https://app.brevo.com/settings/keys/api
         function getBrevoConfig() {
             const storedKey    = localStorage.getItem('slm_brevo_key') || '';
-            const storedSender = localStorage.getItem('slm_brevo_sender') || 'contact@slm-market.com';
+            // Expéditeur pré-rempli depuis ton compte Brevo (.env)
+            const storedSender = localStorage.getItem('slm_brevo_sender') || 'a2ce51001@smtp-brevo.com';
             return {
                 apiKey:      storedKey,
                 senderEmail: storedSender,
@@ -2971,9 +3071,13 @@
                                         <i class="fas fa-heart"></i>
                                     </button>
                                 </div>
-                                <button class="btn-negotiate" onclick="openNegotiator(${p.id}); event.stopPropagation();">
+                                ${p.prix >= 500000 ? `
+                                <button class="btn-negotiate" onclick="openNegotiator(${p.id}); event.stopPropagation();" title="Disponible pour les articles premium">
                                     🤖 NÉGOCIER MON PRIX
-                                </button>
+                                </button>` : `
+                                <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#bbb;margin-top:6px;justify-content:center;padding:6px">
+                                    <i class="fas fa-lock" style="font-size:9px"></i> Négociation disponible dès 500 000 FCFA
+                                </div>`}
                             </div>
                         </div>
                     </div>`;
