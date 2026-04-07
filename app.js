@@ -27,6 +27,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const redis = require('redis');
 const nodemailer = require('nodemailer');
+const EmailService = require('./config/email');
 const validator = require('validator');
 const { body, param, query, validationResult } = require('express-validator');
  
@@ -58,10 +59,13 @@ app.use(helmet({
  
 // CORS Configuration
 const corsOptions = {
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5500'],
+    origin: (process.env.ALLOWED_ORIGINS?.split(',') || []).concat([
+        'http://localhost:5000', 'http://127.0.0.1:5000',
+        'http://localhost:5500', 'http://127.0.0.1:5500'
+    ]),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Key']
 };
 app.use(cors(corsOptions));
  
@@ -577,12 +581,20 @@ class OrderService {
         });
         
         await order.save();
-        
+
         // Reserve inventory
         for (const item of items) {
             await ProductService.updateInventory(item.product, -item.quantity, 'purchase');
         }
-        
+
+        // Send confirmation email (non-blocking)
+        User.findById(userId).select('email firstName').then(user => {
+            if (user && user.email) {
+                EmailService.sendOrderConfirmation(user.email, order)
+                    .catch(err => logger.error('Order confirmation email failed:', { message: err.message }));
+            }
+        }).catch(() => {});
+
         logger.info(`✅ Order created: ${order.orderNumber}`);
         return order;
     }
@@ -700,7 +712,11 @@ class AuthController {
             
             const result = await UserService.createUser(req.body);
             res.status(201).json(result);
-            
+
+            // Email de bienvenue (non-bloquant)
+            EmailService.sendWelcomeEmail(result.user.email, result.user.firstName || 'Client')
+                .catch(err => logger.error('Welcome email failed:', { message: err.message }));
+
         } catch (error) {
             next(error);
         }
@@ -924,7 +940,107 @@ app.post('/api/v1/orders', verifyToken, OrderController.createOrder);
 app.get('/api/v1/orders/:trackingId', verifyToken, OrderController.getOrder);
 app.put('/api/v1/orders/:id/status', verifyToken, authorize('admin'), OrderController.updateOrderStatus);
 app.post('/api/v1/orders/:id/payment', verifyToken, OrderController.processPayment);
- 
+
+// ─── EMAIL PUBLIC ENDPOINT (appelé depuis le frontend boutique) ──────────────
+app.post('/api/v1/email/order-confirmation', async (req, res) => {
+    try {
+        const { toEmail, toName, items, total, orderNumber } = req.body;
+        if (!toEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail)) {
+            return res.status(400).json({ success: false, message: 'Email invalide' });
+        }
+        const itemsList = (items || []).map(i =>
+            `<tr><td style="padding:8px 0;">${i.nom || i.name}</td><td style="padding:8px 0;text-align:right;font-weight:700;">${(i.prix || i.price || 0).toLocaleString()} FCFA × ${i.quantity || 1}</td></tr>`
+        ).join('');
+        const html = `
+        <div style="font-family:'Segoe UI',sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+            <div style="background:linear-gradient(135deg,#ff6a00,#ff9a3c);padding:40px;text-align:center;color:white;">
+                <h1 style="margin:0;font-size:28px;letter-spacing:2px;">S.L.M MARKET</h1>
+                <p style="margin:10px 0 0;opacity:0.9;">Commande confirmée avec succès ✅</p>
+            </div>
+            <div style="padding:40px;">
+                <p style="font-size:16px;">Bonjour <strong>${toName || toEmail}</strong>,</p>
+                <p>Votre commande a bien été reçue. Voici le récapitulatif :</p>
+                <table style="width:100%;border-collapse:collapse;margin:20px 0;">${itemsList}</table>
+                <div style="background:#fff8f5;border:2px solid #ff6a00;border-radius:12px;padding:20px;text-align:center;margin:20px 0;">
+                    <p style="margin:0;color:#888;font-size:13px;">TOTAL</p>
+                    <p style="margin:5px 0 0;font-size:28px;font-weight:900;color:#ff6a00;">${(total||0).toLocaleString()} FCFA</p>
+                </div>
+                <p style="color:#888;font-size:12px;margin-top:30px;border-top:1px solid #eee;padding-top:20px;">S.L.M Market — Conciergerie Privée | Votre commande est entre nos mains.</p>
+            </div>
+        </div>`;
+        const nodemailerTransport = require('nodemailer').createTransport({
+            host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+            port: parseInt(process.env.SMTP_PORT) || 587,
+            secure: false,
+            auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+        });
+        await nodemailerTransport.sendMail({
+            from: `"S.L.M Market" <${process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER}>`,
+            to: toEmail,
+            subject: `✅ Votre commande S.L.M Market — ${(total||0).toLocaleString()} FCFA`,
+            html
+        });
+        res.json({ success: true, message: `Email envoyé à ${toEmail}` });
+    } catch (err) {
+        logger.error('Email confirmation error:', { message: err.message });
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ─── ADMIN ROUTES (clé secrète dans header X-Admin-Key) ─────────────────────
+const verifyAdminKey = (req, res, next) => {
+    const key = req.headers['x-admin-key'];
+    if (!key || key !== (process.env.ADMIN_SECRET || 'BOSS-SLM-2026')) {
+        return res.status(403).json({ success: false, message: 'Clé admin invalide' });
+    }
+    next();
+};
+
+// Lister toutes les commandes (admin panel)
+app.get('/api/v1/admin/orders', verifyAdminKey, async (req, res) => {
+    try {
+        const orders = await Order.find({})
+            .populate('user', 'firstName lastName email phone')
+            .populate('items.product', 'name price')
+            .sort({ createdAt: -1 })
+            .limit(500);
+        res.json({ success: true, data: orders });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Mettre à jour statut commande (admin panel via clé)
+app.put('/api/v1/admin/orders/:id/status', verifyAdminKey, async (req, res) => {
+    try {
+        const order = await OrderService.updateOrderStatus(req.params.id, req.body.status, req.body.notes || '');
+        // Envoyer email de mise à jour si l'utilisateur a un email
+        try {
+            const user = await User.findById(order.user).select('email');
+            if (user && user.email) {
+                EmailService.sendStatusUpdate(user.email, order.orderNumber, req.body.status).catch(() => {});
+            }
+        } catch (_) {}
+        res.json({ success: true, data: order });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Test connexion SMTP (admin)
+app.post('/api/v1/admin/test-email', verifyAdminKey, async (req, res) => {
+    try {
+        const ok = await EmailService.verifyConnection();
+        if (!ok) return res.status(500).json({ success: false, message: 'SMTP non joignable — vérifiez vos identifiants Brevo' });
+        // Envoyer un email de test
+        const testDest = req.body.to || process.env.SMTP_FROM_EMAIL;
+        await EmailService.sendWelcomeEmail(testDest, 'Admin SLM');
+        res.json({ success: true, message: `Email de test envoyé à ${testDest}` });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // ═══════════════════════════════════════════════════════════════════════════
 // 🚨 ERROR HANDLING
 // ═══════════════════════════════════════════════════════════════════════════

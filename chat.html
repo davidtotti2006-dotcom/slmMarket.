@@ -868,32 +868,22 @@
 
             triggerOfficialReply(timeStr) {
                 this.elements.typingRow.style.display = 'flex';
-                
-                // On cache l'avatar rond de l'indicateur de frappe pour le remplacer par l'icône
                 const typingAvatar = document.getElementById('typing-avatar');
                 if(typingAvatar) typingAvatar.style.display = 'none';
-
                 this.scrollToBottom();
+
+                // Délai réaliste selon la longueur de la réponse
+                const delay = 1400 + Math.random() * 1000;
 
                 setTimeout(() => {
                     this.elements.typingRow.style.display = 'none';
-
-                    const officialReplies = [
-                        "Votre directive a été enregistrée. Un chargé de compte prend le relais.",
-                        "Parfait. Nos équipes logistiques effectuent la vérification immédiatement.",
-                        "C'est noté. Nous mettons à jour votre dossier d'acquisition.",
-                        "Le protocole est activé. Vous recevrez une notification d'ici peu."
-                    ];
-                    
-                    const replyText = officialReplies[Math.floor(Math.random() * officialReplies.length)];
-                    
+                    const lastMsg = this.messages.filter(m => m.sender === 'client').slice(-1)[0];
+                    const replyText = NegotiationAI.getReply(lastMsg ? lastMsg.text : '');
                     this.messages.push({ sender: 'concierge', text: replyText, time: timeStr });
                     this.saveHistory();
                     this.renderMessages();
-                    
                     NotificationManager.show("Message transmis au service VIP.", "success");
-
-                }, 2000);
+                }, delay);
             }
 
             saveHistory() {
@@ -926,6 +916,116 @@
                 this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
             }
         }
+
+        // ==========================================================================
+        // 🧠 IA DE NÉGOCIATION S.L.M — STRATÉGIE MARKETING & MAINTIEN DE MARGE
+        // ==========================================================================
+        const NegotiationAI = {
+
+            // ── Base de connaissance règles de réponse ──────────────────────────
+            rules: [
+                // Négociation prix / remise
+                {
+                    keywords: ['prix', 'cher', 'moins cher', 'réduction', 'remise', 'discount', 'negoci', 'négoci', 'baisser', 'promo', 'offre'],
+                    responses: [
+                        "Nos tarifs reflètent la sélection rigoureuse que nos acheteurs opèrent sur place. Ce que vous payez, c'est la fiabilité, la rapidité et l'accompagnement personnalisé. Sur une commande groupée de 3 articles ou plus, un avantage fidélité de 5 % est automatiquement appliqué.",
+                        "Je comprends votre attente. Pour optimiser votre budget, je vous suggère notre formule **Pack VIP** : regrouper plusieurs acquisitions dans une même commande réduit les frais de sourcing et débloque un tarif préférentiel. Souhaitez-vous que je prépare un devis groupé ?",
+                        "Notre politique tarifaire est ferme sur la qualité, mais flexible sur la stratégie. Un règlement anticipé (avant l'arrivée du colis) vous donne accès à un crédit de fidélité de 3 % sur votre prochaine commande. Intéressé ?",
+                        "Les prix que vous voyez incluent le sourcing, le contrôle qualité, le fret et le suivi premium. Nous ne pouvons pas compresser la marge opérationnelle, mais nous pouvons vous proposer un **échelonnement de paiement** si c'est la trésorerie qui freine. Comment puis-je vous aider ?"
+                    ]
+                },
+                // Délai / livraison
+                {
+                    keywords: ['délai', 'quand', 'livraison', 'temps', 'long', 'lent', 'rapide', 'vite', 'urgent', 'date', 'semaine'],
+                    responses: [
+                        "Le délai standard est de 7 à 14 jours ouvrés depuis la source. Pour les acquisitions urgentes, notre option **Express Priority** (J+5) est disponible moyennant un supplément de fret. Souhaitez-vous activer cette option ?",
+                        "Votre commande est en cours de traitement. Les délais varient selon la disponibilité du sourcing et les conditions douanières. Je vous enverrai une mise à jour dès que le colis entre en transit actif.",
+                        "Pour les clients VIP, nous proposons un suivi en temps réel avec notifications à chaque étape. Votre colis est notre priorité — nous mettons tout en œuvre pour respecter les fenêtres de livraison annoncées."
+                    ]
+                },
+                // Qualité / authenticité
+                {
+                    keywords: ['authentique', 'vrai', 'original', 'qualité', 'fake', 'faux', 'copie', 'fiable', 'confiance', 'garanti'],
+                    responses: [
+                        "Chaque article est sourcé directement auprès de nos fournisseurs certifiés. Un contrôle qualité photographique est effectué avant l'expédition — vous recevez les photos de validation avant que le colis ne parte.",
+                        "Notre réputation repose sur l'authenticité absolue. Nous travaillons exclusivement avec des sources vérifiées. En cas de non-conformité à la réception, nous activons immédiatement la procédure de remplacement.",
+                        "La garantie d'authenticité est intégrée dans notre service. Nos acheteurs terrain connaissent personnellement leurs fournisseurs. C'est ce qui différencie S.L.M des plateformes génériques."
+                    ]
+                },
+                // Commande / passer commande
+                {
+                    keywords: ['commander', 'commande', 'acheter', 'achat', 'vouloir', 'je veux', 'intéressé', 'article', 'produit', 'catalogue'],
+                    responses: [
+                        "Parfait. Pour lancer l'acquisition, j'ai besoin de : (1) le nom exact de l'article et la référence si possible, (2) la quantité, (3) votre adresse de livraison. Envoyez-moi ces informations et je prépare votre bon de commande immédiatement.",
+                        "Excellent choix. Notre équipe de sourcing est disponible. Précisez-moi le produit, la couleur/taille souhaitée et je vous envoie une confirmation de disponibilité et un devis sous 30 minutes.",
+                        "Je prends note de votre demande. Pour sécuriser le stock, un acompte de 30 % est requis à la validation. Le solde est dû à l'arrivée du colis à Abidjan. Voulez-vous procéder ?"
+                    ]
+                },
+                // Suivi commande
+                {
+                    keywords: ['suivi', 'tracking', 'où', 'statut', 'status', 'colis', 'arrivé', 'expédié', 'transit'],
+                    responses: [
+                        "Votre numéro de tracking est disponible dans la section **Mes Commandes** de la boutique. Si vous ne le trouvez pas, communiquez-moi votre numéro de commande et je vérifie l'état en temps réel.",
+                        "Je consulte votre dossier. Le système de tracking S.L.M est mis à jour à chaque changement d'étape : Sourcing → Fret Aérien → QG Abidjan → Livraison. Quel est votre numéro de commande ?",
+                        "Votre colis est pris en charge. Je vous enverrai une notification dès qu'il atteint le QG d'Abidjan. Le délai de livraison finale est de 24 à 48h après réception au QG."
+                    ]
+                },
+                // Paiement
+                {
+                    keywords: ['paiement', 'payer', 'virement', 'wave', 'momo', 'orange money', 'acompte', 'solde', 'facture'],
+                    responses: [
+                        "Nous acceptons : Wave, Orange Money, MTN MoMo, et virement bancaire. Un reçu vous est fourni immédiatement après chaque transaction. Quel mode de paiement préférez-vous ?",
+                        "Pour sécuriser votre commande, un acompte de 30 % est requis. Le solde est payable à la livraison ou à l'arrivée au QG Abidjan selon votre préférence. Je vous prépare le RIB ou le numéro Wave dès votre accord.",
+                        "Le paiement est 100 % sécurisé. Nous utilisons des canaux de confiance avec reçu numérique pour chaque transaction. Aucun paiement n'est demandé sur des plateformes tierces non officielles S.L.M."
+                    ]
+                },
+                // Stratégie marketing — upsell / bundle
+                {
+                    keywords: ['autre', 'aussi', 'et', 'plus', 'ensemble', 'combiné', 'plusieurs', 'lot', 'bundle'],
+                    responses: [
+                        "Excellente initiative de combiner plusieurs articles ! Nous proposons une remise groupée de 5 % dès 3 articles dans une même commande, et 8 % à partir de 5 articles. C'est notre meilleure offre coût-efficacité.",
+                        "Je vous recommande notre **Pack Découverte** : combiner des articles complémentaires dans une seule expédition réduit les frais de fret de 40 % par rapport à des commandes séparées. Souhaitez-vous que je compose un bundle personnalisé ?",
+                        "Les clients qui commandent en bundle bénéficient automatiquement du statut **Client Privilégié** avec accès prioritaire aux nouveaux arrivages. C'est notre façon de récompenser la fidélité."
+                    ]
+                },
+                // Plainte / insatisfaction
+                {
+                    keywords: ['problème', 'déçu', 'mauvais', 'cassé', 'abîmé', 'erreur', 'faux', 'non conforme', 'retard', 'plainte', 'rembours'],
+                    responses: [
+                        "Je prends votre signalement très au sérieux. Pouvez-vous me transmettre des photos du problème constaté ? Nous activons le protocole de résolution prioritaire dans les 24h.",
+                        "Toutes nos commandes sont couvertes par notre garantie satisfaction. Si l'article ne correspond pas à la commande, nous procédons au remplacement ou remboursement intégral. Numéro de commande et photos, s'il vous plaît.",
+                        "Je suis sincèrement désolé pour ce désagrément. Votre dossier est escaladé au niveau supérieur. Un responsable vous contacte dans les 2 heures."
+                    ]
+                }
+            ],
+
+            // ── Réponses stratégiques marketing par défaut ─────────────────────
+            marketingDefaults: [
+                "Votre message a été transmis à notre équipe VIP. En attendant, saviez-vous que nos clients qui commandent en début de mois bénéficient d'une priorité de sourcing ? C'est notre manière de récompenser la régularité.",
+                "Directive enregistrée. Notre concierge prend le relais. En parallèle, nos nouveaux arrivages de la semaine sont disponibles — puis-je vous envoyer la sélection ?",
+                "C'est noté. Pour maximiser votre investissement, je vous rappelle que notre programme fidélité S.L.M accumule des points à chaque commande, échangeables contre des réductions. Votre solde actuel est valorisé.",
+                "Protocole activé. Nos équipes sont mobilisées. Pour information : notre prochaine session de sourcing groupé est prévue dans 72h — c'est le meilleur moment pour intégrer de nouveaux articles à votre commande.",
+                "Message bien reçu. Je traite votre demande en priorité. Pour rappel : les clients S.L.M qui parrainent un contact reçoivent 5 000 FCFA de crédit boutique. Avez-vous des proches intéressés par nos services ?",
+                "Votre dossier est entre les mains de notre service d'excellence. En attendant : avez-vous consulté nos offres flash de cette semaine ? Des articles premium sont disponibles à tarif exceptionnel pour 48h seulement."
+            ],
+
+            // ── Moteur principal ────────────────────────────────────────────────
+            getReply(userText) {
+                const text = (userText || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+                // Vérifier chaque règle
+                for (const rule of this.rules) {
+                    const matched = rule.keywords.some(kw => text.includes(kw));
+                    if (matched) {
+                        const pool = rule.responses;
+                        return pool[Math.floor(Math.random() * pool.length)];
+                    }
+                }
+
+                // Réponse marketing par défaut
+                return this.marketingDefaults[Math.floor(Math.random() * this.marketingDefaults.length)];
+            }
+        };
 
         // ==========================================================================
         // DÉMARRAGE DU SYSTÈME (SÉCURITÉ D'ABORD)

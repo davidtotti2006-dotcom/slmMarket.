@@ -1859,6 +1859,7 @@
             <!-- Sous-filtres Parfums -->
             <div id="sub-luxe" class="sub-cats">
                 <button class="sub-cat-tag" onclick="filterSubCat('dior')">Dior</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('chanel')">Chanel</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('creed')">Creed</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('tom-ford')">Tom Ford</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('baccarat')">Baccarat Rouge</button>
@@ -1866,6 +1867,12 @@
                 <button class="sub-cat-tag" onclick="filterSubCat('kilian')">Kilian</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('amouage')">Amouage</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('xerjoff')">Xerjoff</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('ysl')">YSL</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('marly')">Parfums de Marly</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('initio')">Initio</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('montale')">Montale</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('margiela')">Margiela</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('roja')">Roja Parfums</button>
             </div>
 
             <!-- Sous-filtres Sneakers -->
@@ -2344,135 +2351,89 @@
         const store = new AppStore();
  
         // ═══════════════════════════════════════════════════════════════════
-        // 🗄️ DATABASE - PRODUITS ÉTENDUS (200+ Articles)
+        // 🗄️ DATABASE - PARFUMS (organisés par marque)
         // ═══════════════════════════════════════════════════════════════════
         const productDatabase = [
-            // PARFUMS LUXE
-            { id: 1, nom: "Dior Sauvage Elixir 100ml", cat: "luxe", prix: 125000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Concentration extrême, épices raffinées", stock: 5, rating: 4.9, reviews: 324 },
-            { id: 2, nom: "Creed Aventus Eau de Parfum", cat: "luxe", prix: 210000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "L'essence du pouvoir et du prestige", stock: 3, rating: 4.8, reviews: 412 },
-            { id: 3, nom: "Tom Ford Black Orchid", cat: "luxe", prix: 180000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Floral sombre et mystérieux", stock: 8, rating: 4.7, reviews: 289 },
-            { id: 4, nom: "Louis Vuitton Ombre Nomade", cat: "luxe", prix: 250000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Oud et encens extrêmes", stock: 2, rating: 5.0, reviews: 156 },
-            { id: 5, nom: "Kilian Angels' Share", cat: "luxe", prix: 145000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Gourmandise luxe - Cognac & vanille", stock: 6, rating: 4.6, reviews: 201 },
-            { id: 6, nom: "Baccarat Rouge 540", cat: "luxe", prix: 195000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Ambré radieux signature Maison", stock: 4, rating: 4.9, reviews: 567 },
-            { id: 7, nom: "Amouage Interlude Man", cat: "luxe", prix: 210000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Bête bleue - Puissance orientale", stock: 1, rating: 4.8, reviews: 178 },
-            { id: 8, nom: "Xerjoff 1861 Naxos", cat: "luxe", prix: 155000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600", desc: "Excellence italienne - Tabac blond", stock: 7, rating: 4.7, reviews: 234 },
- 
-            // SNEAKERS
-            { id: 20, nom: "Air Jordan 4 Military Black", cat: "sport", prix: 285000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Édition limitée, cuir premium", stock: 5, rating: 4.9, reviews: 892 },
-            { id: 21, nom: "Travis Scott x Nike Dunk", cat: "sport", prix: 850000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Collaboration légendaire ultra-rare", stock: 0, rating: 5.0, reviews: 1245 },
-            { id: 22, nom: "Yeezy Boost 350 V2 Onyx", cat: "sport", prix: 220000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Triple black, confort révolutionnaire", stock: 9, rating: 4.8, reviews: 756 },
-            { id: 23, nom: "New Balance 990v6 Grey", cat: "sport", prix: 195000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Classique américain modernisé", stock: 6, rating: 4.6, reviews: 423 },
-            { id: 24, nom: "Balenciaga Track Black", cat: "sport", prix: 550000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Design complexe, présence massive", stock: 2, rating: 4.9, reviews: 567 },
-            { id: 25, nom: "LV Trainer Green White", cat: "sport", prix: 850000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Design Virgil Abloh emblématique", stock: 1, rating: 5.0, reviews: 834 },
-            { id: 26, nom: "Dior B22 Black Silver", cat: "sport", prix: 750000, img: "https://images.unsplash.com/photo-1552346154-21d32810baa3?w=600", desc: "Running de luxe par excellence", stock: 3, rating: 4.8, reviews: 612 },
- 
-            // CHEVEUX
-            { id: 40, nom: "Raw Hair Bone Straight 32\"", cat: "cheveux", prix: 280000, img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600", desc: "Fluidité totale, mèches vierges", stock: 10, rating: 4.9, reviews: 445 },
-            { id: 41, nom: "Closure HD Lace 5x5", cat: "cheveux", prix: 85000, img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600", desc: "Tulle suisse invisible parfait", stock: 15, rating: 4.7, reviews: 289 },
-            { id: 42, nom: "Raw Vietnamien Double Drawn", cat: "cheveux", prix: 260000, img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600", desc: "Volume constant garantie", stock: 8, rating: 4.8, reviews: 356 },
-            { id: 43, nom: "Bouncy Curls 24\" HD", cat: "cheveux", prix: 220000, img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600", desc: "Ondulations naturelles parfaites", stock: 7, rating: 4.6, reviews: 234 },
-            { id: 44, nom: "Deep Wave 28\" Frontale", cat: "cheveux", prix: 195000, img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600", desc: "Onde profonde luxe complet", stock: 6, rating: 4.8, reviews: 345 },
- 
-            // VÊTEMENTS
-            { id: 60, nom: "Pull Cachemire Loro Piana", cat: "vetements", prix: 850000, img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", desc: "Quiet Luxury absolu", stock: 3, rating: 4.9, reviews: 234 },
-            { id: 61, nom: "T-Shirt Balenciaga Oversize", cat: "vetements", prix: 350000, img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", desc: "Coton lourd coupe parfaite", stock: 5, rating: 4.7, reviews: 156 },
-            { id: 62, nom: "Costume Tom Ford Windsor", cat: "vetements", prix: 2500000, img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", desc: "Sur mesure, l'élégance VIP", stock: 1, rating: 5.0, reviews: 89 },
-            { id: 63, nom: "Chemise Soie Casablanca", cat: "vetements", prix: 450000, img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", desc: "Imprimés iconiques soie italienne", stock: 4, rating: 4.8, reviews: 201 },
-            { id: 64, nom: "Veste Amiri Moto", cat: "vetements", prix: 1200000, img: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", desc: "Rock & luxe fusionnés", stock: 2, rating: 4.9, reviews: 312 },
- 
-            // AUTO
-            { id: 80, nom: "Mercedes-AMG G 63 Dubaï", cat: "auto", prix: 135000000, img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "Importation VIP exclusive", stock: 1, rating: 5.0, reviews: 34 },
-            { id: 81, nom: "Échappement Akrapovič Titane", cat: "auto", prix: 3500000, img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "Performance extrême sonorité", stock: 4, rating: 4.9, reviews: 156 },
-            { id: 82, nom: "Jantes Brabus Monoblock 23\"", cat: "auto", prix: 5800000, img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "L'équipement ultime Classe G", stock: 2, rating: 4.8, reviews: 89 },
-            { id: 83, nom: "Intérieur Cuir Nappa Custom", cat: "auto", prix: 2200000, img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=600", desc: "Personnalisation luxe complète", stock: 3, rating: 4.9, reviews: 145 },
- 
-            // ── PARFUMS LUXE (suite) ──────────────────────────────────────────
-            { id: 9,  nom: "Chanel No.5 EDP 100ml",           cat: "luxe", prix: 165000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "L'icône absolue de la parfumerie mondiale",      stock: 6,  rating: 4.9, reviews: 1024 },
-            { id: 10, nom: "YSL Black Opium 90ml",             cat: "luxe", prix: 120000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Café & vanille, séduction addictive",            stock: 8,  rating: 4.7, reviews: 678 },
-            { id: 11, nom: "Givenchy L'Interdit Rouge 80ml",   cat: "luxe", prix: 115000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Floral rebelle et audacieux",                    stock: 10, rating: 4.6, reviews: 312 },
-            { id: 12, nom: "Maison Margiela Jazz Club 100ml",  cat: "luxe", prix: 140000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Rhum, cuir & tabac blond — vie nocturne",        stock: 5,  rating: 4.8, reviews: 445 },
-            { id: 13, nom: "Parfums de Marly Layton 125ml",   cat: "luxe", prix: 185000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Pomme verte, bergamote, magnolia raffiné",      stock: 4,  rating: 4.9, reviews: 523 },
-            { id: 14, nom: "Roja Parfums Elysium Pour Homme",  cat: "luxe", prix: 320000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Agrumes précieux, sillage légendaire",          stock: 2,  rating: 5.0, reviews: 189 },
-            { id: 15, nom: "Memo Paris African Leather",       cat: "luxe", prix: 260000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Safran, santal, cuir — voyage sensoriel",      stock: 3,  rating: 4.8, reviews: 234 },
-            { id: 16, nom: "Initio Side Effect 90ml",          cat: "luxe", prix: 175000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Vanille & rhum envoûtant, force addictive",    stock: 5,  rating: 4.7, reviews: 367 },
-            { id: 17, nom: "Montale Intense Café 100ml",       cat: "luxe", prix: 135000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Café, roses, musk — harmonie orientale",       stock: 9,  rating: 4.6, reviews: 291 },
-            { id: 18, nom: "Juliette Has a Gun Not A Perf",   cat: "luxe", prix: 125000, img: "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600", desc: "Musk universel, peau propre sublimatoire",      stock: 7,  rating: 4.7, reviews: 402 },
 
-            // ── SNEAKERS / SPORT (suite) ──────────────────────────────────────
-            { id: 27, nom: "Off-White x Nike AF1 OW",          cat: "sport", prix: 620000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Virgil Abloh — concept révolutionnaire",         stock: 1,  rating: 5.0, reviews: 1567 },
-            { id: 28, nom: "Adidas x Gucci Gazelle Collab",    cat: "sport", prix: 580000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Fusion streetwear & maroquinerie italienne",    stock: 2,  rating: 4.9, reviews: 834 },
-            { id: 29, nom: "Prada Cloudbust Thunder 43",       cat: "sport", prix: 450000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Futurisme chunky, luxe sportif",                stock: 3,  rating: 4.8, reviews: 456 },
-            { id: 30, nom: "Rick Owens DRKSHDW GETH",          cat: "sport", prix: 680000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Avant-garde radicale, semelle plateforme",      stock: 2,  rating: 4.9, reviews: 378 },
-            { id: 31, nom: "Bottega Veneta Puddle Boot",       cat: "sport", prix: 490000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Caoutchouc luxe — statement piece ultime",      stock: 4,  rating: 4.7, reviews: 312 },
-            { id: 32, nom: "Nike Air Max 95 OG Neon",          cat: "sport", prix: 195000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Classique 95 — jaune néon iconique",            stock: 8,  rating: 4.8, reviews: 712 },
-            { id: 33, nom: "Jordan 1 High OG Chicago 2022",    cat: "sport", prix: 380000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Retro OG — Blanc/Noir/Rouge historique",        stock: 3,  rating: 5.0, reviews: 2134 },
-            { id: 34, nom: "Salomon XT-6 Advanced Black",      cat: "sport", prix: 220000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Trail luxury — technique & exclusivité",        stock: 6,  rating: 4.6, reviews: 445 },
-            { id: 35, nom: "Asics Gel-Kayano 14 White",        cat: "sport", prix: 185000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Silhouette running 2000s premium",               stock: 9,  rating: 4.7, reviews: 567 },
-            { id: 36, nom: "Saucony Shadow 6000 Tan",          cat: "sport", prix: 175000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Heritage running américain modernisé",          stock: 7,  rating: 4.6, reviews: 389 },
-            { id: 37, nom: "Converse x CDG Play Hi White",     cat: "sport", prix: 155000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Collab légendaire Comme des Garçons",           stock: 11, rating: 4.8, reviews: 891 },
-            { id: 38, nom: "New Balance 2002R Protection Pack", cat: "sport", prix: 210000, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Nubuck premium tons neutres raffinés",           stock: 5,  rating: 4.7, reviews: 634 },
+            // ── DIOR ─────────────────────────────────────────────────────────
+            { id: 1,  nom: "Dior The New Fragrance Homme",     cat: "luxe", subCat: "dior", prix: 120000, img: "assets/images/products/le-nouveau-parfum-homme-the-new-fragance-dior.jpeg", desc: "Le nouveau masculin Dior — fraîcheur & boisé raffiné",     stock: 5,  rating: 4.9, reviews: 324 },
+            { id: 2,  nom: "Dior J'adore L'Or EDP",            cat: "luxe", subCat: "dior", prix: 130000, img: "assets/images/products/j'adore-l'or-eau-de-parfum-dior.jpeg",               desc: "Or absolu — jasmin, rose & ylang-ylang concentrés",        stock: 6,  rating: 4.9, reviews: 512 },
+            { id: 3,  nom: "Dior Riviera",                     cat: "luxe", subCat: "dior", prix: 115000, img: "assets/images/products/dior-riviera-christian -dior .jpeg",                 desc: "Agrumes ensoleillés, fleurs blanches — esprit Côte d'Azur", stock: 7, rating: 4.7, reviews: 289 },
+            { id: 4,  nom: "Dior Ambre Nuit",                  cat: "luxe", subCat: "dior", prix: 135000, img: "assets/images/products/ambre-nuit-dior .jpeg",                              desc: "Rose bulgare & ambre noir — mystère de la nuit",           stock: 4,  rating: 4.8, reviews: 445 },
+            { id: 5,  nom: "Diorissimo EDP",                   cat: "luxe", subCat: "dior", prix: 110000, img: "assets/images/products/diorissimo-eau-de-parfum-dior.jpeg",                desc: "Muguet délicat & jasmin — classique intemporel Dior",      stock: 8,  rating: 4.6, reviews: 234 },
+            { id: 6,  nom: "Miss Dior Essence",                cat: "luxe", subCat: "dior", prix: 125000, img: "assets/images/products/miss-dior-essence.jpeg",                            desc: "Rose absolue, patchouli & musc blanc — féminité absolue",  stock: 6,  rating: 4.8, reviews: 567 },
+            { id: 7,  nom: "Dior Poison Girl",                 cat: "luxe", subCat: "dior", prix: 105000, img: "assets/images/products/poison-girl-dior.jpeg",                             desc: "Vanille intense, rose & amande — séduction sucrée",        stock: 9,  rating: 4.7, reviews: 412 },
+            { id: 8,  nom: "Dior Sauvage EDP",                 cat: "luxe", subCat: "dior", prix: 118000, img: "assets/images/products/sauvage-eau-de-parfum-dior.jpeg",                   desc: "Bergamote de Calabre & ambroxan — fraîcheur boisée",       stock: 10, rating: 4.9, reviews: 892 },
 
-            // ── CHEVEUX (suite) ────────────────────────────────────────────────
-            { id: 45, nom: "Body Wave 26\" Perruque HD",        cat: "cheveux", prix: 210000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Ondulation naturelle souple et brillante",  stock: 8,  rating: 4.8, reviews: 312 },
-            { id: 46, nom: "Water Wave 5x5 HD Lace 24\"",       cat: "cheveux", prix: 240000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Vague aquatique, résistante & naturelle",   stock: 6,  rating: 4.9, reviews: 267 },
-            { id: 47, nom: "Kinky Curly 20\" Glueless",         cat: "cheveux", prix: 190000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Frisé naturel afro-américain, zéro colle",  stock: 9,  rating: 4.7, reviews: 445 },
-            { id: 48, nom: "Frontal 13x4 Raw Indien Straight",  cat: "cheveux", prix: 145000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Tulle transparent, nœuds blanchis",          stock: 14, rating: 4.6, reviews: 189 },
-            { id: 49, nom: "Raw Cambodgien Loose Wave 28\"",    cat: "cheveux", prix: 270000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Volume généreux, texture soyeuse",           stock: 5,  rating: 4.9, reviews: 356 },
-            { id: 50, nom: "Tape In Extensions 20\" Chocolat",  cat: "cheveux", prix: 120000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Adhésif invisible, pose rapide & légère",   stock: 12, rating: 4.5, reviews: 278 },
-            { id: 51, nom: "Blonde 613 Straight HD Wig 22\"",   cat: "cheveux", prix: 295000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Blond platine — glamour absolu",             stock: 4,  rating: 4.8, reviews: 423 },
-            { id: 52, nom: "Bob Wig Pixie Cut HD Lace",         cat: "cheveux", prix: 155000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Coupe courte moderne, frontal 13x4",        stock: 7,  rating: 4.7, reviews: 334 },
-            { id: 53, nom: "Highlight Wig #4/27 30\"",          cat: "cheveux", prix: 310000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Mèches caramel & chocolat ultra tendance",  stock: 3,  rating: 4.9, reviews: 198 },
-            { id: 54, nom: "Raw Birman Wavy 32\" Glueless",     cat: "cheveux", prix: 285000, img: "https://images.unsplash.com/photo-1595459943078-4e5e3b7ac8be?w=600", desc: "Vague birmane — rareté et douceur absolue",  stock: 4,  rating: 5.0, reviews: 145 },
+            // ── CREED ─────────────────────────────────────────────────────────
+            { id: 10, nom: "Creed Absolu Aventus",             cat: "luxe", subCat: "creed", prix: 250000, img: "assets/images/products/creed-absolu-aventus.jpeg",      desc: "Version ultime de l'Aventus — concentration maximale",     stock: 2,  rating: 5.0, reviews: 412 },
+            { id: 11, nom: "Creed Erolaria",                   cat: "luxe", subCat: "creed", prix: 195000, img: "assets/images/products/creed-eladaria.jpeg",            desc: "Floral aquatique délicat — élégance féminine rare",        stock: 4,  rating: 4.7, reviews: 234 },
+            { id: 12, nom: "Creed Millésime Impériale",        cat: "luxe", subCat: "creed", prix: 215000, img: "assets/images/products/creed-millesime-imperiale.jpeg", desc: "Notes marines, mandarine & musc blanc — fraîcheur royale", stock: 3,  rating: 4.8, reviews: 389 },
+            { id: 13, nom: "Creed Original Vétiver",           cat: "luxe", subCat: "creed", prix: 200000, img: "assets/images/products/creed-original-vetiver.jpeg",    desc: "Vétiver haïtien, gingembre & citron — chic masculin",      stock: 5,  rating: 4.7, reviews: 312 },
+            { id: 14, nom: "Creed Oud Zarian",                 cat: "luxe", subCat: "creed", prix: 280000, img: "assets/images/products/creed-oud-zarian.jpeg",          desc: "Oud précieux, rose & ambre — orient & occident fusionnés", stock: 2,  rating: 4.9, reviews: 178 },
+            { id: 15, nom: "Creed Royal Oud",                  cat: "luxe", subCat: "creed", prix: 260000, img: "assets/images/products/creed-royale-oud.jpeg",          desc: "Oud, cèdre & pink pepper — royauté absolue",               stock: 3,  rating: 4.9, reviews: 267 },
+            { id: 16, nom: "Creed Viking",                     cat: "luxe", subCat: "creed", prix: 230000, img: "assets/images/products/creed-viking.jpeg",              desc: "Lavande, citrus & bois — force & raffinement viking",      stock: 4,  rating: 4.8, reviews: 445 },
 
-            // ── VÊTEMENTS (suite) ─────────────────────────────────────────────
-            { id: 65, nom: "Hoodie Chrome Hearts OG Cross",    cat: "vetements", prix: 750000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coton lourd gothique — pièce culte",        stock: 2,  rating: 4.9, reviews: 567 },
-            { id: 66, nom: "Pantalon Palm Angels Track",       cat: "vetements", prix: 380000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Bande latérale, fit parfait luxe sport",    stock: 4,  rating: 4.7, reviews: 312 },
-            { id: 67, nom: "Doudoune Moncler Maya Black",      cat: "vetements", prix: 1800000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Duvet d'oie premium, icône hivernale",       stock: 3,  rating: 5.0, reviews: 289 },
-            { id: 68, nom: "Jean Fear of God Essentials",      cat: "vetements", prix: 220000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coupe ample, délavage délicat parfait",     stock: 6,  rating: 4.6, reviews: 445 },
-            { id: 69, nom: "Robe Dior Bar Veste Longue",       cat: "vetements", prix: 2200000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Silhouette New Look — haute couture",        stock: 1,  rating: 5.0, reviews: 67 },
-            { id: 70, nom: "Short Off-White Arrow Ss23",       cat: "vetements", prix: 290000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Twill coton, imprimé signature flèche",     stock: 5,  rating: 4.7, reviews: 234 },
-            { id: 71, nom: "Knitwear Bottega Veneta Vert",     cat: "vetements", prix: 680000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Intreccio knit, couleur maison exclusive",   stock: 2,  rating: 4.9, reviews: 178 },
-            { id: 72, nom: "Blouson Alpha Industries x Supreme", cat: "vetements", prix: 450000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "MA-1 collab, badge Supreme brodé",          stock: 3,  rating: 4.8, reviews: 389 },
-            { id: 73, nom: "Trench Burberry Heritage Check",   cat: "vetements", prix: 1400000, img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Gabardine coton, carreaux iconiques",        stock: 2,  rating: 4.9, reviews: 445 },
-            { id: 74, nom: "Polo Ralph Lauren Purple Label",   cat: "vetements", prix: 320000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coton pima double fil, élégance prep",      stock: 5,  rating: 4.7, reviews: 312 },
-            { id: 75, nom: "Veste Jacquemus Le Ovalo",         cat: "vetements", prix: 560000,  img: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600", desc: "Coupe sculptée, lin structuré été",         stock: 4,  rating: 4.8, reviews: 267 },
+            // ── TOM FORD ──────────────────────────────────────────────────────
+            { id: 20, nom: "Tom Ford Black Lacker",            cat: "luxe", subCat: "tom-ford", prix: 220000, img: "assets/images/products/tom-ford-black-lacker.jpeg",      desc: "Laque noire, vanille & bois fumé — mystère absolu",        stock: 3,  rating: 4.8, reviews: 189 },
+            { id: 21, nom: "Tom Ford Black Orchid",            cat: "luxe", subCat: "tom-ford", prix: 180000, img: "assets/images/products/tom-ford-black-orchid.jpeg",      desc: "Truffe noire, patchouli & orchidée — floral sombre",       stock: 6,  rating: 4.7, reviews: 289 },
+            { id: 22, nom: "Tom Ford Bois Pacifique",          cat: "luxe", subCat: "tom-ford", prix: 210000, img: "assets/images/products/tom-ford-bois-pacifique.jpeg",    desc: "Cèdre, vétiver & musc — sérénité boisée du Pacifique",    stock: 4,  rating: 4.7, reviews: 234 },
+            { id: 23, nom: "Tom Ford Oud Minérale",            cat: "luxe", subCat: "tom-ford", prix: 260000, img: "assets/images/products/tom-ford-oud-minerals.jpeg",      desc: "Oud & minéraux marins — profondeur extrême",               stock: 2,  rating: 4.9, reviews: 156 },
+            { id: 24, nom: "Tom Ford Vanille Fatale",          cat: "luxe", subCat: "tom-ford", prix: 240000, img: "assets/images/products/tom-ford-vanille-fatale.jpeg",    desc: "Vanille tahitienne & musc — sensualité envoûtante",        stock: 3,  rating: 4.9, reviews: 312 },
+            { id: 25, nom: "Tom Ford Tobacco Vanille",         cat: "luxe", subCat: "tom-ford", prix: 230000, img: "assets/images/products/tom-ford-tobacco-vanille.jpeg",   desc: "Tabac épicé, vanille & cacao — chaleur addictive",         stock: 5,  rating: 4.8, reviews: 445 },
+            { id: 26, nom: "Tom Ford Oud Voyager",             cat: "luxe", subCat: "tom-ford", prix: 250000, img: "assets/images/products/tom-Ford-oud-voyager.jpeg",       desc: "Oud, rose & encens — voyage en Orient",                    stock: 3,  rating: 4.9, reviews: 267 },
+            { id: 27, nom: "Tom Ford Néroli Portofino",        cat: "luxe", subCat: "tom-ford", prix: 200000, img: "assets/images/products/tom-ford-neroli-portofino.jpeg",  desc: "Néroli, agrumes italiens & musc — fraîcheur Riviera",      stock: 6,  rating: 4.7, reviews: 312 },
+            { id: 28, nom: "Tom Ford Velvet Orchid",           cat: "luxe", subCat: "tom-ford", prix: 215000, img: "assets/images/products/tom-ford-velvet-orchid.jpeg",     desc: "Orchidée veloutée, rhum & santal — féminité sophistiquée", stock: 4,  rating: 4.8, reviews: 378 },
 
-            // ── AUTO (suite) ──────────────────────────────────────────────────
-            { id: 84, nom: "Porsche 911 Carrera S Import",     cat: "auto", prix: 185000000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "992.2 — Flat-6 450ch, importation directe", stock: 1, rating: 5.0, reviews: 18 },
-            { id: 85, nom: "BMW M4 Competition xDrive",        cat: "auto", prix: 95000000,  img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "510ch, biturbo inline-6, AWD",               stock: 1, rating: 4.9, reviews: 24 },
-            { id: 86, nom: "Range Rover Sport HSE Dynamic",    cat: "auto", prix: 120000000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "SUV luxe ultime — terrain & prestige",       stock: 1, rating: 5.0, reviews: 31 },
-            { id: 87, nom: "Kit Carrosserie Mansory Classe G",  cat: "auto", prix: 12500000,  img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Fibre carbone complète, look radical",       stock: 2, rating: 4.9, reviews: 56 },
-            { id: 88, nom: "Sièges Racing Recaro Pole Position", cat: "auto", prix: 2800000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Baquet homologué FIA, cuir alcantara",       stock: 3, rating: 4.8, reviews: 89 },
-            { id: 89, nom: "Système Audio Burmester 3D High-End", cat: "auto", prix: 4500000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "24 HP 1590W — expérience concert live",      stock: 2, rating: 5.0, reviews: 45 },
-            { id: 90, nom: "Jantes Vossen HF-3 22\" Noir",     cat: "auto", prix: 3200000,  img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Forgées flow-form, légèreté maximale",       stock: 4, rating: 4.8, reviews: 112 },
-            { id: 91, nom: "Tapis Sol Velours sur-mesure",      cat: "auto", prix: 850000,   img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Velours premium brodé, logo custom",         stock: 8, rating: 4.7, reviews: 167 },
-            { id: 92, nom: "Vitres Teintées Suntek CXP 80%",   cat: "auto", prix: 650000,   img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", desc: "Film céramique, protection UV totale",       stock: 10,rating: 4.8, reviews: 234 },
+            // ── BACCARAT ROUGE ────────────────────────────────────────────────
+            { id: 30, nom: "Baccarat Rouge 540 EDP",           cat: "luxe", subCat: "baccarat",     prix: 195000, img: "assets/images/products/baccarat-rouge-540-eau-de-parfum.jpeg",        desc: "Ambré radieux, safran & cèdre — signature Maison Francis Kurkdjian", stock: 4,  rating: 4.9, reviews: 967 },
+            { id: 31, nom: "Baccarat Rouge 540 Extrait",       cat: "luxe", subCat: "baccarat",     prix: 280000, img: "assets/images/products/baccarat-rouge-rouge-540-extrait-de-parfum.jpeg", desc: "Concentration extrême — sillage légendaire ultra longue durée",       stock: 2,  rating: 5.0, reviews: 567 },
+            { id: 32, nom: "Baccarat Rouge Collection Privée", cat: "luxe", subCat: "baccarat",     prix: 350000, img: "assets/images/products/baccarat-rouge-collection-privée.jpeg",        desc: "Édition exclusive, luxe absolu — pièce de collection",               stock: 1,  rating: 5.0, reviews: 234 },
 
-            // ── TECH & GADGETS ────────────────────────────────────────────────
-            { id: 100, nom: "iPhone 15 Pro Max 1TB Natural Ti", cat: "tech", prix: 1200000, img: "https://images.unsplash.com/photo-1711458228035-6a8bf7e33f1c?w=600", desc: "Titane naturel, puce A17 Pro, camera 48MP",  stock: 5,  rating: 4.9, reviews: 1234 },
-            { id: 101, nom: "Samsung Galaxy S24 Ultra 512GB",   cat: "tech", prix: 950000,  img: "https://images.unsplash.com/photo-1711458228035-6a8bf7e33f1c?w=600", desc: "Galaxy AI, S Pen intégré, 200MP",           stock: 7,  rating: 4.8, reviews: 876 },
-            { id: 102, nom: "MacBook Pro M3 Max 16\" 36GB",     cat: "tech", prix: 2800000, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600", desc: "Puce M3 Max, GPU 40 cœurs, autonomie pro",  stock: 3,  rating: 5.0, reviews: 456 },
-            { id: 103, nom: "Apple Watch Ultra 2 Titanium",     cat: "tech", prix: 850000,  img: "https://images.unsplash.com/photo-1711458228035-6a8bf7e33f1c?w=600", desc: "GPS double, boîtier 49mm, plongée 100m",   stock: 4,  rating: 4.9, reviews: 567 },
-            { id: 104, nom: "AirPods Max Midnight 2024",        cat: "tech", prix: 380000,  img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600", desc: "ANC computationnel, Hi-Res Audio USB-C",     stock: 6,  rating: 4.8, reviews: 789 },
-            { id: 105, nom: "Sony WH-1000XM5 Noir",            cat: "tech", prix: 280000,  img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600", desc: "Meilleure ANC marché, 30h autonomie",        stock: 9,  rating: 4.8, reviews: 1123 },
-            { id: 106, nom: "iPad Pro M4 13\" Wi-Fi + 5G 1TB", cat: "tech", prix: 1450000, img: "https://images.unsplash.com/photo-1544244015-0df4592c8b0a?w=600", desc: "Écran Ultra Retina XDR OLED, ultra fin",    stock: 3,  rating: 4.9, reviews: 312 },
-            { id: 107, nom: "DJI Air 3 Combo Plus Drone",       cat: "tech", prix: 950000,  img: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600", desc: "Caméra 4K/60fps, 46 min vol, omnidirect.",  stock: 4,  rating: 4.8, reviews: 234 },
-            { id: 108, nom: "GoPro Hero 13 Black Creator Ed.", cat: "tech", prix: 420000,  img: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600", desc: "HyperSmooth 7.0, 5.3K, magnétique MagSafe", stock: 7,  rating: 4.7, reviews: 445 },
-            { id: 109, nom: "Dell XPS 15 OLED RTX 4070",       cat: "tech", prix: 2200000, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600", desc: "Intel i9-13900H, 32GB DDR5, 4K OLED",      stock: 2,  rating: 4.8, reviews: 189 },
-            { id: 110, nom: "Bose QuietComfort Ultra Earbuds",  cat: "tech", prix: 240000,  img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600", desc: "ANC immersif, audio spatial, IP54",         stock: 8,  rating: 4.7, reviews: 567 },
+            // ── LOUIS VUITTON ─────────────────────────────────────────────────
+            { id: 40, nom: "LV Attrape-Rêves",                 cat: "luxe", subCat: "louis-vuitton", prix: 215000, img: "assets/images/products/louis-vuiton-attrape-rèves.jpeg",  desc: "Freesia, jasmin & ambre blanc — voyage onirique",          stock: 5,  rating: 4.8, reviews: 189 },
+            { id: 41, nom: "LV Dans la Peau",                  cat: "luxe", subCat: "louis-vuitton", prix: 220000, img: "assets/images/products/louis-vuiton-dans-la-peau.jpeg",   desc: "Cuir précieux & musc — seconde peau luxueuse",             stock: 4,  rating: 4.8, reviews: 167 },
+            { id: 42, nom: "LV Eyes On You",                   cat: "luxe", subCat: "louis-vuitton", prix: 210000, img: "assets/images/products/louis-vuiton-eyes.jpeg",           desc: "Iris, violette & musc blanc — regard envoûtant",           stock: 6,  rating: 4.7, reviews: 145 },
+            { id: 43, nom: "LV Imagination",                   cat: "luxe", subCat: "louis-vuitton", prix: 205000, img: "assets/images/products/louis-vuiton-imagination.jpeg",    desc: "Cèdre de Virginie & musc — masculin libéré",               stock: 5,  rating: 4.7, reviews: 212 },
+            { id: 44, nom: "LV Météore",                       cat: "luxe", subCat: "louis-vuitton", prix: 215000, img: "assets/images/products/louis-vuiton-metéore.jpeg",        desc: "Agrumes frais & bois gris — énergie solaire",              stock: 7,  rating: 4.8, reviews: 234 },
+            { id: 45, nom: "LV Nuit de Feu",                   cat: "luxe", subCat: "louis-vuitton", prix: 235000, img: "assets/images/products/louis-vuiton-nuit-de-feu.jpeg",    desc: "Rose, oud & encens — nuit ardente orientale",              stock: 3,  rating: 4.9, reviews: 178 },
+            { id: 46, nom: "LV Ombre Nomade",                  cat: "luxe", subCat: "louis-vuitton", prix: 250000, img: "assets/images/products/louis-vuiton-ombre-nomade.jpeg",   desc: "Oud du Bangladesh, encens & santal — voyage extrême",      stock: 2,  rating: 5.0, reviews: 256 },
+            { id: 47, nom: "LV On the Beach",                  cat: "luxe", subCat: "louis-vuitton", prix: 200000, img: "assets/images/products/louis-vuiton-on-the-beach.jpeg",   desc: "Coco, tiare & sable blanc — paradis tropical",             stock: 8,  rating: 4.6, reviews: 289 },
+            { id: 48, nom: "LV Spell On You",                  cat: "luxe", subCat: "louis-vuitton", prix: 225000, img: "assets/images/products/louis-vuiton-spell-on-you.jpeg",   desc: "Rose, jasmin & patchouli — envoûtement absolu",            stock: 4,  rating: 4.8, reviews: 198 },
+            { id: 49, nom: "LV Vers",                          cat: "luxe", subCat: "louis-vuitton", prix: 210000, img: "assets/images/products/louis-vuiton-vers.jpeg",           desc: "Vétiver vert, musc & bois — nature sophistiquée",          stock: 5,  rating: 4.7, reviews: 156 },
 
-            // ── HORLOGERIE & BIJOUX ───────────────────────────────────────────
-            { id: 120, nom: "Rolex Submariner Date 41mm",       cat: "bijoux", prix: 28000000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Oystersteel, lunette céramique, mouvement 3235", stock: 1, rating: 5.0, reviews: 145 },
-            { id: 121, nom: "Audemars Piguet Royal Oak 37mm",   cat: "bijoux", prix: 65000000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Or rose 18k, cadran Grande Tapisserie",       stock: 1, rating: 5.0, reviews: 67 },
-            { id: 122, nom: "Omega Seamaster 300M 42mm",        cat: "bijoux", prix: 8500000,  img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Co-Axial Master Chronometer, 600M",          stock: 2, rating: 4.9, reviews: 234 },
-            { id: 123, nom: "Cartier Love Bracelet Or Rose",    cat: "bijoux", prix: 4500000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Or 18k, 4 diamants, tournevis iconique",    stock: 3, rating: 5.0, reviews: 389 },
-            { id: 124, nom: "Van Cleef Vintage Alhambra 20M",   cat: "bijoux", prix: 8500000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "20 motifs trèfle, nacre & or jaune",        stock: 2, rating: 5.0, reviews: 178 },
-            { id: 125, nom: "Bague Chopard Happy Diamonds",     cat: "bijoux", prix: 12000000, img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Diamants mobiles en sertissage libre",      stock: 1, rating: 5.0, reviews: 89 },
-            { id: 126, nom: "Chevalière Hermès Or Jaune 18k",   cat: "bijoux", prix: 3800000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "H en or massif, finition polie satinée",    stock: 3, rating: 4.9, reviews: 145 },
-            { id: 127, nom: "Bracelet Tiffany HardWear Gold",   cat: "bijoux", prix: 2600000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Or jaune 18k, maillon bold New York",       stock: 4, rating: 4.9, reviews: 267 },
-            { id: 128, nom: "TAG Heuer Carrera Chronographe",   cat: "bijoux", prix: 5500000,  img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "COSC Chronographe, verre saphir, 100m",     stock: 2, rating: 4.8, reviews: 312 },
-            { id: 129, nom: "Collier Messika Move Uno Pavé",    cat: "bijoux", prix: 3200000,  img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", desc: "Diamants mobiles, chaîne or blanc",         stock: 3, rating: 4.9, reviews: 198 },
-            { id: 130, nom: "IWC Portugieser Automatique 40mm", cat: "bijoux", prix: 15000000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", desc: "Acier inox, bracelet cuir brun, cal.82100",  stock: 1, rating: 4.9, reviews: 134 },
+            // ── KILIAN ────────────────────────────────────────────────────────
+            { id: 50, nom: "Kilian Apple Brandy On The Rocks", cat: "luxe", subCat: "kilian", prix: 148000, img: "assets/images/products/apple-brandy-killian-on-the-rocks.jpeg",                              desc: "Pomme, cognac & vanille sur glace — cocktail de luxe",     stock: 5,  rating: 4.8, reviews: 312 },
+            { id: 51, nom: "Kilian Her Majesty",               cat: "luxe", subCat: "kilian", prix: 145000, img: "assets/images/products/her-majesty-kilian.jpeg",                                              desc: "Rose impériale, litchi & musc — royauté féminine",         stock: 6,  rating: 4.7, reviews: 267 },
+            { id: 52, nom: "Kilian Born To Be Unforgettable",  cat: "luxe", subCat: "kilian", prix: 150000, img: "assets/images/products/kilian-born-to-be-unforgetable.jpeg",                                  desc: "Bergamote, iris & cèdre — empreinte inoubliable",          stock: 4,  rating: 4.8, reviews: 234 },
+            { id: 53, nom: "Kilian I'm A Princess",            cat: "luxe", subCat: "kilian", prix: 142000, img: "assets/images/products/kilian-i-don't-need-a-orince-by-my-side-to-be-a-princess.jpeg",       desc: "Rose, pivoine & musc poudré — princesse sans couronne",    stock: 7,  rating: 4.6, reviews: 445 },
+            { id: 54, nom: "Kilian Love",                      cat: "luxe", subCat: "kilian", prix: 140000, img: "assets/images/products/kilian-love.jpeg",                                                     desc: "Fleur d'oranger, guimauve & musc blanc — amour pur",       stock: 8,  rating: 4.7, reviews: 523 },
+            { id: 55, nom: "Kilian Moonlight in Heaven",       cat: "luxe", subCat: "kilian", prix: 145000, img: "assets/images/products/kilian-moolight-in-heaven.jpeg",                                       desc: "Coco, ananas & gingembre — nuit tropicale paradisiaque",   stock: 5,  rating: 4.7, reviews: 389 },
+            { id: 56, nom: "Kilian Rolling In Love",           cat: "luxe", subCat: "kilian", prix: 148000, img: "assets/images/products/kilian-rolling-in-love.jpeg",                                          desc: "Rose, jasmin & musc — romance tourbillonnante",            stock: 6,  rating: 4.8, reviews: 401 },
+
+            // ── AMOUAGE ───────────────────────────────────────────────────────
+            { id: 60, nom: "Amouage Guidance 46",              cat: "luxe", subCat: "amouage",      prix: 210000, img: "assets/images/products/amouage-Guidance-46.jpeg",     desc: "Oud précieux, encens & labdanum — voyage oriental ultime", stock: 3,  rating: 4.9, reviews: 178 },
+            { id: 61, nom: "Amouage Purpose",                  cat: "luxe", subCat: "amouage",      prix: 205000, img: "assets/images/products/amouage-purpose.jpeg",         desc: "Cardamome, rose & vétiver — intention & caractère",        stock: 4,  rating: 4.8, reviews: 145 },
+            { id: 62, nom: "Amouage Sunshine",                 cat: "luxe", subCat: "amouage",      prix: 195000, img: "assets/images/products/amouage-sunchine.jpeg",        desc: "Mandarine, jasmin & bois de santal — lumière dorée",       stock: 5,  rating: 4.7, reviews: 134 },
+            { id: 63, nom: "Amouage Lyric Woman",              cat: "luxe", subCat: "amouage",      prix: 215000, img: "assets/images/products/amouge-lyric.jpeg",            desc: "Rose absolue, encens & musc blanc — poésie pure",          stock: 3,  rating: 4.8, reviews: 198 },
+            { id: 64, nom: "Amouage Myths Man",                cat: "luxe", subCat: "amouage",      prix: 200000, img: "assets/images/products/amouage-myths.jpeg",           desc: "Vétiver, cèdre & tabac blond — légende masculine",         stock: 4,  rating: 4.7, reviews: 167 },
+
+            // ── XERJOFF ───────────────────────────────────────────────────────
+            { id: 70, nom: "Xerjoff 1861 Naxos 100ml",         cat: "luxe", subCat: "xerjoff",      prix: 155000, img: "assets/images/products/xerjoff-naxos.jpg",            desc: "Tabac blond, miel & lavande — excellence italienne",       stock: 7,  rating: 4.7, reviews: 234 },
+            { id: 71, nom: "Xerjoff Nio 100ml",                cat: "luxe", subCat: "xerjoff",      prix: 170000, img: "assets/images/products/xerjoff-nio.jpg",              desc: "Bergamote, rose & musc — raffinement suprême",             stock: 5,  rating: 4.8, reviews: 189 },
+
+            // ── AUTRES MAISONS ────────────────────────────────────────────────
+            { id: 80, nom: "Chanel No.5 EDP 100ml",            cat: "luxe", subCat: "chanel",       prix: 165000, img: "assets/images/products/chanel-no5.jpg",               desc: "L'icône absolue de la parfumerie mondiale",                stock: 6,  rating: 4.9, reviews: 1024 },
+            { id: 81, nom: "Chanel Bleu de Chanel EDP 100ml",  cat: "luxe", subCat: "chanel",       prix: 120000, img: "assets/images/products/chanel-bleu.jpg",              desc: "Bois frais, cèdre & vétiver — liberté masculine",          stock: 10, rating: 4.8, reviews: 892 },
+            { id: 82, nom: "YSL Myslf EDP 60ml",               cat: "luxe", subCat: "ysl",          prix: 110000, img: "assets/images/products/ysl-myself.jpg",               desc: "Bergamote bio, ambroxan & musk — nouveau masculin",        stock: 7,  rating: 4.7, reviews: 567 },
+            { id: 83, nom: "YSL Black Opium EDP 90ml",         cat: "luxe", subCat: "ysl",          prix: 120000, img: "assets/images/products/ysl-black-opium.jpg",          desc: "Café noir, vanille & jasmin blanc — séduction nocturne",   stock: 8,  rating: 4.7, reviews: 678 },
+            { id: 84, nom: "Parfums de Marly Layton 125ml",    cat: "luxe", subCat: "marly",        prix: 185000, img: "assets/images/products/marly-layton.jpg",             desc: "Pomme verte, bergamote, magnolia & vanille",               stock: 4,  rating: 4.9, reviews: 723 },
+            { id: 85, nom: "Parfums de Marly Percival 125ml",  cat: "luxe", subCat: "marly",        prix: 190000, img: "assets/images/products/marly-percival.jpg",           desc: "Bergamote, violette & cèdre — aristocratie parfumée",      stock: 3,  rating: 4.8, reviews: 412 },
+            { id: 86, nom: "Initio Side Effect 90ml",          cat: "luxe", subCat: "initio",       prix: 175000, img: "assets/images/products/initio-side-effect.jpg",       desc: "Vanille & rhum — phéromones addictifs",                    stock: 5,  rating: 4.7, reviews: 467 },
+            { id: 87, nom: "Initio Atomic Rose 90ml",          cat: "luxe", subCat: "initio",       prix: 180000, img: "assets/images/products/initio-atomic-rose.jpg",       desc: "Rose sucrée, musc & ambre — puissance florale",            stock: 4,  rating: 4.8, reviews: 289 },
+            { id: 88, nom: "Montale Intense Café 100ml",       cat: "luxe", subCat: "montale",      prix: 135000, img: "assets/images/products/montale-intense-cafe.jpg",     desc: "Café arabica, roses & musc oriental",                      stock: 9,  rating: 4.6, reviews: 391 },
+            { id: 89, nom: "Maison Margiela Jazz Club 100ml",  cat: "luxe", subCat: "margiela",     prix: 140000, img: "assets/images/products/margiela-jazz-club.jpg",       desc: "Rhum, cuir, tabac blond — nuit parisienne",                stock: 5,  rating: 4.8, reviews: 445 },
+            { id: 90, nom: "Roja Parfums Elysium 100ml",       cat: "luxe", subCat: "roja",         prix: 320000, img: "assets/images/products/roja-elysium.jpg",             desc: "Agrumes précieux & sillage légendaire — ultra rare",       stock: 2,  rating: 5.0, reviews: 189 },
         ];
  
         // ═══════════════════════════════════════════════════════════════════
@@ -2877,33 +2838,19 @@
 
         function sendOrderConfirmationEmail(user, cartItems, total) {
             if (!user || !user.email) return;
-            const itemsList = cartItems.map(i => `<tr><td style="padding:8px 0;">${i.nom}</td><td style="padding:8px 0;text-align:right;font-weight:700;">${i.prix.toLocaleString()} FCFA × ${i.quantity}</td></tr>`).join('');
-            sendBrevoEmail({
-                toEmail: user.email,
-                toName: user.name,
-                subject: `✅ Votre commande S.L.M Market — ${total.toLocaleString()} FCFA`,
-                htmlContent: `
-                    <div style="font-family:'Segoe UI',sans-serif; max-width:600px; margin:0 auto; background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
-                        <div style="background:linear-gradient(135deg,#ff6a00,#ff9a3c); padding:40px; text-align:center; color:white;">
-                            <h1 style="margin:0; font-size:28px; letter-spacing:2px;">S.L.M MARKET</h1>
-                            <p style="margin:10px 0 0; opacity:0.9;">Commande confirmée avec succès</p>
-                        </div>
-                        <div style="padding:35px;">
-                            <h2 style="color:#111; margin-bottom:5px;">Bonjour ${user.name} 👋</h2>
-                            <p style="color:#666;">Votre commande a bien été reçue et est en cours de préparation.</p>
-                            <table style="width:100%; border-collapse:collapse; margin:25px 0; border-top:2px solid #ff6a00; border-bottom:2px solid #ff6a00;">
-                                ${itemsList}
-                            </table>
-                            <div style="text-align:right; font-size:22px; font-weight:900; color:#ff6a00;">Total : ${total.toLocaleString()} FCFA</div>
-                            <div style="margin-top:30px; padding:20px; background:#fffbf5; border-radius:12px; border-left:4px solid #ff6a00;">
-                                <p style="margin:0; font-size:14px; color:#555;">Suivez votre commande sur <a href="suivi.html" style="color:#ff6a00; font-weight:700;">S.L.M Suivi</a></p>
-                            </div>
-                        </div>
-                        <div style="background:#f9f9f9; padding:20px; text-align:center; color:#aaa; font-size:12px;">
-                            © 2026 S.L.M Market — Tous droits réservés
-                        </div>
-                    </div>`
-            });
+            fetch('http://localhost:5000/api/v1/email/order-confirmation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    toEmail: user.email,
+                    toName: user.name || user.email,
+                    items: cartItems.map(i => ({ nom: i.nom, prix: i.prix, quantity: i.quantity || 1 })),
+                    total
+                })
+            })
+            .then(r => r.json())
+            .then(d => { if (d.success) console.log('[SLM] ✅ Email confirmation envoyé à', user.email); else console.warn('[SLM] Email non envoyé:', d.message); })
+            .catch(e => console.warn('[SLM] Backend inaccessible pour email:', e.message));
         }
 
         function initializeApp() {

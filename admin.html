@@ -305,11 +305,11 @@
         </div>
         
         <nav class="nav-group">
-            <a class="nav-link active" onclick="App.switchPage('dashboard')"><i class="fas fa-th-large"></i> Tableau de Bord</a>
-            <a class="nav-link" onclick="App.switchPage('orders')"><i class="fas fa-box-open"></i> Commandes</a>
-            <a class="nav-link" onclick="App.switchPage('analytics')"><i class="fas fa-chart-bar"></i> Analytics</a>
-            <a class="nav-link" onclick="App.switchPage('clients')"><i class="fas fa-users"></i> Clients VIP</a>
-            <a class="nav-link" onclick="App.switchPage('settings')"><i class="fas fa-cog"></i> Paramètres</a>
+            <a class="nav-link active" onclick="App.switchPage('dashboard', this)"><i class="fas fa-th-large"></i> Tableau de Bord</a>
+            <a class="nav-link" onclick="App.switchPage('orders', this)"><i class="fas fa-box-open"></i> Commandes</a>
+            <a class="nav-link" onclick="App.switchPage('analytics', this)"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <a class="nav-link" onclick="App.switchPage('clients', this)"><i class="fas fa-users"></i> Clients VIP</a>
+            <a class="nav-link" onclick="App.switchPage('settings', this)"><i class="fas fa-cog"></i> Paramètres</a>
             <a class="nav-link" href="/frontend/slm-market-enterprise.html" style="color: var(--text-muted);"><i class="fas fa-store"></i> Retour Boutique</a>
         </nav>
 
@@ -376,9 +376,14 @@
                     <h1>Registre des Commandes</h1>
                     <p id="current-date2">Gestion complète des acquisitions</p>
                 </div>
-                <button class="btn-action" onclick="App.openModal()">
-                    <i class="fas fa-plus"></i> Nouvelle Commande
-                </button>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn-action" onclick="App.syncFromServer()" id="syncBtn" style="background:transparent; border:1px solid var(--sm-primary); color:var(--sm-primary);">
+                        <i class="fas fa-sync-alt"></i> Sync Serveur
+                    </button>
+                    <button class="btn-action" onclick="App.openModal()">
+                        <i class="fas fa-plus"></i> Nouvelle Commande
+                    </button>
+                </div>
             </div>
  
             <!-- Stats Quick View -->
@@ -597,10 +602,15 @@
                         <input type="text" id="brevoKeyInput" placeholder="xkeysib-xxxxxxxxxxxx" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none; font-family:monospace;">
                         <button onclick="saveBrevoKey()" style="background:var(--sm-primary); color:var(--sm-dark); border:none; padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer;">Sauvegarder</button>
                     </div>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <input type="email" id="brevoSenderInput" placeholder="contact@slm-market.com" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;" value="${localStorage.getItem('slm_brevo_sender') || 'contact@slm-market.com'}">
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                        <input type="email" id="brevoSenderInput" placeholder="contact@slm-market.com" style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;">
                         <button onclick="saveBrevoSender()" style="background:var(--sm-dark); color:var(--sm-primary); border:1px solid var(--sm-primary); padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer;">Email expéditeur</button>
                     </div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="email" id="testEmailInput" placeholder="Adresse de test..." style="flex:1; background:var(--sm-dark); border:1px solid var(--glass-border); padding:12px; border-radius:10px; color:white; outline:none;">
+                        <button onclick="testEmailConnection()" style="background:#10b981; color:white; border:none; padding:12px 20px; border-radius:10px; font-weight:800; cursor:pointer;"><i class="fas fa-paper-plane"></i> Tester SMTP</button>
+                    </div>
+                    <p id="emailTestResult" style="margin-top:10px; font-size:12px; color:var(--text-muted);"></p>
                 </div>
             </div>
         </section>
@@ -679,6 +689,46 @@
             } catch(e) {}
         }
 
+        // ==================== SYNC DEPUIS BACKEND ====================
+        const API_BASE = 'http://localhost:5000';
+        const ADMIN_KEY = 'BOSS-SLM-2026';
+
+        async function fetchOrdersFromServer() {
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/orders`, {
+                    headers: { 'X-Admin-Key': ADMIN_KEY }
+                });
+                if (!res.ok) return null;
+                const json = await res.json();
+                return json.data || [];
+            } catch(e) { return null; }
+        }
+
+        function mapServerOrder(o) {
+            const user = o.user || {};
+            const nom = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email || 'Client';
+            const articles = (o.items || []).map(i => {
+                const p = i.product || {};
+                return `${p.name || 'Produit'} x${i.quantity}`;
+            }).join(', ') || 'Commande';
+            const statusMap = {
+                received: 'reçue', processing: 'préparation',
+                shipped: 'fret', 'in-transit': 'abidjan', delivered: 'livré', returned: 'reçue'
+            };
+            return {
+                id: o.trackingId || o._id,
+                client: nom,
+                telephone: user.phone || '',
+                email: user.email || '',
+                articles,
+                montant: (o.pricing && o.pricing.total) || 0,
+                statut: statusMap[o.status && o.status.current] || 'reçue',
+                date: new Date(o.createdAt || Date.now()),
+                priority: o.priority || 'medium',
+                _serverId: o._id
+            };
+        }
+
         // ==================== MAIN APPLICATION ====================
 
         const App = {
@@ -687,16 +737,45 @@
             currentPage: 'dashboard',
             pageSize: 10,
             currentPageNum: 1,
- 
-            init() {
-                document.addEventListener('DOMContentLoaded', () => {
-                    this.updateDate();
-                    this.renderDashboard();
-                    this.renderOrders();
-                    this.renderClients();
-                    this.initCharts();
-                    setInterval(() => this.updateDate(), 60000);
+
+            async syncFromServer() {
+                const btn = document.getElementById('syncBtn');
+                if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sync...'; btn.disabled = true; }
+                const serverOrders = await fetchOrdersFromServer();
+                if (btn) { btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync Serveur'; btn.disabled = false; }
+                if (!serverOrders) {
+                    this.toast('Serveur inaccessible — vérifiez que le backend tourne sur le port 5000', 'error');
+                    return;
+                }
+                let added = 0;
+                serverOrders.forEach(raw => {
+                    const mapped = mapServerOrder(raw);
+                    const idx = this.orders.findIndex(o => o.id === mapped.id);
+                    if (idx >= 0) {
+                        this.orders[idx] = { ...this.orders[idx], ...mapped };
+                    } else {
+                        this.orders.unshift(mapped);
+                        added++;
+                    }
                 });
+                saveOrdersToStorage(this.orders);
+                // Mettre à jour uniquement la page actuellement visible
+                if (this.currentPage === 'dashboard') this.renderDashboard();
+                if (this.currentPage === 'orders') { this.renderOrders(); this.filterTable(); }
+                if (this.currentPage === 'analytics') this.renderAnalytics();
+                const msg = added > 0
+                    ? `${added} nouvelle(s) commande(s) reçue(s)`
+                    : `Sync OK — ${serverOrders.length} commandes en base`;
+                this.toast(msg, added > 0 ? 'info' : 'success');
+            },
+
+            init() {
+                this.updateDate();
+                this.renderDashboard();
+                this.renderOrders();
+                this.renderClients();
+                this.initCharts();
+                setInterval(() => this.updateDate(), 60000);
             },
  
             updateDate() {
@@ -710,15 +789,19 @@
  
             // ==================== PAGE NAVIGATION ====================
  
-            switchPage(page) {
+            switchPage(page, clickedEl) {
                 document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-                document.getElementById(page).classList.add('active');
+                const section = document.getElementById(page);
+                if (section) section.classList.add('active');
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                event.target.closest('.nav-link').classList.add('active');
+                const navEl = clickedEl ? clickedEl.closest('.nav-link') : null;
+                if (navEl) navEl.classList.add('active');
                 this.currentPage = page;
- 
+
                 if (page === 'dashboard') this.renderDashboard();
+                if (page === 'orders')    { this.renderOrders(); this.filterTable(); }
                 if (page === 'analytics') this.renderAnalytics();
+                if (page === 'clients')   this.renderClients();
             },
  
             // ==================== DASHBOARD ====================
@@ -1247,10 +1330,42 @@
             App.toast(`Email expéditeur défini : ${email}`, 'success');
         }
 
+        async function testEmailConnection() {
+            const to = document.getElementById('testEmailInput').value.trim();
+            const result = document.getElementById('emailTestResult');
+            if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+                result.style.color = '#ef4444';
+                result.textContent = 'Entrez une adresse email valide.';
+                return;
+            }
+            result.style.color = '#888';
+            result.textContent = '⏳ Test en cours...';
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/test-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_KEY },
+                    body: JSON.stringify({ to })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    result.style.color = '#10b981';
+                    result.textContent = '✅ ' + json.message;
+                } else {
+                    result.style.color = '#ef4444';
+                    result.textContent = '❌ ' + json.message;
+                }
+            } catch(e) {
+                result.style.color = '#ef4444';
+                result.textContent = '❌ Serveur inaccessible — démarrez le backend (npm start)';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             renderPromosAdmin();
             const inp = document.getElementById('brevoKeyInput');
             if (inp) inp.value = localStorage.getItem('slm_brevo_key') || '';
+            const snd = document.getElementById('brevoSenderInput');
+            if (snd) snd.value = localStorage.getItem('slm_brevo_sender') || 'contact@slm-market.com';
         });
 
         // Initialisation
