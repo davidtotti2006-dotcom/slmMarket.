@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <style>
-        /* ═══════════════════════════════════════════════════════════════════
+        /* ══
+        ═════════════════════════════════════════════════════════════════
            📱 VARIABLES & DESIGN SYSTEM (ALIBABA-GRADE)
            ═══════════════════════════════════════════════════════════════════ */
         :root {
@@ -301,7 +302,65 @@
         }
  
         .search-container button:hover { background: var(--sm-primary); }
- 
+
+        .search-wrapper {
+            flex: 1;
+            max-width: 700px;
+            position: relative;
+        }
+        .search-wrapper .search-container {
+            max-width: 100%;
+        }
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0; right: 0;
+            background: var(--sm-white);
+            border: 1.5px solid var(--sm-gray-200);
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.13);
+            z-index: 9999;
+            overflow: hidden;
+            display: none;
+        }
+        .search-suggestions.open { display: block; animation: slideDown 0.2s ease; }
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover, .suggestion-item.focused { background: var(--sm-gray-100); }
+        .suggestion-item img {
+            width: 44px; height: 44px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        .suggestion-info { flex: 1; min-width: 0; }
+        .suggestion-name { font-size: 13px; font-weight: 700; color: var(--sm-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .suggestion-name em { color: var(--sm-primary); font-style: normal; }
+        .suggestion-meta { font-size: 11px; color: var(--sm-text-muted); margin-top: 1px; }
+        .suggestion-price { font-size: 13px; font-weight: 800; color: var(--sm-black); white-space: nowrap; }
+        .suggestion-header {
+            padding: 9px 20px 6px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--sm-text-muted); background: var(--sm-gray-100);
+            border-bottom: 1px solid var(--sm-gray-200);
+        }
+        .suggestion-see-all {
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 12px; font-weight: 700; color: var(--sm-primary);
+            cursor: pointer; border-top: 1px solid var(--sm-gray-200);
+            transition: background 0.15s;
+        }
+        .suggestion-see-all:hover { background: var(--sm-gray-100); }
+
         .header-actions {
             display: flex;
             align-items: center;
@@ -431,6 +490,9 @@
             letter-spacing: 1px; cursor: pointer; transition: var(--transition-base); white-space: nowrap;
         }
         .sub-cat-tag:hover { background: var(--sm-primary); color: var(--sm-white); border-color: var(--sm-primary); transform: translateY(-2px); box-shadow: 0 5px 15px var(--sm-primary-glow); }
+        .sub-cat-tag.brand-tag { background: var(--sm-gray-900); color: var(--sm-white); border-color: var(--sm-gray-900); }
+        .sub-cat-tag.brand-tag:hover { background: var(--sm-primary); border-color: var(--sm-primary); }
+        .sub-cats-divider { color: var(--sm-gray-200); font-size: 18px; line-height: 1; align-self: center; user-select: none; margin: 0 4px; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ═══════════════════════════════════════════════════════════════════
@@ -780,6 +842,14 @@
         .size-chip:hover { border-color: var(--sm-primary); color: var(--sm-primary); }
         .size-chip.selected { background: var(--sm-black); color: white; border-color: var(--sm-black); }
         .color-picker { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+        .qty-picker { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+        .qty-chip {
+            min-width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--sm-gray-200);
+            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; cursor: pointer;
+            background: white; color: var(--sm-black); user-select: none; transition: var(--transition-fast); padding: 0 10px;
+        }
+        .qty-chip:hover { border-color: var(--sm-primary); color: var(--sm-primary); }
+        .qty-chip.selected { background: var(--sm-black); color: white; border-color: var(--sm-black); }
         .color-dot {
             width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
             border: 2px solid rgba(0,0,0,0.08); outline: 2px solid transparent; outline-offset: 2px;
@@ -1582,6 +1652,20 @@
  
         .wishlist-item-info h4 { color: white; margin: 0 0 8px 0; font-size: 14px; }
         .wishlist-item-info p { color: var(--sm-primary); font-weight: 900; font-size: 14px; }
+
+        .wishlist-item-actions { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+        .btn-remove-wishlist {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #888;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .btn-remove-wishlist:hover { background: #c0392b; border-color: #c0392b; color: white; }
  
         /* ═══════════════════════════════════════════════════════════════════
            🔔 NOTIFICATIONS & TOASTS
@@ -1677,7 +1761,8 @@
         @media (max-width: 900px) {
             .container { padding: 0 12px; }
             .header-inner { flex-wrap: wrap; gap: 12px; }
-            .search-container { order: 3; width: 100%; max-width: 100%; }
+            .search-wrapper { order: 3; width: 100%; max-width: 100%; }
+            .search-container { max-width: 100%; }
             .search-container input { padding: 14px 20px; font-size: 14px; }
             .search-container button { padding: 0 24px; font-size: 12px; }
             .header-actions { gap: 16px; }
@@ -1704,7 +1789,8 @@
             .header-inner { flex-wrap: wrap; gap: 10px; padding: 0; }
             .logo-wrapper svg { width: 130px; height: 36px; }
             .header-actions { gap: 12px; margin-left: auto; }
-            .search-container { order: 3; width: 100%; max-width: 100%; border-radius: 12px; }
+            .search-wrapper { order: 3; width: 100%; max-width: 100%; }
+            .search-container { border-radius: 12px; }
             .search-container input { padding: 12px 16px; font-size: 14px; }
             .search-container button { padding: 0 18px; font-size: 11px; letter-spacing: 0.5px; }
 
@@ -1805,9 +1891,12 @@
                 </svg>
             </a>
  
-            <div class="search-container">
-                <input type="text" id="mainSearch" placeholder="Rechercher une pièce d'exception..." onkeyup="handleSearch()">
-                <button onclick="handleSearch()">EXPLORER</button>
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <input type="text" id="mainSearch" placeholder="Rechercher une pièce d'exception..." onkeyup="handleSearch()" oninput="showSearchSuggestions(this.value)" onfocus="showSearchSuggestions(this.value)" autocomplete="off">
+                    <button onclick="handleSearch(); closeSearchSuggestions();">EXPLORER</button>
+                </div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
             </div>
  
             <div class="header-actions">
@@ -1877,10 +1966,30 @@
 
             <!-- Sous-filtres Sneakers -->
             <div id="sub-sport" class="sub-cats">
-                <button class="sub-cat-tag" onclick="filterSubCat('nike')">Nike Dunk Low</button>
-                <button class="sub-cat-tag" onclick="filterSubCat('nike')">Air Max DN</button>
-                <button class="sub-cat-tag" onclick="filterSubCat('nike')">P-6000</button>
-                <button class="sub-cat-tag" onclick="filterSubCat('nike')">Cortez</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('nike')">🔵 Tout Nike</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('dunk')">Dunk Low</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('air-max')">Air Max DN</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('p-6000')">P-6000</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('cortez')">Cortez</button>
+                <span class="sub-cats-divider">|</span>
+                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('adidas')">⚫ Tout Adidas</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('samba')">Samba OG</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('gazelle')">Gazelle Bold</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('stan-smith')">Stan Smith</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('ultraboost')">Ultraboost 24</button>
+                <span class="sub-cats-divider">|</span>
+                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('jordan')">🔴 Tout Jordan</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-1')">Jordan 1</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-4')">Jordan 4</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-11')">Jordan 11</button>
+                <span class="sub-cats-divider">|</span>
+                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('new-balance')">🟡 Tout New Balance</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('550')">550</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('990')">990v6</button>
+                <span class="sub-cats-divider">|</span>
+                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('converse')">⬛ Tout Converse</button>
+                <span class="sub-cats-divider">|</span>
+                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('puma')">🐆 Tout Puma</button>
             </div>
 
             <!-- Sous-filtres Cheveux -->
@@ -2441,6 +2550,33 @@
             { id: 108, nom: "Nike Cortez Cacao Brown",         cat: "sport", subCat: "nike", prix: 65000,  img: "assets/images/products/nike-cortez-cacao-brown.jpeg",       desc: "Heritage running 1972 — brun cacao vintage",              stock: 10, rating: 4.5, reviews: 234 },
             { id: 109, nom: "Nike P-6000 White Malachite",     cat: "sport", subCat: "nike", prix: 78000,  img: "assets/images/products/nike-p-6000-white-malachite.jpeg",   desc: "Blanc & vert malachite — fraîcheur rétro futuriste",       stock: 8,  rating: 4.6, reviews: 312 },
 
+            // ── ADIDAS ────────────────────────────────────────────────────────
+            { id: 110, nom: "Adidas Samba OG White/Black",    cat: "sport", subCat: "adidas", prix: 72000,  img: "assets/images/products/adidas-samba-og.jpeg",               desc: "L'iconique Samba — cuir premium blanc & noir classique",   stock: 9,  rating: 4.8, reviews: 634 },
+            { id: 111, nom: "Adidas Gazelle Bold Platform",   cat: "sport", subCat: "adidas", prix: 78000,  img: "assets/images/products/adidas-gazelle-bold.jpeg",           desc: "Semelle plateforme XXL — style 70s revisité",             stock: 7,  rating: 4.7, reviews: 421 },
+            { id: 112, nom: "Adidas Stan Smith Lux",          cat: "sport", subCat: "adidas", prix: 69000,  img: "assets/images/products/adidas-stan-smith-lux.jpeg",         desc: "Le tennis iconique en cuir grain — minimalisme total",    stock: 11, rating: 4.6, reviews: 812 },
+            { id: 113, nom: "Adidas Ultraboost 24",           cat: "sport", subCat: "adidas", prix: 95000,  img: "assets/images/products/adidas-ultraboost-24.jpeg",          desc: "Technologie Boost ultime — running & lifestyle premium",  stock: 6,  rating: 4.9, reviews: 567 },
+            { id: 114, nom: "Adidas Forum Low Cloud White",   cat: "sport", subCat: "adidas", prix: 68000,  img: "assets/images/products/adidas-forum-low.jpeg",              desc: "Basket basket vintage 1984 — blanc immaculé héritage",    stock: 8,  rating: 4.5, reviews: 345 },
+            { id: 115, nom: "Adidas NMD_R1 Core Black",       cat: "sport", subCat: "adidas", prix: 85000,  img: "assets/images/products/adidas-nmd-r1.jpeg",                 desc: "Boost encapsulé & knit respirant — street futuriste",     stock: 5,  rating: 4.7, reviews: 289 },
+
+            // ── JORDAN ────────────────────────────────────────────────────────
+            { id: 116, nom: "Air Jordan 1 Retro High OG",     cat: "sport", subCat: "jordan", prix: 120000, img: "assets/images/products/air-jordan-1-retro.jpeg",            desc: "L'OG absolu — cuir premium coloris Chicago banned",       stock: 4,  rating: 4.9, reviews: 1243 },
+            { id: 117, nom: "Air Jordan 4 Retro Military Blue",cat: "sport", subCat: "jordan", prix: 135000, img: "assets/images/products/air-jordan-4-military.jpeg",         desc: "Semelle AIR visible — Military Blue grail légendaire",    stock: 3,  rating: 5.0, reviews: 876 },
+            { id: 118, nom: "Air Jordan 11 Retro Concord",    cat: "sport", subCat: "jordan", prix: 145000, img: "assets/images/products/air-jordan-11-concord.jpeg",         desc: "Tige vernie brevet & lacets graphite — grail ultime",     stock: 2,  rating: 5.0, reviews: 934 },
+            { id: 119, nom: "Air Jordan 3 Retro White Cement", cat: "sport", subCat: "jordan", prix: 115000, img: "assets/images/products/air-jordan-3-white-cement.jpeg",     desc: "Éléphant print & Jumpman embossé — héritage MJ 1988",     stock: 5,  rating: 4.9, reviews: 723 },
+
+            // ── NEW BALANCE ───────────────────────────────────────────────────
+            { id: 120, nom: "New Balance 550 White Green",    cat: "sport", subCat: "new-balance", prix: 75000,  img: "assets/images/products/new-balance-550.jpeg",           desc: "Basketball court vintage — blanc & vert tennis clean",    stock: 9,  rating: 4.8, reviews: 556 },
+            { id: 121, nom: "New Balance 990v6 Grey",         cat: "sport", subCat: "new-balance", prix: 98000,  img: "assets/images/products/new-balance-990v6.jpeg",         desc: "Made in USA — gris signature dad shoe premium",           stock: 6,  rating: 4.9, reviews: 478 },
+            { id: 122, nom: "New Balance 574 Legacy",         cat: "sport", subCat: "new-balance", prix: 65000,  img: "assets/images/products/new-balance-574.jpeg",           desc: "ENCAP technologie — runner lifestyle intemporel",         stock: 10, rating: 4.6, reviews: 389 },
+
+            // ── CONVERSE ──────────────────────────────────────────────────────
+            { id: 123, nom: "Converse Chuck Taylor All Star '70", cat: "sport", subCat: "converse", prix: 55000, img: "assets/images/products/converse-chuck-taylor-70.jpeg", desc: "Chuck '70 renforcé — semelle Ortholite OG depuis 1917",   stock: 12, rating: 4.5, reviews: 721 },
+            { id: 124, nom: "Converse Run Star Hike Platform",    cat: "sport", subCat: "converse", prix: 68000, img: "assets/images/products/converse-run-star-hike.jpeg",    desc: "Semelle crantée XXL — attitude underground maximale",     stock: 7,  rating: 4.6, reviews: 312 },
+
+            // ── PUMA ──────────────────────────────────────────────────────────
+            { id: 125, nom: "Puma Suede Classic XXI",         cat: "sport", subCat: "puma", prix: 52000,  img: "assets/images/products/puma-suede-classic.jpeg",            desc: "Daim iconique depuis 1968 — silhouette streetwear culte", stock: 10, rating: 4.4, reviews: 445 },
+            { id: 126, nom: "Puma RS-X Efekt",                cat: "sport", subCat: "puma", prix: 72000,  img: "assets/images/products/puma-rs-x-efekt.jpeg",               desc: "Running System explosive — colorblock avant-gardiste",    stock: 7,  rating: 4.6, reviews: 267 },
+
             // ── CHEVEUX ───────────────────────────────────────────────────────
             { id: 121, nom: "Bounce Curl Definition Kit",      cat: "cheveux", subCat: "curly",    prix: 45000,  img: "assets/images/products/bounce-curl-definition-kit.jpeg",   desc: "Kit complet pour boucles définies & hydratées",            stock: 12, rating: 4.7, reviews: 389 },
             { id: 122, nom: "Deep Wave Hair Bundles",          cat: "cheveux", subCat: "deep-wave", prix: 85000, img: "assets/images/products/deep-wave-hair-bundles.jpeg",        desc: "Vague profonde naturelle — volume & brillance",            stock: 8,  rating: 4.8, reviews: 267 },
@@ -2867,6 +3003,7 @@
         }
 
         function initializeApp() {
+            initProductSelections();
             store.setState({ products: productDatabase, filteredProducts: productDatabase });
             renderProducts(productDatabase);
             updateCartUI();
@@ -2893,8 +3030,16 @@
             }
         }
  
-        // ── Options sélectionnées par produit (taille / couleur) ──
+        // ── Options sélectionnées par produit (taille / couleur / quantité) ──
         const productSelections = {};
+
+        // Pré-initialiser la quantité à 1 pour tous les parfums
+        function initProductSelections() {
+            productDatabase.filter(p => p.cat === 'luxe').forEach(p => {
+                if (!productSelections[p.id]) productSelections[p.id] = {};
+                productSelections[p.id].qty = 1;
+            });
+        }
 
         function getProductSizes(cat) {
             if (cat === 'sport')    return ['EU 38','EU 39','EU 40','EU 41','EU 42','EU 43','EU 44','EU 45','EU 46'];
@@ -2941,6 +3086,21 @@
             productSelections[productId].colorHex  = colorHex;
         }
 
+        function getProductQuantities(p) {
+            // Sélecteur de quantité disponible uniquement pour les parfums
+            if (p.cat !== 'luxe') return [];
+            const max = Math.min(p.stock, 5);
+            if (max <= 0) return [];
+            return Array.from({ length: max }, (_, i) => i + 1);
+        }
+
+        function selectProductQuantity(productId, qty, el) {
+            el.closest('.qty-picker').querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            if (!productSelections[productId]) productSelections[productId] = {};
+            productSelections[productId].qty = qty;
+        }
+
         function renderProducts(products) {
             const grid = document.getElementById('productGrid');
             if (products.length === 0) {
@@ -2975,8 +3135,9 @@
 
                 const isInWishlist = store.state.wishlist.find(w => w.id === p.id);
 
-                const sizes  = getProductSizes(p.cat);
-                const colors = getProductColors(p.cat);
+                const sizes     = getProductSizes(p.cat);
+                const colors    = getProductColors(p.cat);
+                const quantities = getProductQuantities(p);
 
                 const sizesHtml = sizes.length > 0 ? `
                     <div class="picker-label">Taille</div>
@@ -2988,6 +3149,12 @@
                     <div class="picker-label">Couleur</div>
                     <div class="color-picker">
                         ${colors.map(c => `<span class="color-dot" style="background:${c.hex}" title="${c.name}" onclick="selectProductColor(${p.id},'${c.name}','${c.hex}',this);event.stopPropagation();"></span>`).join('')}
+                    </div>` : '';
+
+                const quantitiesHtml = quantities.length > 0 ? `
+                    <div class="picker-label">Quantité</div>
+                    <div class="qty-picker">
+                        ${quantities.map(q => `<span class="qty-chip${q === 1 ? ' selected' : ''}" onclick="selectProductQuantity(${p.id},${q},this);event.stopPropagation();">${q}</span>`).join('')}
                     </div>` : '';
 
                 return `
@@ -3012,6 +3179,7 @@
                                 </div>
                                 ${sizesHtml}
                                 ${colorsHtml}
+                                ${quantitiesHtml}
                             </div>
                             <div class="info-bottom">
                                 <div class="price-tag">
@@ -3065,7 +3233,7 @@
             const filtered = cat === 'tous' ? productDatabase : productDatabase.filter(p => p.cat === cat);
             store.setState({ filteredProducts: filtered });
             renderProducts(filtered);
- 
+
             const titles = {
                 'tous': 'Collections Exclusives',
                 'luxe': 'Haute Parfumerie & Fragrances',
@@ -3086,31 +3254,151 @@
 
         function filterSubCat(subCat) {
             const base = store.state.filteredProducts;
-            const filtered = base.filter(p =>
-                p.nom.toLowerCase().includes(subCat.replace(/-/g, ' ')) ||
-                (p.subCat && p.subCat === subCat)
-            );
+            const needle = subCat.replace(/-/g, ' ').toLowerCase();
+
+            // Mapping modèles précis vers patterns de recherche dans le nom
+            const modelMap = {
+                'jordan-1':   'jordan 1',
+                'jordan-4':   'jordan 4',
+                'jordan-11':  'jordan 11',
+                'samba':      'samba',
+                'gazelle':    'gazelle',
+                'stan-smith': 'stan smith',
+                'ultraboost': 'ultraboost',
+                '550':        '550',
+                '990':        '990',
+            };
+            const searchNeedle = modelMap[subCat] || needle;
+
+            const filtered = base.filter(p => {
+                const nomNorm = p.nom.toLowerCase().replace(/-/g, ' ');
+                return nomNorm.includes(searchNeedle) || (p.subCat && p.subCat === subCat);
+            });
             renderProducts(filtered.length > 0 ? filtered : base);
+            document.getElementById('store').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Navigation directe vers une catégorie + sous-filtre (ex: depuis hero ou liens rapides)
+        function goToCategory(cat, subCat) {
+            // 1. Activer le bouton de catégorie principal
+            const catBtn = document.querySelector(`.cat-btn[onclick*="'${cat}'"]`);
+            if (catBtn) {
+                filterCategory(cat, catBtn);
+            }
+            // 2. Appliquer le sous-filtre si fourni
+            if (subCat) {
+                setTimeout(() => filterSubCat(subCat), 50);
+            }
+            // 3. Défilement vers les produits
+            setTimeout(() => {
+                document.getElementById('store').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         function handleSearch() {
             const query = document.getElementById('mainSearch').value.toLowerCase();
             analytics.trackSearch(query);
- 
+
             if (query.length < 2) {
                 renderProducts(store.state.products);
                 return;
             }
- 
+
             const filtered = productDatabase.filter(p =>
                 p.nom.toLowerCase().includes(query) ||
                 p.desc.toLowerCase().includes(query) ||
                 p.cat.toLowerCase().includes(query)
             );
- 
+
             renderProducts(filtered);
             document.getElementById('sectionTitle').textContent = `Résultats pour "${query}"`;
+            document.getElementById('store').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // ─── SUGGESTIONS DE RECHERCHE (autocomplete) ─────────────────────────
+        let _suggestionFocusIdx = -1;
+
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const idx = text.toLowerCase().indexOf(query.toLowerCase());
+            if (idx === -1) return text;
+            return text.slice(0, idx) + '<em>' + text.slice(idx, idx + query.length) + '</em>' + text.slice(idx + query.length);
+        }
+
+        function showSearchSuggestions(value) {
+            const box = document.getElementById('searchSuggestions');
+            const q = value.trim().toLowerCase();
+            _suggestionFocusIdx = -1;
+
+            if (q.length < 1) { closeSearchSuggestions(); return; }
+
+            const catLabels = { luxe:'Parfumerie', sport:'Sneakers', cheveux:'Cheveux', vetements:'Mode', auto:'Auto', tech:'Tech', bijoux:'Bijoux' };
+
+            const matches = productDatabase
+                .filter(p => p.nom.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
+                .slice(0, 7);
+
+            if (matches.length === 0) { closeSearchSuggestions(); return; }
+
+            box.innerHTML =
+                `<div class="suggestion-header"><i class="fas fa-search" style="margin-right:6px;color:var(--sm-primary)"></i>Suggestions</div>` +
+                matches.map((p, i) => `
+                    <div class="suggestion-item" data-idx="${i}" onclick="selectSuggestion('${p.nom.replace(/'/g,"\\'")}')">
+                        <img src="${p.img}" alt="${p.nom}" onerror="this.style.display='none'">
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">${highlightMatch(p.nom, value.trim())}</div>
+                            <div class="suggestion-meta">${catLabels[p.cat] || p.cat} · ${p.stock > 0 ? p.stock + ' en stock' : 'Épuisé'}</div>
+                        </div>
+                        <div class="suggestion-price">${p.prix.toLocaleString()} <small style="font-size:10px;font-weight:600">FCFA</small></div>
+                    </div>`).join('') +
+                `<div class="suggestion-see-all" onclick="handleSearch(); closeSearchSuggestions();">
+                    Voir tous les résultats pour "<strong>${value.trim()}</strong>" <i class="fas fa-arrow-right" style="font-size:10px;margin-left:4px"></i>
+                </div>`;
+
+            box.classList.add('open');
+        }
+
+        function closeSearchSuggestions() {
+            const box = document.getElementById('searchSuggestions');
+            if (box) { box.classList.remove('open'); box.innerHTML = ''; }
+            _suggestionFocusIdx = -1;
+        }
+
+        function selectSuggestion(nom) {
+            document.getElementById('mainSearch').value = nom;
+            closeSearchSuggestions();
+            handleSearch();
+        }
+
+        // Navigation clavier dans les suggestions
+        document.addEventListener('keydown', function(e) {
+            const box = document.getElementById('searchSuggestions');
+            if (!box || !box.classList.contains('open')) return;
+            const items = box.querySelectorAll('.suggestion-item');
+            if (!items.length) return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (_suggestionFocusIdx < items.length - 1) _suggestionFocusIdx++;
+                items.forEach((el, i) => el.classList.toggle('focused', i === _suggestionFocusIdx));
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (_suggestionFocusIdx > 0) _suggestionFocusIdx--;
+                items.forEach((el, i) => el.classList.toggle('focused', i === _suggestionFocusIdx));
+            } else if (e.key === 'Enter') {
+                if (_suggestionFocusIdx >= 0 && items[_suggestionFocusIdx]) {
+                    items[_suggestionFocusIdx].click();
+                } else {
+                    handleSearch(); closeSearchSuggestions();
+                }
+            } else if (e.key === 'Escape') {
+                closeSearchSuggestions();
+            }
+        });
+
+        // Fermer si clic en dehors
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-wrapper')) closeSearchSuggestions();
+        });
  
         function sortProducts(criteria) {
             let sorted = [...store.state.filteredProducts];
@@ -3150,6 +3438,7 @@
             const sel    = productSelections[productId] || {};
             const sizes  = getProductSizes(product.cat);
             const colors = getProductColors(product.cat);
+            const qtyToAdd = sel.qty || 1;
 
             // Valider la sélection de taille si le produit en a
             if (sizes.length > 0 && !sel.size) {
@@ -3157,7 +3446,7 @@
                 return;
             }
 
-            const stockCheck = inventoryManager.reserve(productId, 1);
+            const stockCheck = inventoryManager.reserve(productId, qtyToAdd);
             if (!stockCheck.success) {
                 showToast(stockCheck.message, 'warning');
                 return;
@@ -3170,11 +3459,11 @@
                 item.selectedColor === (sel.color || null)
             );
             if (existing) {
-                existing.quantity++;
+                existing.quantity += qtyToAdd;
             } else {
                 store.state.cart.push({
                     ...product,
-                    quantity: 1,
+                    quantity: qtyToAdd,
                     selectedSize:     sel.size     || null,
                     selectedColor:    sel.color    || null,
                     selectedColorHex: sel.colorHex || null
@@ -3182,10 +3471,10 @@
             }
 
             store.setState({ cart: store.state.cart });
-            analytics.trackAddToCart(product, 1);
-            addElitePoints(product.prix);
-            const optLabel = sel.size ? ` (${sel.size}${sel.color ? ' · ' + sel.color : ''})` : '';
-            showToast(`${product.nom}${optLabel} ajouté • +${Math.floor(product.prix/1000)} pts Elite`, 'success');
+            analytics.trackAddToCart(product, qtyToAdd);
+            addElitePoints(product.prix * qtyToAdd);
+            const optLabel = sel.size ? ` (${sel.size}${sel.color ? ' · ' + sel.color : ''})` : (qtyToAdd > 1 ? ` ×${qtyToAdd}` : '');
+            showToast(`${product.nom}${optLabel} ajouté • +${Math.floor(product.prix * qtyToAdd / 1000)} pts Elite`, 'success');
             renderProducts(store.state.filteredProducts);
         }
  
@@ -3314,11 +3603,16 @@
                         <h4>${item.nom}</h4>
                         <p>${item.prix.toLocaleString()} FCFA</p>
                     </div>
-                    <button class="btn-buy" onclick="addToCart(${item.id}); showToast('Ajouté au coffre', 'success');" 
-                            style="width: auto; padding: 8px 16px; font-size: 12px;">
-                        <i class="fas fa-shopping-bag"></i>
-                    </button>
-                </div>`) .join('');
+                    <div class="wishlist-item-actions">
+                        <button class="btn-buy" onclick="addToCart(${item.id}); showToast('Ajouté au coffre', 'success');"
+                                style="width: auto; padding: 8px 12px; font-size: 12px;" title="Ajouter au panier">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <button class="btn-remove-wishlist" onclick="toggleWishlistItem(${item.id})" title="Retirer des favoris">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>`).join('');
         }
  
         function applyCoupon(code) {
@@ -3863,4 +4157,4 @@
     }
     </script>
 </body>
-</html>
+</html> 
