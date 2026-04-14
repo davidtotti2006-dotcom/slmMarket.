@@ -492,7 +492,15 @@
         .sub-cat-tag:hover { background: var(--sm-primary); color: var(--sm-white); border-color: var(--sm-primary); transform: translateY(-2px); box-shadow: 0 5px 15px var(--sm-primary-glow); }
         .sub-cat-tag.brand-tag { background: var(--sm-gray-900); color: var(--sm-white); border-color: var(--sm-gray-900); }
         .sub-cat-tag.brand-tag:hover { background: var(--sm-primary); border-color: var(--sm-primary); }
+        .sub-cat-tag.brand-tag.active { background: var(--sm-primary); border-color: var(--sm-primary); }
         .sub-cats-divider { color: var(--sm-gray-200); font-size: 18px; line-height: 1; align-self: center; user-select: none; margin: 0 4px; }
+        .sub-back-btn {
+            background: transparent; border: 1.5px dashed var(--sm-gray-200); padding: 8px 18px;
+            border-radius: var(--radius-full); font-size: 11px; font-weight: 800; cursor: pointer;
+            color: var(--sm-text-muted); transition: var(--transition-fast); white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        .sub-back-btn:hover { border-color: var(--sm-primary); color: var(--sm-primary); background: rgba(255,106,0,0.05); border-style: solid; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ═══════════════════════════════════════════════════════════════════
@@ -973,155 +981,318 @@
         .price-jumia-disc { background: #ef4444; color: white; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 900; }
         .price-free-ship { font-size: 10px; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 3px; }
 
-        /* ── Modal Négociateur IA ── */
+        /* ── Modal Bot SLM Oracle ── */
         .neg-modal-bg {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             z-index: 9500;
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
         }
         .neg-modal-bg.open { display: flex; }
         .neg-modal {
             background: #0d0d0d;
-            border: 1px solid rgba(109,40,217,0.3);
-            border-radius: 24px;
+            border: 1px solid rgba(109,40,217,0.4);
+            border-radius: 18px;
             width: 100%;
-            max-width: 500px;
+            max-width: 340px;
             overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+            box-shadow: 0 24px 70px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,106,0,0.1);
+            animation: botSlideIn 0.35s cubic-bezier(0.19,1,0.22,1);
         }
+        @keyframes botSlideIn { from { opacity:0; transform:translateY(20px) scale(0.96); } to { opacity:1; transform:none; } }
         .neg-header {
-            background: linear-gradient(135deg, #1e1b4b, #2e1065);
-            padding: 20px 24px;
+            background: linear-gradient(135deg, #1a1040, #2e1065);
+            padding: 11px 14px;
             display: flex;
             align-items: center;
-            gap: 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
         }
+        /* ── Bouton Retour — clairement visible ── */
+        .neg-back {
+            background: #ff6a00;
+            border: none;
+            color: #fff;
+            height: 26px;
+            padding: 0 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 800;
+            font-family: inherit;
+            display: flex; align-items: center; gap: 4px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .neg-back:hover { background: #e65c00; transform: translateX(-2px); }
         .neg-avatar {
-            width: 48px; height: 48px; border-radius: 50%;
+            width: 32px; height: 32px; border-radius: 50%;
             background: linear-gradient(135deg, #7c3aed, #5b21b6);
             display: flex; align-items: center; justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 0 0 6px rgba(124,58,237,0.15);
+            font-size: 16px;
+            box-shadow: 0 0 0 4px rgba(124,58,237,0.18);
             animation: negPulse 2s infinite;
             flex-shrink: 0;
         }
         @keyframes negPulse {
-            0%,100% { box-shadow: 0 0 0 6px rgba(124,58,237,0.15); }
-            50% { box-shadow: 0 0 0 12px rgba(124,58,237,0.05); }
+            0%,100% { box-shadow: 0 0 0 4px rgba(124,58,237,0.18); }
+            50% { box-shadow: 0 0 0 8px rgba(124,58,237,0.05); }
         }
-        .neg-header-info { flex: 1 }
-        .neg-title { font-size: 16px; font-weight: 800; color: white }
-        .neg-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
-        .neg-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .neg-close:hover { background: rgba(255,255,255,0.2); }
+        .neg-header-info { flex: 1; min-width: 0; }
+        .neg-title { font-size: 12px; font-weight: 800; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .neg-subtitle { font-size: 9px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+        .neg-close { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); width: 26px; height: 26px; border-radius: 8px; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .neg-close:hover { background: rgba(255,60,60,0.3); color: white; border-color: rgba(255,60,60,0.6); }
 
-        .neg-product-info {
-            padding: 14px 24px;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+        /* ── Tabs navigation ── */
+        .neg-tabs {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
+            background: #111;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            overflow-x: auto;
         }
-        .neg-product-info img { width: 48px; height: 48px; object-fit: cover; border-radius: 10px; }
-        .neg-prod-name { font-weight: 700; color: #e8e8e8; font-size: 13px; }
-        .neg-prod-price { color: #ff6a00; font-weight: 900; font-size: 15px; margin-top: 2px; }
+        .neg-tabs::-webkit-scrollbar { display: none; }
+        .neg-tab-btn {
+            flex: 1; border: none; background: none;
+            color: rgba(255,255,255,0.4);
+            padding: 8px 4px 7px;
+            font-size: 9px; font-weight: 700; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s; min-width: 0;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .neg-tab-btn i { font-size: 13px; }
+        .neg-tab-btn.active { color: #a855f7; border-bottom-color: #7c3aed; }
+        .neg-tab-btn:hover:not(.active) { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03); }
 
+        /* ── Contenu produit ── */
+        .neg-product-info {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.025);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .neg-product-info img { width: 32px; height: 32px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .neg-prod-name { font-weight: 700; color: #d8d8d8; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .neg-prod-price { color: #ff6a00; font-weight: 900; font-size: 12px; margin-top: 1px; }
+        .neg-prod-badge { margin-left: auto; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #10b981; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+
+        /* ── Zone chat commune ── */
+        .neg-tab-panel { display: none; }
+        .neg-tab-panel.active { display: block; }
         .neg-chat {
-            height: 260px;
+            height: 165px;
             overflow-y: auto;
-            padding: 16px 20px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 7px;
+            background: #0a0a0a;
         }
-        .neg-chat::-webkit-scrollbar { width: 3px; }
+        .neg-chat::-webkit-scrollbar { width: 2px; }
         .neg-chat::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); }
 
-        .neg-msg { display: flex; gap: 10px; align-items: flex-end; animation: negMsgIn 0.3s ease-out; max-width: 90%; }
+        .neg-msg { display: flex; gap: 7px; align-items: flex-end; animation: negMsgIn 0.25s ease-out; max-width: 92%; }
         .neg-msg.right { align-self: flex-end; flex-direction: row-reverse; }
-        @keyframes negMsgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+        @keyframes negMsgIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; } }
         .neg-msg-avatar {
-            width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center; font-size: 13px;
+            width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 11px;
         }
         .neg-bubble {
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 13px;
-            line-height: 1.55;
-            color: #e8e8e8;
+            padding: 7px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #e0e0e0;
             max-width: 100%;
         }
-        .neg-msg.left .neg-bubble { background: #1e1e1e; border: 1px solid rgba(255,255,255,0.07); border-bottom-left-radius: 4px; }
-        .neg-msg.right .neg-bubble { background: linear-gradient(135deg,#7c3aed,#5b21b6); border-bottom-right-radius: 4px; }
-        .neg-msg.system .neg-bubble { background: rgba(255,106,0,0.08); border: 1px solid rgba(255,106,0,0.2); color: #ff9a3c; font-size: 12px; text-align: center; width: 100%; max-width: 100%; }
+        .neg-msg.left .neg-bubble { background: #1c1c1c; border: 1px solid rgba(255,255,255,0.07); border-bottom-left-radius: 3px; }
+        .neg-msg.right .neg-bubble { background: linear-gradient(135deg,#7c3aed,#5b21b6); border-bottom-right-radius: 3px; }
+        .neg-msg.system .neg-bubble { background: rgba(255,106,0,0.07); border: 1px solid rgba(255,106,0,0.18); color: #ff9a3c; font-size: 10px; text-align: center; width: 100%; max-width: 100%; }
         .neg-msg.system { max-width: 100%; }
 
-        .neg-typing { display: none; padding: 4px 0; }
-        .neg-typing.show { display: flex; align-items: flex-end; gap: 10px; }
+        .neg-typing { display: none; padding: 3px 0; }
+        .neg-typing.show { display: flex; align-items: flex-end; gap: 7px; }
         .neg-typing-dots {
-            background: #1e1e1e; border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px; border-bottom-left-radius: 4px;
-            padding: 10px 14px; display: flex; gap: 4px;
+            background: #1c1c1c; border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px; border-bottom-left-radius: 3px;
+            padding: 7px 10px; display: flex; gap: 4px;
         }
-        .neg-typing-dots span { width: 6px; height: 6px; background: #666; border-radius: 50%; animation: typingBounce 1s ease-in-out infinite; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+        .neg-typing-dots span { width: 5px; height: 5px; background: #555; border-radius: 50%; animation: typingBounce 1s ease-in-out infinite; }
         .neg-typing-dots span:nth-child(2) { animation-delay: .15s; }
         .neg-typing-dots span:nth-child(3) { animation-delay: .3s; }
 
+        /* ── Footer négociation ── */
         .neg-footer {
-            padding: 16px 24px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            background: #111;
+            padding: 10px 14px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            background: #0f0f0f;
         }
         .neg-result {
             display: none;
-            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05));
-            border: 1.5px solid rgba(16,185,129,0.3);
-            border-radius: 14px;
-            padding: 16px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.04));
+            border: 1.5px solid rgba(16,185,129,0.25);
+            border-radius: 10px;
+            padding: 12px;
             text-align: center;
         }
         .neg-result.show { display: block; }
-        .neg-result-title { font-size: 16px; font-weight: 900; color: #10b981; margin-bottom: 8px; }
+        .neg-result-title { font-size: 13px; font-weight: 900; color: #10b981; margin-bottom: 6px; }
         .neg-result-code {
-            font-size: 22px; font-weight: 900; letter-spacing: 4px; color: #ff6a00;
-            font-family: monospace; background: rgba(255,106,0,0.08);
-            border: 1.5px dashed rgba(255,106,0,0.4); border-radius: 10px;
-            padding: 10px 20px; margin: 10px 0; cursor: pointer;
-            transition: all 0.2s;
+            font-size: 16px; font-weight: 900; letter-spacing: 3px; color: #ff6a00;
+            font-family: monospace; background: rgba(255,106,0,0.07);
+            border: 1.5px dashed rgba(255,106,0,0.35); border-radius: 8px;
+            padding: 7px 14px; margin: 8px 0; cursor: pointer; transition: all 0.2s;
         }
-        .neg-result-code:hover { background: rgba(255,106,0,0.15); transform: scale(1.02); }
-        .neg-result-saving { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+        .neg-result-code:hover { background: rgba(255,106,0,0.14); transform: scale(1.02); }
+        .neg-result-saving { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
         .neg-progress {
-            height: 4px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 12px;
+            height: 3px; background: rgba(255,255,255,0.06);
+            border-radius: 2px; overflow: hidden; margin-bottom: 8px;
         }
         .neg-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #7c3aed, #a855f7);
-            border-radius: 2px;
-            width: 0%;
-            transition: width 0.5s ease;
+            height: 100%; background: linear-gradient(90deg, #7c3aed, #a855f7);
+            border-radius: 2px; width: 0%; transition: width 0.5s ease;
         }
-        .neg-status-text { font-size: 11px; color: rgba(255,255,255,0.4); text-align: center; margin-bottom: 8px; }
+        .neg-status-text { font-size: 10px; color: rgba(255,255,255,0.35); text-align: center; margin-bottom: 6px; }
         .neg-apply-btn {
             width: 100%; background: linear-gradient(135deg, #10b981, #059669);
-            color: white; border: none; padding: 12px; border-radius: 10px;
-            font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 10px;
-            letter-spacing: 1px; transition: all 0.2s;
+            color: white; border: none; padding: 9px; border-radius: 8px;
+            font-size: 11px; font-weight: 800; cursor: pointer; margin-top: 8px;
+            letter-spacing: 0.5px; transition: all 0.2s; font-family: inherit;
         }
-        .neg-apply-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+        .neg-apply-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(16,185,129,0.4); }
+
+        /* ── Panel Marché ── */
+        .neg-market-panel {
+            padding: 10px 14px;
+            background: #0a0a0a;
+            height: 165px;
+            overflow-y: auto;
+        }
+        .neg-market-stat {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .neg-market-stat:last-child { border-bottom: none; }
+        .neg-market-label { font-size: 10px; color: rgba(255,255,255,0.45); display: flex; align-items: center; gap: 5px; }
+        .neg-market-label i { font-size: 11px; }
+        .neg-market-val { font-size: 11px; font-weight: 800; color: #e0e0e0; }
+        .neg-market-val.up { color: #10b981; }
+        .neg-market-val.down { color: #ef4444; }
+        .neg-market-val.orange { color: #ff6a00; }
+        .neg-hype-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; margin: 8px 0 4px; overflow: hidden; }
+        .neg-hype-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+        .neg-hype-label { display: flex; justify-content: space-between; font-size: 9px; color: rgba(255,255,255,0.3); }
+
+        /* ── Panel Conseiller ── */
+        .neg-advisor-chat {
+            height: 130px; overflow-y: auto; padding: 8px 12px;
+            display: flex; flex-direction: column; gap: 6px; background: #0a0a0a;
+        }
+        .neg-advisor-chat::-webkit-scrollbar { width: 2px; }
+        .neg-advisor-opts {
+            padding: 8px 12px; background: #0f0f0f;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-wrap: wrap; gap: 5px;
+        }
+        .neg-opt-btn {
+            background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.35);
+            color: #c4b5fd; font-size: 10px; font-weight: 700; padding: 4px 9px;
+            border-radius: 6px; cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .neg-opt-btn:hover { background: rgba(124,58,237,0.3); color: white; }
+
+        /* ── Panel Offres Flash ── */
+        .neg-offers-panel {
+            padding: 10px 14px; background: #0a0a0a;
+            height: 165px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+        }
+        .neg-offer-card {
+            background: linear-gradient(135deg, rgba(255,106,0,0.08), rgba(255,106,0,0.03));
+            border: 1px solid rgba(255,106,0,0.2); border-radius: 10px; padding: 9px 11px;
+        }
+        .neg-offer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        .neg-offer-name { font-size: 11px; font-weight: 800; color: #e0e0e0; }
+        .neg-offer-badge { background: #ef4444; color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; }
+        .neg-offer-desc { font-size: 10px; color: rgba(255,255,255,0.45); line-height: 1.4; }
+        .neg-offer-timer { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 10px; color: #fbbf24; font-weight: 700; }
+        .neg-offer-btn {
+            width: 100%; margin-top: 6px; background: linear-gradient(135deg,#ff6a00,#e65c00);
+            border: none; color: white; padding: 6px; border-radius: 6px;
+            font-size: 10px; font-weight: 800; cursor: pointer; font-family: inherit;
+            transition: all 0.2s;
+        }
+        .neg-offer-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,106,0,0.4); }
+
+        /* ── Panel Marketing ── */
+        .neg-mkt-panel {
+            padding: 10px 14px; background: #0a0a0a;
+            height: 165px; overflow-y: auto; display: flex; flex-direction: column; gap: 7px;
+        }
+        .neg-mkt-tip {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 9px; padding: 8px 10px; display: flex; gap: 8px; align-items: flex-start;
+        }
+        .neg-mkt-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .neg-mkt-text { font-size: 10px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+        .neg-mkt-text strong { color: #ff9a3c; display: block; font-size: 11px; margin-bottom: 2px; }
+        .neg-footer-mkt {
+            padding: 8px 14px; background: #0f0f0f;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .neg-share-btn {
+            width: 100%; background: linear-gradient(135deg,#1d4ed8,#1e40af);
+            border: none; color: white; padding: 7px; border-radius: 7px;
+            font-size: 10px; font-weight: 800; cursor: pointer; font-family: inherit;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .neg-share-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(29,78,216,0.4); }
+
+        /* ── Écran d'accueil — choix du mode ── */
+        .neg-welcome {
+            padding: 12px 14px 14px;
+            background: #0a0a0a;
+            display: flex; flex-direction: column; gap: 7px;
+        }
+        .neg-welcome-title {
+            font-size: 10px; font-weight: 700;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .neg-choice {
+            display: flex; align-items: center; gap: 11px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 11px; padding: 10px 12px;
+            cursor: pointer; transition: all 0.2s;
+            text-align: left; width: 100%; font-family: inherit;
+        }
+        .neg-choice:hover {
+            border-color: rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.06);
+            transform: translateX(3px);
+        }
+        .neg-choice-icon {
+            width: 34px; height: 34px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .neg-choice-text { flex: 1; min-width: 0; }
+        .neg-choice-name { font-size: 12px; font-weight: 800; color: #e8e8e8; }
+        .neg-choice-desc { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+        .neg-choice-arrow { font-size: 11px; color: rgba(255,255,255,0.25); flex-shrink: 0; }
 
         .btn-wishlist {
             width: 46px;
@@ -1964,32 +2135,55 @@
                 <button class="sub-cat-tag" onclick="filterSubCat('roja')">Roja Parfums</button>
             </div>
 
-            <!-- Sous-filtres Sneakers -->
+            <!-- Sous-filtres Sneakers — Niveau 1 : Marques -->
             <div id="sub-sport" class="sub-cats">
-                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('nike')">🔵 Tout Nike</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSneakerBrand('nike', this)">🔵 Tout Nike</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSneakerBrand('adidas', this)">⚫ Tout Adidas</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSneakerBrand('jordan', this)">🔴 Tout Jordan</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSneakerBrand('new-balance', this)">🟡 Tout New Balance</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSneakerBrand('converse', this)">⬛ Tout Converse</button>
+                <button class="sub-cat-tag brand-tag" onclick="filterSneakerBrand('puma', this)">🐆 Tout Puma</button>
+            </div>
+
+            <!-- Sous-filtres Sneakers — Niveau 2 : Modèles par marque -->
+            <div id="sub-sport-nike" class="sub-cats sub-models">
+                <button class="sub-back-btn" onclick="backToSneakerBrands()">← Marques</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('dunk')">Dunk Low</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('air-max')">Air Max DN</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('p-6000')">P-6000</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('cortez')">Cortez</button>
-                <span class="sub-cats-divider">|</span>
-                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('adidas')">⚫ Tout Adidas</button>
+            </div>
+            <div id="sub-sport-adidas" class="sub-cats sub-models">
+                <button class="sub-back-btn" onclick="backToSneakerBrands()">← Marques</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('samba')">Samba OG</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('gazelle')">Gazelle Bold</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('stan-smith')">Stan Smith</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('ultraboost')">Ultraboost 24</button>
-                <span class="sub-cats-divider">|</span>
-                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('jordan')">🔴 Tout Jordan</button>
-                <button class="sub-cat-tag" onclick="filterSubCat('jordan-1')">Jordan 1</button>
-                <button class="sub-cat-tag" onclick="filterSubCat('jordan-4')">Jordan 4</button>
-                <button class="sub-cat-tag" onclick="filterSubCat('jordan-11')">Jordan 11</button>
-                <span class="sub-cats-divider">|</span>
-                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('new-balance')">🟡 Tout New Balance</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('forum')">Forum Low</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('nmd')">NMD R1</button>
+            </div>
+            <div id="sub-sport-jordan" class="sub-cats sub-models">
+                <button class="sub-back-btn" onclick="backToSneakerBrands()">← Marques</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-1')">Jordan 1 Retro</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-4')">Jordan 4 Retro</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-11')">Jordan 11 Retro</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('jordan-3')">Jordan 3 Retro</button>
+            </div>
+            <div id="sub-sport-new-balance" class="sub-cats sub-models">
+                <button class="sub-back-btn" onclick="backToSneakerBrands()">← Marques</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('550')">550</button>
                 <button class="sub-cat-tag" onclick="filterSubCat('990')">990v6</button>
-                <span class="sub-cats-divider">|</span>
-                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('converse')">⬛ Tout Converse</button>
-                <span class="sub-cats-divider">|</span>
-                <button class="sub-cat-tag brand-tag" onclick="filterSubCat('puma')">🐆 Tout Puma</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('574')">574</button>
+            </div>
+            <div id="sub-sport-converse" class="sub-cats sub-models">
+                <button class="sub-back-btn" onclick="backToSneakerBrands()">← Marques</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('chuck')">Chuck Taylor '70</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('run-star')">Run Star Hike</button>
+            </div>
+            <div id="sub-sport-puma" class="sub-cats sub-models">
+                <button class="sub-back-btn" onclick="backToSneakerBrands()">← Marques</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('suede')">Suede Classic</button>
+                <button class="sub-cat-tag" onclick="filterSubCat('rs-x')">RS-X Efekt</button>
             </div>
 
             <!-- Sous-filtres Cheveux -->
@@ -3256,17 +3450,29 @@
             const base = store.state.filteredProducts;
             const needle = subCat.replace(/-/g, ' ').toLowerCase();
 
-            // Mapping modèles précis vers patterns de recherche dans le nom
+            // Mapping modèles précis → pattern dans le nom du produit
             const modelMap = {
                 'jordan-1':   'jordan 1',
                 'jordan-4':   'jordan 4',
                 'jordan-11':  'jordan 11',
+                'jordan-3':   'jordan 3',
                 'samba':      'samba',
                 'gazelle':    'gazelle',
                 'stan-smith': 'stan smith',
                 'ultraboost': 'ultraboost',
+                'forum':      'forum',
+                'nmd':        'nmd',
                 '550':        '550',
                 '990':        '990',
+                '574':        '574',
+                'chuck':      'chuck taylor',
+                'run-star':   'run star',
+                'suede':      'suede',
+                'rs-x':       'rs-x',
+                'dunk':       'dunk',
+                'air-max':    'air max',
+                'p-6000':     'p-6000',
+                'cortez':     'cortez',
             };
             const searchNeedle = modelMap[subCat] || needle;
 
@@ -3276,6 +3482,42 @@
             });
             renderProducts(filtered.length > 0 ? filtered : base);
             document.getElementById('store').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ─── SNEAKERS : filtre par marque puis affiche ses modèles ────────────
+        function filterSneakerBrand(brand, btn) {
+            // 1. Filtrer les produits par marque
+            const brandProducts = productDatabase.filter(p => p.cat === 'sport' && p.subCat === brand);
+            store.state.filteredProducts = brandProducts;
+            renderProducts(brandProducts);
+
+            // 2. Mettre en évidence le bouton de marque
+            document.querySelectorAll('#sub-sport .brand-tag').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // 3. Cacher la barre des marques, afficher les modèles de cette marque
+            document.getElementById('sub-sport').classList.remove('active');
+            document.querySelectorAll('.sub-models').forEach(el => el.classList.remove('active'));
+            const modelBar = document.getElementById('sub-sport-' + brand);
+            if (modelBar) modelBar.classList.add('active');
+
+            // 4. Mettre à jour le titre
+            const brandNames = { nike:'Nike', adidas:'Adidas', jordan:'Jordan', 'new-balance':'New Balance', converse:'Converse', puma:'Puma' };
+            document.getElementById('sectionTitle').textContent = `Sneakers ${brandNames[brand] || brand}`;
+            document.getElementById('store').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function backToSneakerBrands() {
+            // Remettre tous les produits sport
+            const sportProducts = productDatabase.filter(p => p.cat === 'sport');
+            store.state.filteredProducts = sportProducts;
+            renderProducts(sportProducts);
+
+            // Cacher les modèles, réafficher les marques
+            document.querySelectorAll('.sub-models').forEach(el => el.classList.remove('active'));
+            document.getElementById('sub-sport').classList.add('active');
+            document.querySelectorAll('#sub-sport .brand-tag').forEach(b => b.classList.remove('active'));
+            document.getElementById('sectionTitle').textContent = 'Sneakers & Streetwear';
         }
 
         // Navigation directe vers une catégorie + sous-filtre (ex: depuis hero ou liens rapides)
@@ -3796,12 +4038,21 @@
                 </div>` : '';
 
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 900px; display: grid; grid-template-columns: 1fr 1fr;">
+                <div class="modal-content" style="max-width: 900px; display: grid; grid-template-columns: 1fr 1fr; position:relative;">
                     <button class="close-modal" onclick="this.closest('.modal-overlay').remove()"><i class="fas fa-times"></i></button>
                     <div style="background: #f5f5f5; display: flex; align-items: center; justify-content: center; padding: 50px;">
                         <img src="${product.img}" style="max-width: 100%; max-height: 400px; object-fit: contain;">
                     </div>
                     <div style="padding: 40px; overflow-y: auto; max-height: 90vh;">
+                        <button onclick="this.closest('.modal-overlay').remove()" style="
+                            display: inline-flex; align-items: center; gap: 7px;
+                            background: #f5f5f5; border: none; border-radius: 8px;
+                            padding: 8px 14px; font-size: 13px; font-weight: 700;
+                            color: #444; cursor: pointer; margin-bottom: 22px;
+                            font-family: inherit; transition: all 0.2s;
+                        " onmouseover="this.style.background='#ebebeb';this.style.color='#111'" onmouseout="this.style.background='#f5f5f5';this.style.color='#444'">
+                            <i class="fas fa-arrow-left" style="font-size:11px"></i> Retour
+                        </button>
                         <small style="color: var(--sm-primary); font-weight: 800; text-transform: uppercase;">${product.cat}</small>
                         <h2 class="title-serif" style="font-size: 26px; margin: 12px 0;">${product.nom}</h2>
                         <div class="rating" style="margin: 10px 0;">
@@ -3904,6 +4155,908 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🤖 ARIA — Artificial Retail Intelligence Assistant (SLM Market)
+         ═══════════════════════════════════════════════════════════════════ -->
+    <style>
+        /* ── ARIA Orbe Bubble ── */
+        #aria-bubble {
+            position: fixed;
+            bottom: 110px;
+            left: 28px;
+            z-index: 9500;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+            transition: transform 0.3s cubic-bezier(0.19,1,0.22,1);
+        }
+        #aria-bubble:hover { transform: scale(1.06); }
+        .aria-orb {
+            width: 90px; height: 90px;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .aria-orb-core {
+            width: 78px; height: 78px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ff6a00, #b44fff, #00c8ff, #ff6a00);
+            animation: ariaOrbeRotate 3s linear infinite;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 35px rgba(255,106,0,0.7), 0 0 70px rgba(180,79,255,0.4), 0 0 100px rgba(0,200,255,0.2);
+            position: relative; z-index: 2;
+        }
+        .aria-orb-core::after {
+            content: '';
+            position: absolute; inset: 4px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #2a0a3e, #0d0d0d);
+        }
+        .aria-face {
+            position: relative; z-index: 3;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 7px;
+        }
+        .aria-eyes {
+            display: flex; gap: 10px;
+        }
+        .aria-eye {
+            width: 10px; height: 10px;
+            background: #ff6a00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff6a00, 0 0 20px rgba(255,106,0,0.5);
+            animation: ariaBlink 3.5s ease-in-out infinite;
+            display: block;
+        }
+        .aria-eye:nth-child(2) { animation-delay: 0.1s; }
+        .aria-mouth {
+            width: 20px; height: 7px;
+            border: 2.5px solid #ff6a00;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 0 8px rgba(255,106,0,0.6);
+        }
+        .aria-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1.5px solid transparent;
+            animation: ariaRingPulse 2.5s ease-out infinite;
+        }
+        .aria-ring-1 { width: 90px;  height: 90px;  border-color: rgba(255,106,0,0.5);   animation-delay: 0s; }
+        .aria-ring-2 { width: 112px; height: 112px; border-color: rgba(180,79,255,0.3);  animation-delay: 0.5s; }
+        .aria-ring-3 { width: 136px; height: 136px; border-color: rgba(0,200,255,0.18);  animation-delay: 1s; }
+        .aria-label {
+            font-size: 11px; font-weight: 900; letter-spacing: 4px;
+            background: linear-gradient(90deg, #ff6a00, #b44fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+        .aria-notif {
+            position: absolute; top: -2px; right: -2px; z-index: 5;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #ff4444; color: white; font-size: 10px; font-weight: 900;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid white; animation: ariaBounce 1s ease-in-out infinite;
+        }
+        @keyframes ariaOrbeRotate { to { filter: hue-rotate(360deg); } }
+        @keyframes ariaBlink {
+            0%,90%,100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        @keyframes ariaRingPulse {
+            0% { transform: scale(0.85); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        @keyframes ariaBounce {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* ── ARIA Panel ── */
+        .aria-panel {
+            position: fixed;
+            bottom: 24px; left: 24px;
+            width: 440px; height: 640px;
+            z-index: 9500;
+            border-radius: 28px;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            background: #0d0d14;
+            border: 1px solid rgba(255,106,0,0.25);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.07), 0 0 60px rgba(255,106,0,0.08);
+            animation: ariaPanelIn 0.4s cubic-bezier(0.19,1,0.22,1);
+        }
+        .aria-panel.open { display: flex; }
+        @keyframes ariaPanelIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Header */
+        .aria-header {
+            display: flex; align-items: center; gap: 14px;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(255,106,0,0.15), rgba(180,79,255,0.1));
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .aria-avatar-sm {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: conic-gradient(from 0deg, #ff6a00, #b44fff, #00c8ff, #ff6a00);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; animation: ariaOrbeRotate 4s linear infinite;
+            position: relative;
+            box-shadow: 0 0 18px rgba(255,106,0,0.4);
+        }
+        .aria-avatar-sm::after {
+            content: ''; position: absolute; inset: 3px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #1e0930, #0d0d14);
+        }
+        .aria-avatar-sm .aria-eyes-sm {
+            position: relative; z-index: 2;
+            display: flex; gap: 5px;
+        }
+        .aria-avatar-sm .aria-eyes-sm span {
+            width: 5px; height: 5px; background: #ff6a00;
+            border-radius: 50%; box-shadow: 0 0 4px #ff6a00;
+            animation: ariaBlink 3.5s ease-in-out infinite;
+            display: block;
+        }
+        .aria-avatar-sm .aria-eyes-sm span:nth-child(2) { animation-delay: 0.1s; }
+        .aria-header-info { flex: 1; }
+        .aria-header-name {
+            font-size: 16px; font-weight: 900; letter-spacing: 3px;
+            background: linear-gradient(90deg, #ff6a00, #b44fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .aria-header-status {
+            font-size: 11px; color: rgba(255,255,255,0.45);
+            display: flex; align-items: center; gap: 5px; margin-top: 2px;
+        }
+        .aria-status-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: #00e676;
+            box-shadow: 0 0 6px #00e676; animation: ariaBounce 1.5s ease-in-out infinite;
+        }
+        .aria-close-btn {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.06); border: none; color: rgba(255,255,255,0.4);
+            font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .aria-close-btn:hover { background: rgba(255,106,0,0.2); color: #ff6a00; }
+        .aria-mode-badge {
+            font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 8px;
+            border-radius: 20px; margin-left: 6px;
+        }
+
+        /* Messages */
+        .aria-messages {
+            flex: 1; overflow-y: auto; padding: 16px 14px; display: flex;
+            flex-direction: column; gap: 10px; scroll-behavior: smooth;
+        }
+        .aria-messages::-webkit-scrollbar { width: 4px; }
+        .aria-messages::-webkit-scrollbar-track { background: transparent; }
+        .aria-messages::-webkit-scrollbar-thumb { background: rgba(255,106,0,0.3); border-radius: 4px; }
+
+        .aria-msg {
+            max-width: 85%; display: flex; flex-direction: column; gap: 4px;
+            animation: ariaMsgIn 0.3s ease;
+        }
+        @keyframes ariaMsgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .aria-msg.aria-bot { align-self: flex-start; }
+        .aria-msg.aria-user { align-self: flex-end; }
+        .aria-bubble-text {
+            padding: 13px 17px; border-radius: 18px; font-size: 13.5px; line-height: 1.65;
+        }
+        .aria-bot .aria-bubble-text {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.88);
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .aria-user .aria-bubble-text {
+            background: linear-gradient(135deg, #ff6a00, #ff9a3c);
+            color: white; font-weight: 600;
+            border-bottom-right-radius: 4px;
+        }
+        .aria-msg-time {
+            font-size: 9px; color: rgba(255,255,255,0.2);
+            padding: 0 4px;
+        }
+        .aria-bot .aria-msg-time { align-self: flex-start; }
+        .aria-user .aria-msg-time { align-self: flex-end; }
+
+        /* Typing indicator */
+        .aria-typing {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 16px; border-radius: 16px; border-bottom-left-radius: 4px;
+            display: flex; gap: 5px; align-items: center;
+        }
+        .aria-typing span {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(255,106,0,0.7);
+            animation: ariaTypingDot 1.2s ease-in-out infinite;
+        }
+        .aria-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .aria-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes ariaTypingDot {
+            0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Product card dans le chat */
+        .aria-product-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,106,0,0.2);
+            border-radius: 16px; overflow: hidden;
+            cursor: pointer; transition: all 0.2s;
+            max-width: 260px;
+        }
+        .aria-product-card:hover { border-color: rgba(255,106,0,0.5); transform: translateY(-2px); }
+        .aria-product-card img {
+            width: 100%; height: 140px; object-fit: cover;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .aria-product-card-body { padding: 10px 12px; }
+        .aria-product-card-name {
+            font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.9);
+            line-height: 1.4; margin-bottom: 5px;
+        }
+        .aria-product-card-meta {
+            font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 9px;
+        }
+        .aria-product-card-footer {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .aria-product-price { font-size: 14px; font-weight: 900; color: #ff6a00; }
+        .aria-product-add {
+            background: linear-gradient(135deg, #ff6a00, #ff9a3c);
+            border: none; color: white; font-size: 10px; font-weight: 800;
+            padding: 5px 10px; border-radius: 20px; cursor: pointer;
+            transition: opacity 0.2s; letter-spacing: 0.5px;
+        }
+        .aria-product-add:hover { opacity: 0.85; }
+        .aria-products-scroll {
+            display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 8px;
+            scrollbar-width: none;
+        }
+        .aria-products-scroll::-webkit-scrollbar { display: none; }
+        .aria-products-scroll .aria-product-card { flex-shrink: 0; }
+
+        /* Stock badge */
+        .aria-stock-badge {
+            display: inline-block; font-size: 9px; font-weight: 800;
+            padding: 2px 7px; border-radius: 20px; letter-spacing: 0.5px;
+        }
+        .aria-stock-badge.ok { background: rgba(0,230,118,0.15); color: #00e676; }
+        .aria-stock-badge.low { background: rgba(255,193,7,0.15); color: #ffc107; }
+        .aria-stock-badge.out { background: rgba(255,68,68,0.15); color: #ff4444; }
+
+        /* Compare card */
+        .aria-compare {
+            display: flex; gap: 8px; max-width: 100%;
+        }
+        .aria-compare-col {
+            flex: 1; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 10px; font-size: 11px;
+        }
+        .aria-compare-col img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+        .aria-compare-col h5 { font-size: 10.5px; color: rgba(255,255,255,0.85); font-weight: 700; margin-bottom: 4px; }
+        .aria-compare-row { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.4); margin: 3px 0; }
+        .aria-compare-row strong { color: rgba(255,255,255,0.7); }
+
+        /* Quick actions */
+        .aria-quick {
+            padding: 8px 14px 4px; display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .aria-chip {
+            background: rgba(255,106,0,0.1); border: 1px solid rgba(255,106,0,0.25);
+            color: rgba(255,255,255,0.7); font-size: 11.5px; font-weight: 700;
+            padding: 7px 15px; border-radius: 22px; cursor: pointer; transition: all 0.15s;
+            white-space: nowrap; letter-spacing: 0.3px;
+        }
+        .aria-chip:hover { background: rgba(255,106,0,0.25); color: white; border-color: rgba(255,106,0,0.5); }
+
+        /* Input */
+        .aria-input-zone {
+            display: flex; gap: 8px; padding: 10px 14px 14px;
+            background: rgba(0,0,0,0.3); flex-shrink: 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .aria-input-zone input {
+            flex: 1; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 22px;
+            padding: 12px 20px; font-size: 13.5px; color: white;
+            outline: none; font-family: inherit; transition: border-color 0.2s;
+        }
+        .aria-input-zone input::placeholder { color: rgba(255,255,255,0.25); }
+        .aria-input-zone input:focus { border-color: rgba(255,106,0,0.4); }
+        .aria-send-btn {
+            width: 46px; height: 46px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff6a00, #ff9a3c);
+            border: none; color: white; font-size: 16px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .aria-send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 15px rgba(255,106,0,0.4); }
+
+        /* Divider */
+        .aria-divider {
+            font-size: 9px; font-weight: 800; letter-spacing: 2px;
+            color: rgba(255,255,255,0.2); text-align: center;
+            margin: 4px 0; text-transform: uppercase;
+        }
+
+        /* Quiz card */
+        .aria-quiz-card {
+            background: rgba(180,79,255,0.08); border: 1px solid rgba(180,79,255,0.25);
+            border-radius: 14px; padding: 12px 14px; font-size: 12px;
+        }
+        .aria-quiz-q { color: rgba(255,255,255,0.85); font-weight: 700; margin-bottom: 10px; }
+        .aria-quiz-opts { display: flex; flex-direction: column; gap: 6px; }
+        .aria-quiz-opt {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: 8px 12px; cursor: pointer;
+            color: rgba(255,255,255,0.65); font-size: 11.5px; font-weight: 600;
+            transition: all 0.15s; text-align: left;
+        }
+        .aria-quiz-opt:hover { background: rgba(180,79,255,0.15); border-color: rgba(180,79,255,0.4); color: white; }
+
+        /* Info box */
+        .aria-info-box {
+            background: rgba(0,200,255,0.06); border: 1px solid rgba(0,200,255,0.2);
+            border-radius: 12px; padding: 10px 13px; font-size: 11.5px;
+            color: rgba(255,255,255,0.7); line-height: 1.6;
+        }
+        .aria-info-box strong { color: #00c8ff; }
+
+        @media (max-width: 480px) {
+            .aria-panel { width: calc(100vw - 16px); left: 8px; bottom: 8px; height: 580px; border-radius: 22px; }
+            #aria-bubble { bottom: 95px; left: 16px; }
+            .aria-orb { width: 74px; height: 74px; }
+            .aria-orb-core { width: 64px; height: 64px; }
+        }
+    </style>
+
+    <!-- Orbe flottante -->
+    <div id="aria-bubble" onclick="toggleAria()" title="Parlez à ARIA — votre concierge IA">
+        <div class="aria-orb">
+            <div class="aria-orb-core">
+                <div class="aria-face">
+                    <div class="aria-eyes">
+                        <span class="aria-eye"></span>
+                        <span class="aria-eye"></span>
+                    </div>
+                    <div class="aria-mouth"></div>
+                </div>
+            </div>
+            <div class="aria-ring aria-ring-1"></div>
+            <div class="aria-ring aria-ring-2"></div>
+            <div class="aria-ring aria-ring-3"></div>
+            <div class="aria-notif" id="ariaNotif">1</div>
+        </div>
+        <div class="aria-label">ARIA</div>
+    </div>
+
+    <!-- Panel IA -->
+    <div class="aria-panel" id="ariaPanel">
+        <!-- Header -->
+        <div class="aria-header">
+            <div class="aria-avatar-sm">
+                <div class="aria-eyes-sm">
+                    <span></span><span></span>
+                </div>
+            </div>
+            <div class="aria-header-info">
+                <div class="aria-header-name">A·R·I·A</div>
+                <div class="aria-header-status">
+                    <span class="aria-status-dot"></span>
+                    Concierge IA · SLM Market
+                </div>
+            </div>
+            <button class="aria-close-btn" onclick="toggleAria()">✕</button>
+        </div>
+
+        <!-- Messages -->
+        <div class="aria-messages" id="ariaMessages"></div>
+
+        <!-- Quick chips -->
+        <div class="aria-quick" id="ariaQuick"></div>
+
+        <!-- Input -->
+        <div class="aria-input-zone">
+            <input type="text" id="ariaInput" placeholder="Demandez-moi tout…" onkeydown="ariaKey(event)" autocomplete="off">
+            <button class="aria-send-btn" onclick="ariaSend()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // ══════════════════════════════════════════════════════════════════════
+    //  🤖 ARIA — Artificial Retail Intelligence Assistant
+    // ══════════════════════════════════════════════════════════════════════
+    const ARIA = {
+        open: false,
+        greeted: false,
+        ctx: {
+            lastCat: null, lastBrand: null, lastProduct: null,
+            budget: null, quizStep: 0, quizAnswers: [],
+            mode: null, compareList: []
+        },
+
+        // ── Heure de la journée ──────────────────────────────────────────
+        timeGreet() {
+            const h = new Date().getHours();
+            if (h < 6)  return 'Bonsoir';
+            if (h < 12) return 'Bonjour';
+            if (h < 18) return 'Bon après-midi';
+            return 'Bonsoir';
+        },
+
+        // ── Détection d'intention ────────────────────────────────────────
+        intent(txt) {
+            const t = txt.toLowerCase();
+            const i = {};
+
+            // Budget
+            const bm = t.match(/(\d[\d\s]{1,8})\s*(fcfa|f\b|fr\b|k\b|000\b)?/);
+            if (bm) {
+                let val = parseInt(bm[1].replace(/\s/g,''));
+                if (/\bk\b/.test(t)) val *= 1000;
+                if (val >= 5000 && val <= 20000000) i.budget = val;
+            }
+
+            // Catégories
+            if (/sne|basket|shoe|sport|chaussure|nike|adidas|jordan|new.?bal|converse|puma/i.test(t)) i.cat = 'sport';
+            if (/parfum|fragrance|dior|chanel|creed|tom.?ford|sauvage|jadore|versace|baccarat|amouage|senteur/i.test(t)) i.cat = 'luxe';
+            if (/chev|hair|mèche|wig|lace|curl|wave|straight/i.test(t)) i.cat = 'cheveux';
+            if (/vêt|habit|manteau|streetwear|casual|fashion|fringue|costume/i.test(t)) i.cat = 'vetements';
+            if (/auto|voiture|car|jante|piece|pneu/i.test(t)) i.cat = 'auto';
+            if (/tech|phone|smartphone|ordi|casque|audio/i.test(t)) i.cat = 'tech';
+            if (/bijou|montre|bracelet|bague|collier|or\b/i.test(t)) i.cat = 'bijoux';
+
+            // Marques sneakers
+            if (/nike/i.test(t)) i.brand = 'nike';
+            else if (/adidas/i.test(t)) i.brand = 'adidas';
+            else if (/jordan/i.test(t)) i.brand = 'jordan';
+            else if (/new.?balance|nb\b/i.test(t)) i.brand = 'new-balance';
+            else if (/converse/i.test(t)) i.brand = 'converse';
+            else if (/puma/i.test(t)) i.brand = 'puma';
+
+            // Actions
+            if (/compar|vs\b|versus|contre\b|diff[eé]r/i.test(t)) i.compare = true;
+            if (/meilleur|best|top|recommand|conseil|suggestion|propose/i.test(t)) i.recommend = true;
+            if (/panier|acheter|commander|ajouter|add\b|prendre/i.test(t)) i.toCart = true;
+            if (/stock|dispo|rest|disponible/i.test(t)) i.stock = true;
+            if (/promo|code|réduction|remise|réduct|coupon/i.test(t)) i.promo = true;
+            if (/quiz|style|profil|personnalis|goût/i.test(t)) i.quiz = true;
+            if (/bonjour|salut|hello|coucou|allo/i.test(t)) i.greet = true;
+            if (/merci|super|parfait|génial|cool|bravo|excellent/i.test(t)) i.thanks = true;
+            if (/livraison|délai|expéd/i.test(t)) i.delivery = true;
+            if (/panier|mon panier|cart/i.test(t)) i.cartCheck = true;
+            if (/wishlist|favoris|coeur/i.test(t)) i.wishlist = true;
+            if (/tendance|trend|populaire|viral|hype/i.test(t)) i.trend = true;
+            if (/prix|coût|combien|tarif/i.test(t)) i.price = true;
+            if (/aide|help|que.*tu|quoi.*faire|comment/i.test(t)) i.help = true;
+
+            return i;
+        },
+
+        // ── Trouver des produits ─────────────────────────────────────────
+        findProducts(criteria = {}) {
+            let pool = productDatabase;
+            if (criteria.cat)    pool = pool.filter(p => p.cat === criteria.cat);
+            if (criteria.brand)  pool = pool.filter(p => p.subCat === criteria.brand);
+            if (criteria.maxPrice) pool = pool.filter(p => p.prix <= criteria.maxPrice);
+            if (criteria.inStock)  pool = pool.filter(p => p.stock > 0);
+            if (criteria.trending) pool = pool.filter(p => p.rating >= 4.9);
+            if (criteria.rare)     pool = pool.filter(p => p.stock <= 2 && p.stock > 0);
+            pool = pool.sort((a,b) => b.rating - a.rating);
+            return pool;
+        },
+
+        // ── Rendu d'une carte produit ────────────────────────────────────
+        productCard(p) {
+            const stockClass = p.stock === 0 ? 'out' : p.stock <= 2 ? 'low' : 'ok';
+            const stockTxt   = p.stock === 0 ? 'Épuisé' : p.stock <= 2 ? `Dernier ${p.stock}` : `${p.stock} dispo`;
+            return `
+            <div class="aria-product-card" onclick="trackProductView(${p.id})">
+                <img src="${p.img}" alt="${p.nom}" onerror="this.src='assets/images/placeholder.jpg'">
+                <div class="aria-product-card-body">
+                    <div class="aria-product-card-name">${p.nom}</div>
+                    <div class="aria-product-card-meta">
+                        <span class="aria-stock-badge ${stockClass}">${stockTxt}</span>
+                    </div>
+                    <div class="aria-product-card-footer">
+                        <div class="aria-product-price">${p.prix.toLocaleString()} FCFA</div>
+                        ${p.stock > 0 ? `<button class="aria-product-add" onclick="event.stopPropagation();addToCart(${p.id});ariaAddMsg('✅ <b>${p.nom.split(' ').slice(0,3).join(' ')}</b> ajouté au panier !')">PANIER</button>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        },
+
+        // ── Rendu d'un scroll de produits ───────────────────────────────
+        productsScroll(products, max = 5) {
+            const slice = products.slice(0, max);
+            if (!slice.length) return '<div style="color:rgba(255,255,255,0.3);font-size:12px">Aucun produit trouvé.</div>';
+            return `<div class="aria-products-scroll">${slice.map(p => this.productCard(p)).join('')}</div>`;
+        },
+
+        // ── Comparateur de 2 produits ────────────────────────────────────
+        compareCards(p1, p2) {
+            const col = p => `
+            <div class="aria-compare-col">
+                <img src="${p.img}" alt="${p.nom}">
+                <h5>${p.nom}</h5>
+                <div class="aria-compare-row"><span>Prix</span><strong>${p.prix.toLocaleString()} F</strong></div>
+                <div class="aria-compare-row"><span>Note</span><strong>⭐ ${p.rating}</strong></div>
+                <div class="aria-compare-row"><span>Stock</span><strong>${p.stock}</strong></div>
+                <div class="aria-compare-row"><span>Avis</span><strong>${p.reviews}</strong></div>
+                ${p.stock > 0 ? `<button class="aria-product-add" style="width:100%;margin-top:8px" onclick="addToCart(${p.id})">PANIER</button>` : ''}
+            </div>`;
+            return `<div class="aria-compare">${col(p1)}${col(p2)}</div>`;
+        },
+
+        // ── Quiz style ───────────────────────────────────────────────────
+        quizQuestions: [
+            {
+                q: '🎯 Quel est ton univers ?',
+                opts: ['👟 Sneakers & Streetwear', '✨ Luxe & Parfums', '👑 Beauté & Cheveux', '💎 Lifestyle & Tech']
+            },
+            {
+                q: '💰 Quel est ton budget habituel ?',
+                opts: ['Moins de 80 000 FCFA', '80k – 150k FCFA', '150k – 300k FCFA', '300k+ FCFA']
+            },
+            {
+                q: '🔥 Tu cherches plutôt…',
+                opts: ['Les tendances du moment', 'Des classiques intemporels', 'Des pièces rares & limitées', 'Le meilleur rapport qualité/prix']
+            }
+        ],
+
+        quizResult() {
+            const [univers, budget, pref] = this.ctx.quizAnswers;
+            let cat = 'sport', max = 150000, trending = false, rare = false;
+            if (univers.includes('Luxe')) cat = 'luxe';
+            else if (univers.includes('Beauté')) cat = 'cheveux';
+            else if (univers.includes('Lifestyle')) cat = 'tech';
+            if (budget.includes('80k')) max = 150000;
+            else if (budget.includes('150k')) max = 300000;
+            else if (budget.includes('300k')) max = 9999999;
+            else max = 80000;
+            if (pref.includes('tendance')) trending = true;
+            if (pref.includes('rares')) rare = true;
+            const results = this.findProducts({ cat, maxPrice: max, inStock: true, trending, rare });
+            return results;
+        },
+
+        // ── Générer la réponse ───────────────────────────────────────────
+        respond(txt) {
+            const i = this.intent(txt);
+            const catNames = {sport:'Sneakers',luxe:'Parfumerie',cheveux:'Cheveux',vetements:'Mode',auto:'Auto',tech:'Tech',bijoux:'Bijoux'};
+
+            // Quiz en cours
+            if (this.ctx.mode === 'quiz') {
+                return this.handleQuiz(txt);
+            }
+
+            // Salutation
+            if (i.greet && !Object.keys(i).filter(k=>k!=='greet').length) {
+                return { text: `${this.timeGreet()} ! 🌟 Je suis <b>ARIA</b>, ton concierge IA SLM Market. Je peux t'aider à trouver la pièce parfaite, comparer des articles, ou te donner des recommandations ultra-personnalisées.<br><br>Qu'est-ce qui t'amène aujourd'hui ?`, chips: ['🎯 Quiz de style', '🔥 Tendances', '💰 Budget', '👟 Sneakers', '✨ Parfums'] };
+            }
+
+            // Merci
+            if (i.thanks) {
+                return { text: `Avec plaisir ! 🙏 C'est ça le luxe — être là quand tu as besoin. N'hésite pas si tu as d'autres questions !`, chips: ['🔥 Voir les tendances', '🎯 Quiz de style'] };
+            }
+
+            // Aide
+            if (i.help) {
+                return { text: `Voici ce que je sais faire :<br><br>🔍 <b>Trouver</b> un article par nom, marque ou catégorie<br>💰 <b>Budget</b> : dis-moi ton budget → je filtre<br>🆚 <b>Comparer</b> deux articles côte à côte<br>🎯 <b>Quiz</b> : 3 questions → tes recommandations perso<br>📦 <b>Stock</b> : vérifier la disponibilité<br>🏷️ <b>Promos</b> : les codes actifs<br>❤️ <b>Wishlist</b> : analyser tes favoris`, chips: ['🎯 Quiz de style', '💰 Budget', '🔥 Tendances', '🏷️ Codes promo'] };
+            }
+
+            // Promo / codes
+            if (i.promo) {
+                const codes = ['WELCOME25 → -25%', 'SLM2026 → -25 000 FCFA', 'FIRST10 → -10 000 FCFA', 'SUMMER50 → -50 000 FCFA'];
+                return { text: `🎁 Codes promo actifs :<br><br>${codes.map(c=>`<span style="background:rgba(255,106,0,0.15);border:1px solid rgba(255,106,0,0.3);padding:4px 10px;border-radius:6px;font-family:monospace;font-size:11px;color:#ff9a3c">${c}</span>`).join('<br>')}<br><br>Entre le code au checkout pour en profiter !`, chips: ['Voir les produits', '🛒 Mon panier'] };
+            }
+
+            // Livraison
+            if (i.delivery) {
+                return { text: `🚚 <b>Livraison SLM Market :</b><br><br>• Abidjan : <b>24-48h</b> après confirmation<br>• Côte d'Ivoire : <b>2-4 jours</b><br>• International : <b>5-10 jours ouvrables</b><br><br>✈️ Livraison <b>OFFERTE</b> dès 500 000 FCFA d'achat.`, chips: ['🛒 Mon panier', 'Voir les produits'] };
+            }
+
+            // Vérifier le panier
+            if (i.cartCheck) {
+                const cart = store.state.cart;
+                if (!cart.length) return { text: `Ton panier est vide pour l'instant. Je peux t'aider à trouver quelque chose ? 🛒`, chips: ['🔥 Tendances', '🎯 Quiz de style', '👟 Sneakers'] };
+                const total = cart.reduce((s,item) => s + item.prix * item.quantity, 0);
+                const items = cart.map(item => `• <b>${item.nom.split(' ').slice(0,4).join(' ')}</b> ×${item.quantity} — ${(item.prix*item.quantity).toLocaleString()} FCFA`).join('<br>');
+                return { text: `🛒 <b>Ton panier (${cart.length} article${cart.length>1?'s':''}) :</b><br><br>${items}<br><br><b>Total : ${total.toLocaleString()} FCFA</b>`, chips: ['Passer commande', 'Continuer les achats'] };
+            }
+
+            // Wishlist
+            if (i.wishlist) {
+                const wl = store.state.wishlist;
+                if (!wl.length) return { text: `Ta wishlist est vide. Explore les collections et clique ❤️ sur les articles qui t'intéressent !`, chips: ['🔥 Tendances', '👟 Sneakers', '✨ Parfums'] };
+                const bestWl = wl.sort((a,b) => b.rating - a.rating)[0];
+                return { text: `❤️ Tu as <b>${wl.length} article${wl.length>1?'s':''}</b> en wishlist. Ton favori le mieux noté :`, product: bestWl, chips: ['Voir toute la wishlist', '🛒 Ajouter au panier'] };
+            }
+
+            // Tendances
+            if (i.trend) {
+                const trending = this.findProducts({ inStock: true, trending: true }).slice(0, 6);
+                return { text: `🔥 <b>Top tendances SLM Market</b> — les articles les plus notés en ce moment :`, products: trending, chips: ['👟 Tendances Sneakers', '✨ Tendances Parfums'] };
+            }
+
+            // Quiz de style
+            if (i.quiz) {
+                this.ctx.mode = 'quiz';
+                this.ctx.quizStep = 0;
+                this.ctx.quizAnswers = [];
+                return { quiz: this.quizQuestions[0] };
+            }
+
+            // Budget + catégorie
+            if (i.budget) {
+                this.ctx.budget = i.budget;
+                const cat = i.cat || this.ctx.lastCat;
+                const products = this.findProducts({ cat, maxPrice: i.budget, inStock: true });
+                const catLabel = cat ? catNames[cat] : 'toutes catégories';
+                if (!products.length) return { text: `Hmm, je n'ai rien trouvé sous <b>${i.budget.toLocaleString()} FCFA</b> pour ${catLabel}. Veux-tu que j'élargisse la recherche ?`, chips: ['Élargir la recherche', 'Voir tout'] };
+                return { text: `💰 Budget <b>${i.budget.toLocaleString()} FCFA</b> → <b>${products.length} articles</b> pour toi en ${catLabel} :`, products, chips: ['Voir plus', 'Changer de budget'] };
+            }
+
+            // Comparaison
+            if (i.compare) {
+                const words = txt.toLowerCase();
+                const pool = productDatabase.filter(p => {
+                    const n = p.nom.toLowerCase();
+                    const keywords = words.split(/\s+/).filter(w => w.length > 3);
+                    return keywords.some(k => n.includes(k));
+                });
+                if (pool.length >= 2) {
+                    return { text: `🆚 Comparaison des deux articles :`, compare: [pool[0], pool[1]], chips: ['Ajouter au panier', 'Voir d\'autres options'] };
+                }
+                const cat = i.cat || this.ctx.lastCat || 'sport';
+                const top2 = this.findProducts({ cat, inStock: true }).slice(0, 2);
+                if (top2.length >= 2) return { text: `🆚 Voici une comparaison des 2 meilleures pièces <b>${catNames[cat]}</b> :`, compare: [top2[0], top2[1]], chips: ['En voir d\'autres'] };
+                return { text: `Dis-moi les deux articles que tu veux comparer ! Ex: <i>"compare le Dunk Low et le Samba OG"</i>`, chips: ['👟 Sneakers', '✨ Parfums'] };
+            }
+
+            // Marque spécifique
+            if (i.brand) {
+                this.ctx.lastBrand = i.brand;
+                this.ctx.lastCat = 'sport';
+                const brandNames = { nike:'Nike', adidas:'Adidas', jordan:'Jordan', 'new-balance':'New Balance', converse:'Converse', puma:'Puma' };
+                const products = this.findProducts({ brand: i.brand, inStock: true });
+                if (!products.length) return { text: `Je n'ai pas encore de ${brandNames[i.brand]} en stock. Veux-tu voir d'autres marques ?`, chips: ['🔵 Nike', '⚫ Adidas', '🔴 Jordan'] };
+                return { text: `👟 Collection <b>${brandNames[i.brand]}</b> — ${products.length} articles disponibles :`, products, chips: ['Filtrer par prix', 'Voir les tendances'] };
+            }
+
+            // Catégorie
+            if (i.cat) {
+                this.ctx.lastCat = i.cat;
+                const cat = i.cat;
+                const products = this.findProducts({ cat, inStock: true });
+
+                if (cat === 'sport') {
+                    return { text: `👟 <b>Sneakers & Streetwear</b> — ${products.length} paires disponibles. Par marque ou je te montre tout ?`, products: products.slice(0,6), chips: ['🔵 Tout Nike', '⚫ Tout Adidas', '🔴 Tout Jordan', '🟡 New Balance', '🏆 Top tendances'] };
+                }
+                if (cat === 'luxe') {
+                    return { text: `✨ <b>Haute Parfumerie</b> — ${products.length} fragrances d'exception. Par maison ou recommandation personnalisée ?`, products: products.slice(0,5), chips: ['Dior', 'Chanel', 'Creed', 'Tom Ford', '🎯 Recommander'] };
+                }
+                return { text: `Voici les meilleurs articles <b>${catNames[cat]}</b> :`, products: products.slice(0,5), chips: ['Trier par prix', 'Voir les tendances'] };
+            }
+
+            // Stock
+            if (i.stock) {
+                const lowStock = productDatabase.filter(p => p.stock > 0 && p.stock <= 3);
+                return { text: `⚡ <b>${lowStock.length} articles en stock critique</b> (≤ 3 pièces restantes) — à saisir vite :`, products: lowStock.slice(0,5), chips: ['Ajouter au panier', 'Voir tout le stock'] };
+            }
+
+            // Recommandation générale
+            if (i.recommend) {
+                const cat = this.ctx.lastCat;
+                const products = this.findProducts({ cat, inStock: true, trending: true });
+                return { text: `🌟 Mes recommandations du moment${cat ? ` en <b>${catNames[cat]}</b>` : ''} :`, products: products.slice(0,5), chips: ['🎯 Quiz personnalisé', 'Changer catégorie'] };
+            }
+
+            // Recherche texte libre
+            const query = txt.toLowerCase();
+            const found = productDatabase.filter(p =>
+                p.nom.toLowerCase().includes(query) ||
+                p.desc.toLowerCase().includes(query) ||
+                (p.subCat && p.subCat.includes(query))
+            );
+            if (found.length) {
+                return { text: `🔍 J'ai trouvé <b>${found.length} article${found.length>1?'s':''}</b> pour "<b>${txt}</b>" :`, products: found.slice(0,5), chips: ['Trier par prix', 'Voir tout'] };
+            }
+
+            // Fallback
+            return { text: `Je n'ai pas bien compris, mais je suis là ! Essaie :<br>• <i>"montre-moi des Nike"</i><br>• <i>"budget 100 000 FCFA sneakers"</i><br>• <i>"compare Dunk Low et Samba"</i><br>• <i>"quiz de style"</i>`, chips: ['🎯 Quiz de style', '🔥 Tendances', '💰 Budget', '🛒 Mon panier'] };
+        },
+
+        handleQuiz(answer) {
+            this.ctx.quizAnswers.push(answer);
+            this.ctx.quizStep++;
+            if (this.ctx.quizStep < this.quizQuestions.length) {
+                return { quiz: this.quizQuestions[this.ctx.quizStep] };
+            }
+            // Fin du quiz
+            this.ctx.mode = null;
+            const results = this.quizResult();
+            return {
+                text: `🎉 Profil établi ! Basé sur tes réponses, voici tes <b>${Math.min(results.length,5)} picks ARIA</b> ultra-personnalisés :`,
+                products: results.slice(0,5),
+                chips: ['❤️ Ajouter à la wishlist', '🛒 Tout mettre au panier', '🎯 Refaire le quiz']
+            };
+        }
+    };
+
+    // ── UI Functions ──────────────────────────────────────────────────────
+    let ariaTypingTimer = null;
+
+    function toggleAria() {
+        const panel = document.getElementById('ariaPanel');
+        const bubble = document.getElementById('aria-bubble');
+        ARIA.open = !ARIA.open;
+        panel.classList.toggle('open', ARIA.open);
+        if (ARIA.open) {
+            bubble.style.opacity = '0.4';
+            document.getElementById('ariaNotif').style.display = 'none';
+            if (!ARIA.greeted) { ariaGreet(); ARIA.greeted = true; }
+            setTimeout(() => document.getElementById('ariaInput').focus(), 300);
+        } else {
+            bubble.style.opacity = '1';
+        }
+    }
+
+    function ariaGreet() {
+        const h = new Date().getHours();
+        const greet = h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir';
+        const user = store.state.user ? ` <b>${store.state.user.name.split(' ')[0]}</b>` : '';
+        ariaAddBotMsg(`${greet}${user} ! 🌟 Je suis <b>ARIA</b>, ton concierge IA SLM Market.<br><br>Je peux trouver la pièce parfaite pour toi, comparer des articles, créer ton profil de style, ou t'alerter sur les stocks critiques.<br><br>Comment puis-je t'aider ?`);
+        ariaSetChips(['🎯 Quiz de style', '🔥 Tendances', '💰 Mon budget', '🛒 Mon panier', '🏷️ Promos']);
+    }
+
+    function ariaAddBotMsg(html, extras = {}) {
+        const box = document.getElementById('ariaMessages');
+        const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+        const div = document.createElement('div');
+        div.className = 'aria-msg aria-bot';
+
+        let inner = `<div class="aria-bubble-text">${html}</div>`;
+
+        if (extras.products && extras.products.length) {
+            inner += ARIA.productsScroll(extras.products);
+        }
+        if (extras.compare && extras.compare.length >= 2) {
+            inner += ARIA.compareCards(extras.compare[0], extras.compare[1]);
+        }
+        if (extras.quiz) {
+            inner += `<div class="aria-quiz-card">
+                <div class="aria-quiz-q">${extras.quiz.q}</div>
+                <div class="aria-quiz-opts">
+                    ${extras.quiz.opts.map(o => `<button class="aria-quiz-opt" onclick="ariaQuizAnswer('${o.replace(/'/g,"\\'")}',this)">${o}</button>`).join('')}
+                </div>
+            </div>`;
+        }
+        if (extras.info) {
+            inner += `<div class="aria-info-box">${extras.info}</div>`;
+        }
+
+        inner += `<div class="aria-msg-time">${now}</div>`;
+        div.innerHTML = inner;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function ariaAddMsg(html) {
+        ariaRemoveTyping();
+        ariaAddBotMsg(html);
+    }
+
+    function ariaAddUserMsg(txt) {
+        const box = document.getElementById('ariaMessages');
+        const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+        box.innerHTML += `
+        <div class="aria-msg aria-user">
+            <div class="aria-bubble-text">${txt}</div>
+            <div class="aria-msg-time">${now}</div>
+        </div>`;
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function ariaShowTyping() {
+        ariaRemoveTyping();
+        const box = document.getElementById('ariaMessages');
+        const el = document.createElement('div');
+        el.className = 'aria-typing'; el.id = 'ariaTyping';
+        el.innerHTML = '<span></span><span></span><span></span>';
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function ariaRemoveTyping() {
+        const el = document.getElementById('ariaTyping');
+        if (el) el.remove();
+    }
+
+    function ariaSetChips(chips) {
+        const q = document.getElementById('ariaQuick');
+        q.innerHTML = chips.map(c =>
+            `<button class="aria-chip" onclick="ariaSendText('${c.replace(/'/g,"\\'")}',true)">${c}</button>`
+        ).join('');
+    }
+
+    function ariaSend() {
+        const input = document.getElementById('ariaInput');
+        const txt = input.value.trim();
+        if (!txt) return;
+        input.value = '';
+        ariaSendText(txt, false);
+    }
+
+    function ariaSendText(txt, isChip = false) {
+        if (!ARIA.open) { toggleAria(); setTimeout(() => ariaSendText(txt, isChip), 400); return; }
+        ariaAddUserMsg(isChip ? txt : txt);
+        ariaShowTyping();
+        const delay = 600 + Math.random() * 600;
+        clearTimeout(ariaTypingTimer);
+        ariaTypingTimer = setTimeout(() => {
+            ariaRemoveTyping();
+            const resp = ARIA.respond(txt);
+            ariaAddBotMsg(resp.text || '', { products: resp.products, compare: resp.compare, quiz: resp.quiz });
+            if (resp.chips) ariaSetChips(resp.chips);
+            if (resp.product) {
+                const box = document.getElementById('ariaMessages');
+                const el = document.createElement('div');
+                el.className = 'aria-msg aria-bot';
+                el.innerHTML = ARIA.productCard(resp.product);
+                box.appendChild(el);
+                box.scrollTop = box.scrollHeight;
+            }
+        }, delay);
+    }
+
+    function ariaKey(e) {
+        if (e.key === 'Enter') ariaSend();
+    }
+
+    function ariaQuizAnswer(answer, btn) {
+        btn.closest('.aria-quiz-opts').querySelectorAll('.aria-quiz-opt').forEach(b => b.disabled = true);
+        btn.style.background = 'rgba(180,79,255,0.25)';
+        btn.style.borderColor = 'rgba(180,79,255,0.6)';
+        btn.style.color = 'white';
+        ariaShowTyping();
+        setTimeout(() => {
+            ariaRemoveTyping();
+            const resp = ARIA.handleQuiz(answer);
+            ariaAddBotMsg(resp.text || '', { products: resp.products, quiz: resp.quiz });
+            if (resp.chips) ariaSetChips(resp.chips);
+        }, 700);
+    }
+
+    // Notification initiale après 5s
+    setTimeout(() => {
+        if (!ARIA.open) {
+            document.getElementById('ariaNotif').style.display = 'flex';
+        }
+    }, 5000);
+    </script>
+
     <!-- 💬 WHATSAPP FLOAT -->
     <a href="https://wa.me/2250000000000?text=Bonjour%20S.L.M%20Market%2C%20je%20suis%20intéressé(e)%20par%20vos%20produits." target="_blank" rel="noopener" style="
         position: fixed; bottom: 24px; right: 24px; z-index: 8000;
@@ -3950,86 +5103,299 @@
         </div>
     </div>
 
-    <!-- 🤖 MODAL SLM ORACLE NÉGOCIATEUR IA -->
+    <!-- 🤖 SLM ORACLE — BOT INTELLIGENT MULTI-MODE -->
     <div class="neg-modal-bg" id="negModal" onclick="closeNegModal(event)">
       <div class="neg-modal" onclick="event.stopPropagation()">
+
+        <!-- HEADER -->
         <div class="neg-header">
+          <button class="neg-back" id="negBackBtn" onclick="fermerBot()">
+            <i class="fas fa-arrow-left"></i> Retour
+          </button>
           <div class="neg-avatar">🤖</div>
           <div class="neg-header-info">
-            <div class="neg-title">SLM Oracle Négociateur</div>
-            <div class="neg-subtitle">IA exclusive • Négocie le prix en temps réel pour vous</div>
+            <div class="neg-title">SLM Oracle IA</div>
+            <div class="neg-subtitle" id="negSubtitle">Que souhaitez-vous faire ?</div>
           </div>
-          <button class="neg-close" onclick="document.getElementById('negModal').classList.remove('open')"><i class="fas fa-times"></i></button>
+          <button class="neg-close" onclick="fermerBot()"><i class="fas fa-times"></i></button>
         </div>
-        <div class="neg-product-info" id="negProductInfo">
+
+        <!-- TABS (cachés sur l'écran d'accueil) -->
+        <div class="neg-tabs" id="negTabs" style="display:none">
+          <button class="neg-tab-btn" onclick="switchNegTab('nego')" id="tab-nego">
+            <i class="fas fa-handshake"></i>Négocier
+          </button>
+          <button class="neg-tab-btn" onclick="switchNegTab('market')" id="tab-market">
+            <i class="fas fa-chart-line"></i>Marché
+          </button>
+          <button class="neg-tab-btn" onclick="switchNegTab('advisor')" id="tab-advisor">
+            <i class="fas fa-robot"></i>Conseiller
+          </button>
+          <button class="neg-tab-btn" onclick="switchNegTab('offers')" id="tab-offers">
+            <i class="fas fa-bolt"></i>Offres
+          </button>
+          <button class="neg-tab-btn" onclick="switchNegTab('marketing')" id="tab-marketing">
+            <i class="fas fa-bullhorn"></i>Tips
+          </button>
+        </div>
+
+        <!-- INFO PRODUIT -->
+        <div class="neg-product-info">
           <img id="negProductImg" src="" alt="">
-          <div>
+          <div style="flex:1;min-width:0">
             <div class="neg-prod-name" id="negProductName">—</div>
             <div class="neg-prod-price" id="negProductPrice">—</div>
           </div>
+          <div class="neg-prod-badge" id="negStockBadge">🟢 En stock</div>
         </div>
-        <div class="neg-chat" id="negChat">
-          <div class="neg-typing" id="negTyping">
-            <div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div>
-            <div class="neg-typing-dots"><span></span><span></span><span></span></div>
-          </div>
-        </div>
-        <div class="neg-footer">
-          <div class="neg-progress" id="negProgress"><div class="neg-progress-bar" id="negProgressBar"></div></div>
-          <div class="neg-status-text" id="negStatusText">Initialisation de la négociation...</div>
-          <div class="neg-result" id="negResult">
-            <div class="neg-result-title">✅ Accord obtenu !</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px">Code promo exclusif — usage unique</div>
-            <div class="neg-result-code" id="negResultCode" onclick="copyNegCode()">NEG-XXXXX</div>
-            <div class="neg-result-saving" id="negResultSaving">Vous économisez 0 FCFA</div>
-            <button class="neg-apply-btn" onclick="applyNegotiatedCode()">
-              <i class="fas fa-tag"></i> APPLIQUER ET COMMANDER
+
+        <!-- ═══ PANEL ACCUEIL — CHOIX ═══ -->
+        <div class="neg-tab-panel active" id="panel-welcome">
+          <div class="neg-welcome">
+            <div class="neg-welcome-title">Que voulez-vous faire ?</div>
+
+            <button class="neg-choice" onclick="chooseNegMode('nego')">
+              <div class="neg-choice-icon" style="background:rgba(124,58,237,0.15)">🤝</div>
+              <div class="neg-choice-text">
+                <div class="neg-choice-name">Négocier le prix</div>
+                <div class="neg-choice-desc">L'IA négocie un meilleur prix avec le fournisseur</div>
+              </div>
+              <div class="neg-choice-arrow"><i class="fas fa-chevron-right"></i></div>
+            </button>
+
+            <button class="neg-choice" onclick="chooseNegMode('market')">
+              <div class="neg-choice-icon" style="background:rgba(16,185,129,0.15)">📈</div>
+              <div class="neg-choice-text">
+                <div class="neg-choice-name">Analyser le marché</div>
+                <div class="neg-choice-desc">Comparer les prix Amazon, Alibaba, Abidjan</div>
+              </div>
+              <div class="neg-choice-arrow"><i class="fas fa-chevron-right"></i></div>
+            </button>
+
+            <button class="neg-choice" onclick="chooseNegMode('advisor')">
+              <div class="neg-choice-icon" style="background:rgba(59,130,246,0.15)">🤖</div>
+              <div class="neg-choice-text">
+                <div class="neg-choice-name">Conseiller IA</div>
+                <div class="neg-choice-desc">Alternatives, bundles et produits tendance</div>
+              </div>
+              <div class="neg-choice-arrow"><i class="fas fa-chevron-right"></i></div>
+            </button>
+
+            <button class="neg-choice" onclick="chooseNegMode('offers')">
+              <div class="neg-choice-icon" style="background:rgba(239,68,68,0.15)">⚡</div>
+              <div class="neg-choice-text">
+                <div class="neg-choice-name">Offres Flash</div>
+                <div class="neg-choice-desc">Réductions limitées et deals exclusifs</div>
+              </div>
+              <div class="neg-choice-arrow"><i class="fas fa-chevron-right"></i></div>
+            </button>
+
+            <button class="neg-choice" onclick="chooseNegMode('marketing')">
+              <div class="neg-choice-icon" style="background:rgba(251,191,36,0.15)">💡</div>
+              <div class="neg-choice-text">
+                <div class="neg-choice-name">Tips & Économies</div>
+                <div class="neg-choice-desc">Astuces fidélité, parrainage, meilleur achat</div>
+              </div>
+              <div class="neg-choice-arrow"><i class="fas fa-chevron-right"></i></div>
             </button>
           </div>
         </div>
+
+        <!-- ═══ PANEL NÉGOCIATION ═══ -->
+        <div class="neg-tab-panel active" id="panel-nego">
+          <div class="neg-chat" id="negChat">
+            <div class="neg-typing" id="negTyping">
+              <div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div>
+              <div class="neg-typing-dots"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="neg-footer">
+            <div class="neg-progress" id="negProgress"><div class="neg-progress-bar" id="negProgressBar"></div></div>
+            <div class="neg-status-text" id="negStatusText">Initialisation...</div>
+            <div class="neg-result" id="negResult">
+              <div class="neg-result-title">✅ Accord obtenu !</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:6px">Code promo exclusif — usage 24h</div>
+              <div class="neg-result-code" id="negResultCode" onclick="copyNegCode()">NEG-XXXXX</div>
+              <div class="neg-result-saving" id="negResultSaving">Vous économisez 0 FCFA</div>
+              <button class="neg-apply-btn" onclick="applyNegotiatedCode()">
+                <i class="fas fa-tag"></i> APPLIQUER ET COMMANDER
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ PANEL MARCHÉ ═══ -->
+        <div class="neg-tab-panel" id="panel-market">
+          <div class="neg-market-panel" id="negMarketPanel">
+            <div class="neg-market-stat">
+              <span class="neg-market-label"><i class="fas fa-globe"></i> Prix Amazon US</span>
+              <span class="neg-market-val" id="mkt-amazon">—</span>
+            </div>
+            <div class="neg-market-stat">
+              <span class="neg-market-label"><i class="fas fa-store"></i> Prix Alibaba</span>
+              <span class="neg-market-val" id="mkt-ali">—</span>
+            </div>
+            <div class="neg-market-stat">
+              <span class="neg-market-label"><i class="fas fa-map-marker-alt"></i> Marché Abidjan</span>
+              <span class="neg-market-val orange" id="mkt-local">—</span>
+            </div>
+            <div class="neg-market-stat">
+              <span class="neg-market-label"><i class="fas fa-tag"></i> Prix SLM (vous)</span>
+              <span class="neg-market-val up" id="mkt-slm">—</span>
+            </div>
+            <div class="neg-market-stat">
+              <span class="neg-market-label"><i class="fas fa-eye"></i> Vues aujourd'hui</span>
+              <span class="neg-market-val" id="mkt-views">—</span>
+            </div>
+            <div style="margin-top:6px">
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:4px">🔥 Popularité produit</div>
+              <div class="neg-hype-bar"><div class="neg-hype-fill" id="mkt-hype" style="width:0%;background:linear-gradient(90deg,#ff6a00,#fbbf24)"></div></div>
+              <div class="neg-hype-label"><span>Faible</span><span id="mkt-hype-pct">0%</span><span>Viral</span></div>
+            </div>
+            <div class="neg-market-stat" style="margin-top:4px">
+              <span class="neg-market-label"><i class="fas fa-trending-up"></i> Tendance prix</span>
+              <span class="neg-market-val" id="mkt-trend">—</span>
+            </div>
+          </div>
+          <div class="neg-footer" style="padding:8px 14px">
+            <div style="font-size:9px;color:rgba(255,255,255,0.25);text-align:center">📡 Données marché simulées en temps réel par SLM Oracle IA</div>
+          </div>
+        </div>
+
+        <!-- ═══ PANEL CONSEILLER ═══ -->
+        <div class="neg-tab-panel" id="panel-advisor">
+          <div class="neg-advisor-chat" id="advisorChat"></div>
+          <div class="neg-advisor-opts" id="advisorOpts"></div>
+        </div>
+
+        <!-- ═══ PANEL OFFRES FLASH ═══ -->
+        <div class="neg-tab-panel" id="panel-offers">
+          <div class="neg-offers-panel" id="negOffersPanel"></div>
+        </div>
+
+        <!-- ═══ PANEL TIPS MARKETING ═══ -->
+        <div class="neg-tab-panel" id="panel-marketing">
+          <div class="neg-mkt-panel" id="negMktPanel"></div>
+          <div class="neg-footer-mkt">
+            <button class="neg-share-btn" onclick="shareProduct()">
+              <i class="fas fa-share-alt"></i> Partager ce produit — Gagnez 500 FCFA
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <script>
-    // ════════════════════════════════════════════════════
-    // 🤖 SLM ORACLE NÉGOCIATEUR IA
-    // Fonctionnalité 100% unique — aucun Amazon/Alibaba/Jumia ne propose ça
-    // ════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════════
+    // 🤖 SLM ORACLE — BOT IA MULTI-MODE (Négociation · Marché · Conseiller · Offres · Tips)
+    // ════════════════════════════════════════════════════════════════════
 
     let negCurrentProduct = null;
-    let negGeneratedCode = null;
+    let negGeneratedCode  = null;
+    let negActiveTab      = 'welcome';
+    let negNegoStarted    = false;
+    let advisorStep       = 0;
+    let advisorBudget     = null;
+    let offerTimers       = [];
 
+    // ── Utilitaires ──────────────────────────────────────────────────────
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // ── Retour à l'écran d'accueil ───────────────────────────────────────
+    function fermerBot() {
+        document.getElementById('negModal').classList.remove('open');
+        offerTimers.forEach(clearInterval);
+        offerTimers = [];
+    }
+
+    function showNegWelcome() {
+        negActiveTab = 'welcome';
+        document.querySelectorAll('.neg-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.neg-tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-welcome').classList.add('active');
+        document.getElementById('negTabs').style.display = 'none';
+        document.getElementById('negSubtitle').textContent = 'Que souhaitez-vous faire ?';
+    }
+
+    // ── Choisir un mode depuis l'accueil ─────────────────────────────────
+    function chooseNegMode(tab) {
+        // Afficher les tabs
+        document.getElementById('negTabs').style.display = 'flex';
+        switchNegTab(tab);
+
+        // Lancer le mode sélectionné
+        const p = negCurrentProduct;
+        if (tab === 'nego' && !negNegoStarted) {
+            negNegoStarted = true;
+            runNegotiationScript(p);
+        } else if (tab === 'advisor') {
+            loadAdvisorPanel(p);
+        } else if (tab === 'offers') {
+            loadOffersPanel(p);
+        }
+    }
+
+    function switchNegTab(tab) {
+        negActiveTab = tab;
+        document.querySelectorAll('.neg-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.neg-tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+        document.getElementById('panel-' + tab).classList.add('active');
+        const subtitles = {
+            nego:      'Négociation en cours avec le fournisseur',
+            market:    'Analyse des prix mondiaux',
+            advisor:   'Recommandations personnalisées',
+            offers:    'Offres flash & deals exclusifs',
+            marketing: 'Astuces pour économiser plus'
+        };
+        document.getElementById('negSubtitle').textContent = subtitles[tab] || '';
+    }
+
+    // ── Ouverture du bot ──────────────────────────────────────────────────
     function openNegotiator(productId) {
         const p = productDatabase.find(x => x.id === productId);
         if (!p) return;
         negCurrentProduct = p;
-        negGeneratedCode = null;
+        negGeneratedCode  = null;
+        negNegoStarted    = false;
 
-        // Reset UI
+        // Infos produit header
         document.getElementById('negProductImg').src = p.img;
         document.getElementById('negProductName').textContent = p.nom;
         document.getElementById('negProductPrice').textContent = p.prix.toLocaleString() + ' FCFA';
+        const stock = p.stock !== undefined ? p.stock : Math.floor(Math.random() * 20) + 2;
+        const badgeEl = document.getElementById('negStockBadge');
+        if (stock <= 3) { badgeEl.textContent = '🔴 ' + stock + ' restants'; badgeEl.style.background = 'rgba(239,68,68,0.15)'; badgeEl.style.borderColor = 'rgba(239,68,68,0.3)'; badgeEl.style.color = '#ef4444'; }
+        else if (stock <= 8) { badgeEl.textContent = '🟡 ' + stock + ' restants'; badgeEl.style.background = 'rgba(251,191,36,0.12)'; badgeEl.style.borderColor = 'rgba(251,191,36,0.3)'; badgeEl.style.color = '#fbbf24'; }
+        else { badgeEl.textContent = '🟢 En stock'; badgeEl.style.background = 'rgba(16,185,129,0.12)'; badgeEl.style.borderColor = 'rgba(16,185,129,0.3)'; badgeEl.style.color = '#10b981'; }
+
+        // Reset négociation
         document.getElementById('negChat').innerHTML = `
             <div class="neg-typing" id="negTyping">
-                <div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div>
-                <div class="neg-typing-dots"><span></span><span></span><span></span></div>
+              <div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div>
+              <div class="neg-typing-dots"><span></span><span></span><span></span></div>
             </div>`;
         document.getElementById('negProgressBar').style.width = '0%';
-        document.getElementById('negStatusText').textContent = 'Initialisation...';
+        document.getElementById('negStatusText').textContent = 'Prêt à négocier...';
         document.getElementById('negResult').classList.remove('show');
-        document.getElementById('negModal').classList.add('open');
 
-        // Lance le script de négociation
-        runNegotiationScript(p);
+        // Pré-charger marché & marketing (silencieux)
+        loadMarketPanel(p);
+        loadMarketingPanel(p);
+
+        // Afficher l'écran d'accueil — l'utilisateur choisit
+        showNegWelcome();
+        document.getElementById('negModal').classList.add('open');
     }
 
     function closeNegModal(e) {
         if (e && e.target !== document.getElementById('negModal')) return;
-        document.getElementById('negModal').classList.remove('open');
+        fermerBot();
     }
 
+    // ══ MODE 1 : NÉGOCIATION ════════════════════════════════════════════
     async function runNegotiationScript(p) {
-        // Calcul du discount selon catégorie
         const discountRates = {
             luxe: [0.07, 0.12], sport: [0.06, 0.10],
             cheveux: [0.08, 0.15], vetements: [0.07, 0.12],
@@ -4037,123 +5403,289 @@
         };
         const [minD, maxD] = discountRates[p.cat] || [0.06, 0.10];
         const discountRate = minD + Math.random() * (maxD - minD);
-        const saving = Math.round(p.prix * discountRate / 100) * 100;
+        const saving  = Math.round(p.prix * discountRate / 100) * 100;
         const newPrice = p.prix - saving;
-
-        // Prix de marché simulés
-        const usdRate = 1650;
-        const eur = ((p.prix / usdRate) * 0.92).toFixed(0);
-        const usd = (p.prix / usdRate).toFixed(0);
+        const usdRate  = 1650;
         const amazPrice = Math.round(p.prix * 1.08 / 100) * 100;
-        const aliPrice = Math.round(p.prix * 0.95 / 100) * 100;
+        const aliPrice  = Math.round(p.prix * 0.95 / 100) * 100;
 
         const steps = [
-            { delay: 600,  who: 'ai',     text: `🔍 Analyse du marché mondial pour "${p.nom}"...` },
-            { delay: 1800, who: 'system', text: `📊 Comparaison des prix globaux` },
-            { delay: 2600, who: 'ai',     text: `📈 Amazon US: $${amazPrice > 0 ? Math.round(amazPrice/usdRate) : usd} | Alibaba: $${Math.round(aliPrice/usdRate)} | Marché Abidjan: ${Math.round(p.prix*1.1).toLocaleString()} FCFA\n\n💡 Notre prix SLM est compétitif. Je vais négocier un tarif encore plus bas pour vous.` },
-            { delay: 4200, who: 'supplier', text: `Bonjour SLM, quel est le contexte de cette commande ?` },
-            { delay: 5400, who: 'ai',     text: `Client fidèle SLM Market, historique d'achats premium. Cherche "${p.nom}" — prêt à commander immédiatement si prix négocié.` },
-            { delay: 6800, who: 'supplier', text: `Compris. Meilleure offre possible sur ce produit ?` },
-            { delay: 7800, who: 'ai',     text: `Le marché mondial indique une marge fournisseur de 18–22% sur ce type de produit. Je propose ${newPrice.toLocaleString()} FCFA (économie de ${saving.toLocaleString()} FCFA) pour commande immédiate.` },
-            { delay: 9400, who: 'supplier', text: `... Un instant, je consulte mon responsable...` },
-            { delay: 11500, who: 'supplier', text: `✅ Accord. Prix final accordé pour commande dans les 24h : ${newPrice.toLocaleString()} FCFA. Code unique généré.` },
-            { delay: 12800, who: 'ai',    text: `🎉 Excellent ! Accord conclu avec le fournisseur.\n\nVotre code promo personnel a été généré. Il est valable 24h et s'applique uniquement sur "${p.nom}".` },
+            { delay: 600,   who: 'ai',       text: `🔍 Analyse du marché mondial pour "${p.nom}"...` },
+            { delay: 1800,  who: 'system',   text: `📊 Scan de 47 fournisseurs internationaux en cours` },
+            { delay: 2600,  who: 'ai',       text: `📈 Amazon US: $${Math.round(amazPrice/usdRate)} · Alibaba: $${Math.round(aliPrice/usdRate)} · Abidjan local: ${Math.round(p.prix*1.12).toLocaleString()} FCFA\n\n💡 SLM est déjà ${Math.round((1 - p.prix/(p.prix*1.12))*100)}% moins cher que le marché. Je vais aller encore plus loin.` },
+            { delay: 4200,  who: 'supplier', text: `Bonjour SLM Oracle, quel est le profil de l'acheteur ?` },
+            { delay: 5400,  who: 'ai',       text: `Client premium SLM Market. Historique d'achat vérifié. Prêt à commander immédiatement si accord sur "${p.nom}".` },
+            { delay: 6800,  who: 'supplier', text: `Quelle est la proposition de prix ?` },
+            { delay: 7800,  who: 'ai',       text: `Marge fournisseur estimée à 18–22% sur ce segment. Je propose ${newPrice.toLocaleString()} FCFA — économie de ${saving.toLocaleString()} FCFA — pour commande dans les 2h.` },
+            { delay: 9400,  who: 'supplier', text: `⏳ En attente de validation direction commerciale...` },
+            { delay: 11500, who: 'supplier', text: `✅ Accord validé. Prix final : ${newPrice.toLocaleString()} FCFA. Valable 24h. Code promotionnel généré.` },
+            { delay: 12800, who: 'ai',       text: `🎉 Accord conclu ! Votre code personnel est prêt — il expire dans 24h et ne fonctionne que pour "${p.nom}". Félicitations !` },
         ];
 
         let msgCount = 0;
+        const statusLabels = ['Scan des fournisseurs...','Comparaison mondiale...','Analyse de la marge...','Connexion fournisseur...','Négociation en cours...','Arguments avancés...','Discussion de prix...','En attente accord...','Finalisation...','Code généré !'];
         for (const step of steps) {
-            await wait(step.delay - (msgCount > 0 ? 0 : 0));
+            await wait(step.delay);
             showNegTyping(step.who);
-            await wait(900);
+            await wait(850);
             hideNegTyping();
             addNegMessage(step.who, step.text);
             msgCount++;
-            const progress = (msgCount / steps.length) * 85;
-            document.getElementById('negProgressBar').style.width = progress + '%';
-            document.getElementById('negStatusText').textContent = negStatusLabel(step.who, msgCount, steps.length);
+            document.getElementById('negProgressBar').style.width = ((msgCount / steps.length) * 85) + '%';
+            document.getElementById('negStatusText').textContent = statusLabels[Math.min(msgCount-1, statusLabels.length-1)];
         }
 
-        // Générer le code unique
-        const code = 'NEG' + p.id + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        const code = 'NEG' + p.id + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
         negGeneratedCode = code;
-
-        // Enregistrer le code promo dans le système
         const custom = JSON.parse(localStorage.getItem('slm_promo_codes') || '{}');
-        custom[code] = {
-            discount: saving,
-            type: 'fixed',
-            minOrder: 0,
-            desc: `Prix négocié IA pour ${p.nom}`,
-            active: true,
-            expiresAt: Date.now() + 24 * 60 * 60 * 1000
-        };
+        custom[code] = { discount: saving, type: 'fixed', minOrder: 0, desc: `Prix négocié IA — ${p.nom}`, active: true, expiresAt: Date.now() + 86400000 };
         localStorage.setItem('slm_promo_codes', JSON.stringify(custom));
 
         await wait(400);
         document.getElementById('negProgressBar').style.width = '100%';
-        document.getElementById('negStatusText').textContent = '✅ Négociation terminée avec succès !';
+        document.getElementById('negStatusText').textContent = '✅ Négociation réussie !';
         document.getElementById('negResultCode').textContent = code;
-        document.getElementById('negResultSaving').textContent = `Vous économisez ${saving.toLocaleString()} FCFA · Prix final : ${newPrice.toLocaleString()} FCFA`;
+        document.getElementById('negResultSaving').textContent = `Économie : ${saving.toLocaleString()} FCFA · Prix final : ${newPrice.toLocaleString()} FCFA`;
         document.getElementById('negResult').classList.add('show');
-    }
-
-    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-    function negStatusLabel(who, step, total) {
-        const labels = ['Analyse du marché...', 'Comparaison des prix...', 'Évaluation de la marge...', 'Contacting le fournisseur...', 'Négociation en cours...', 'Arguments présentés...', 'Discussion avancée...', 'En attente de réponse...', 'Accord en cours de finalisation...', 'Code promo généré !'];
-        return labels[Math.min(step - 1, labels.length - 1)];
     }
 
     function showNegTyping(who) {
         const chat = document.getElementById('negChat');
-        const typingEl = document.getElementById('negTyping');
-        if (typingEl) typingEl.remove();
+        const old  = document.getElementById('negTyping');
+        if (old) old.remove();
+        const colors = { ai:'linear-gradient(135deg,#7c3aed,#5b21b6)', supplier:'linear-gradient(135deg,#059669,#047857)', system:'linear-gradient(135deg,#ff6a00,#e65c00)' };
+        const avatars = { ai:'🤖', supplier:'🏭', system:'📊' };
         const row = document.createElement('div');
-        row.id = 'negTyping';
-        row.className = 'neg-typing show';
-        const avatars = { ai: '🤖', supplier: '🏭', system: '📊' };
-        const colors = { ai: 'linear-gradient(135deg,#7c3aed,#5b21b6)', supplier: 'linear-gradient(135deg,#059669,#047857)', system: 'linear-gradient(135deg,#ff6a00,#e65c00)' };
+        row.id = 'negTyping'; row.className = 'neg-typing show';
         row.innerHTML = `<div class="neg-msg-avatar" style="background:${colors[who]||colors.ai}">${avatars[who]||'🤖'}</div><div class="neg-typing-dots"><span></span><span></span><span></span></div>`;
         chat.appendChild(row);
         chat.scrollTop = chat.scrollHeight;
     }
-    function hideNegTyping() {
-        const t = document.getElementById('negTyping');
-        if (t) t.classList.remove('show');
-    }
+    function hideNegTyping() { const t = document.getElementById('negTyping'); if(t) t.classList.remove('show'); }
 
     function addNegMessage(who, text) {
         const chat = document.getElementById('negChat');
-        const typingEl = document.getElementById('negTyping');
-        const row = document.createElement('div');
-        const avatars = { ai: '🤖', supplier: '🏭', system: '⚡' };
-        const colors = { ai: 'linear-gradient(135deg,#7c3aed,#5b21b6)', supplier: 'linear-gradient(135deg,#059669,#047857)', system: 'linear-gradient(135deg,#ff6a00,#e65c00)' };
-        const isRight = who === 'ai';
+        const typEl = document.getElementById('negTyping');
+        const colors  = { ai:'linear-gradient(135deg,#7c3aed,#5b21b6)', supplier:'linear-gradient(135deg,#059669,#047857)', system:'linear-gradient(135deg,#ff6a00,#e65c00)' };
+        const avatars  = { ai:'🤖', supplier:'🏭', system:'⚡' };
         const isSystem = who === 'system';
-
+        const isRight  = who === 'ai';
+        const row = document.createElement('div');
         row.className = 'neg-msg ' + (isSystem ? 'system' : isRight ? 'right' : 'left');
         if (!isSystem) {
-            const avatarEl = `<div class="neg-msg-avatar" style="background:${colors[who]||colors.ai}">${avatars[who]||'?'}</div>`;
-            row.innerHTML = `${isRight ? '' : avatarEl}<div class="neg-bubble">${text.replace(/\n/g,'<br>')}</div>${isRight ? avatarEl : ''}`;
+            const av = `<div class="neg-msg-avatar" style="background:${colors[who]||colors.ai}">${avatars[who]||'?'}</div>`;
+            row.innerHTML = `${isRight?'':av}<div class="neg-bubble">${text.replace(/\n/g,'<br>')}</div>${isRight?av:''}`;
         } else {
             row.innerHTML = `<div class="neg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
         }
-        if (typingEl) chat.insertBefore(row, typingEl);
-        else chat.appendChild(row);
+        if (typEl) chat.insertBefore(row, typEl); else chat.appendChild(row);
         chat.scrollTop = chat.scrollHeight;
     }
 
     function copyNegCode() {
         if (!negGeneratedCode) return;
-        navigator.clipboard.writeText(negGeneratedCode).catch(() => {});
-        showToast('Code copié : ' + negGeneratedCode, 'success');
+        navigator.clipboard.writeText(negGeneratedCode).catch(()=>{});
+        showToast('✅ Code copié : ' + negGeneratedCode, 'success');
     }
-
     function applyNegotiatedCode() {
         if (!negGeneratedCode) return;
         document.getElementById('negModal').classList.remove('open');
         applyCoupon(negGeneratedCode);
         toggleCart();
+    }
+
+    // ══ MODE 2 : MARCHÉ ═════════════════════════════════════════════════
+    function loadMarketPanel(p) {
+        const usdRate = 1650;
+        const amazFCFA  = Math.round(p.prix * (1.06 + Math.random()*0.08) / 100) * 100;
+        const aliFCFA   = Math.round(p.prix * (0.92 + Math.random()*0.06) / 100) * 100;
+        const localFCFA = Math.round(p.prix * (1.08 + Math.random()*0.10) / 100) * 100;
+        const hype      = Math.floor(40 + Math.random() * 55);
+        const views     = Math.floor(12 + Math.random() * 88);
+        const trends    = ['📈 +' + Math.floor(3+Math.random()*12) + '% ce mois', '📉 -' + Math.floor(2+Math.random()*8) + '% cette semaine', '➡️ Stable depuis 2 sem.'];
+        const trend     = trends[Math.floor(Math.random() * trends.length)];
+        const trendColor = trend.startsWith('📈') ? 'up' : trend.startsWith('📉') ? 'down' : '';
+
+        document.getElementById('mkt-amazon').textContent = amazFCFA.toLocaleString() + ' FCFA';
+        document.getElementById('mkt-ali').textContent    = aliFCFA.toLocaleString() + ' FCFA';
+        document.getElementById('mkt-local').textContent  = localFCFA.toLocaleString() + ' FCFA';
+        document.getElementById('mkt-slm').textContent    = p.prix.toLocaleString() + ' FCFA ✓';
+        document.getElementById('mkt-views').textContent  = views + ' personnes';
+        document.getElementById('mkt-hype-pct').textContent = hype + '%';
+        document.getElementById('mkt-trend').textContent  = trend;
+        document.getElementById('mkt-trend').className    = 'neg-market-val ' + trendColor;
+        setTimeout(() => { document.getElementById('mkt-hype').style.width = hype + '%'; }, 300);
+    }
+
+    // ══ MODE 3 : CONSEILLER IA ══════════════════════════════════════════
+    function loadAdvisorPanel(p) {
+        advisorStep   = 0;
+        advisorBudget = null;
+        const chat = document.getElementById('advisorChat');
+        chat.innerHTML = '';
+        document.getElementById('advisorOpts').innerHTML = '';
+        setTimeout(() => advisorSay(`👋 Bonjour ! Je suis votre conseiller IA SLM.\n\nVous regardez <strong>${p.nom}</strong>. Voulez-vous que je vous aide ?`), 400);
+        setTimeout(() => showAdvisorOptions([
+            { label: '💡 Voir des alternatives', fn: 'advisorShowAlts' },
+            { label: '🎁 Suggestions bundle',    fn: 'advisorShowBundle' },
+            { label: '⭐ Produits tendance',     fn: 'advisorShowTrending' },
+        ]), 1200);
+    }
+
+    function advisorSay(text) {
+        const chat = document.getElementById('advisorChat');
+        const row = document.createElement('div');
+        row.className = 'neg-msg left';
+        row.innerHTML = `<div class="neg-msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🤖</div><div class="neg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+        chat.appendChild(row);
+        chat.scrollTop = chat.scrollHeight;
+    }
+    function advisorUserSay(text) {
+        const chat = document.getElementById('advisorChat');
+        const row = document.createElement('div');
+        row.className = 'neg-msg right';
+        row.innerHTML = `<div class="neg-bubble" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">${text}</div><div class="neg-msg-avatar" style="background:linear-gradient(135deg,#ff6a00,#e65c00)">👤</div>`;
+        chat.appendChild(row);
+        chat.scrollTop = chat.scrollHeight;
+    }
+    function showAdvisorOptions(opts) {
+        const el = document.getElementById('advisorOpts');
+        el.innerHTML = opts.map(o => `<button class="neg-opt-btn" onclick="${o.fn}()">${o.label}</button>`).join('');
+    }
+    function advisorShowAlts() {
+        advisorUserSay('💡 Voir des alternatives');
+        document.getElementById('advisorOpts').innerHTML = '';
+        const p = negCurrentProduct;
+        const alts = productDatabase.filter(x => x.cat === p.cat && x.id !== p.id).slice(0,3);
+        if (alts.length === 0) { advisorSay('Aucune alternative dans cette catégorie pour l\'instant.'); return; }
+        let msg = `Voici ${alts.length} alternative(s) dans la même catégorie :<br><br>`;
+        alts.forEach(a => { msg += `• <strong>${a.nom}</strong> — ${a.prix.toLocaleString()} FCFA<br>`; });
+        setTimeout(() => advisorSay(msg), 400);
+        setTimeout(() => showAdvisorOptions([{ label: '🔙 Retour', fn: 'loadAdvisorPanelCurrent' }]), 1200);
+    }
+    function advisorShowBundle() {
+        advisorUserSay('🎁 Suggestions bundle');
+        document.getElementById('advisorOpts').innerHTML = '';
+        const p = negCurrentProduct;
+        const other = productDatabase.filter(x => x.id !== p.id && x.cat !== p.cat).slice(0,2);
+        let msg = `💼 Bundle suggéré :<br><br><strong>${p.nom}</strong> + `;
+        if (other.length) {
+            msg += other.map(o => `<strong>${o.nom}</strong>`).join(' + ');
+            const total = p.prix + other.reduce((s,o)=>s+o.prix,0);
+            const disc  = Math.round(total * 0.10 / 100) * 100;
+            msg += `<br><br>Total : ${total.toLocaleString()} FCFA<br>🎁 Remise bundle -10% : <strong style="color:#10b981">-${disc.toLocaleString()} FCFA</strong>`;
+        }
+        setTimeout(() => advisorSay(msg), 400);
+        setTimeout(() => showAdvisorOptions([{ label: '🔙 Retour', fn: 'loadAdvisorPanelCurrent' }]), 1200);
+    }
+    function advisorShowTrending() {
+        advisorUserSay('⭐ Produits tendance');
+        document.getElementById('advisorOpts').innerHTML = '';
+        const trending = [...productDatabase].sort(() => Math.random()-0.5).slice(0,3);
+        let msg = `🔥 Top tendances SLM Market :<br><br>`;
+        trending.forEach((a,i) => { msg += `${['🥇','🥈','🥉'][i]} <strong>${a.nom}</strong> — ${a.prix.toLocaleString()} FCFA<br>`; });
+        setTimeout(() => advisorSay(msg), 400);
+        setTimeout(() => showAdvisorOptions([{ label: '🔙 Retour', fn: 'loadAdvisorPanelCurrent' }]), 1200);
+    }
+    function loadAdvisorPanelCurrent() { if(negCurrentProduct) loadAdvisorPanel(negCurrentProduct); }
+
+    // ══ MODE 4 : OFFRES FLASH ═══════════════════════════════════════════
+    function loadOffersPanel(p) {
+        offerTimers.forEach(clearInterval); offerTimers = [];
+        const panel = document.getElementById('negOffersPanel');
+        const disc  = { luxe:12, sport:10, cheveux:15, vetements:12, auto:6, tech:9, bijoux:8 };
+        const pct   = disc[p.cat] || 10;
+        const save  = Math.round(p.prix * pct / 100 / 100) * 100;
+        const newP  = p.prix - save;
+
+        const offers = [
+            {
+                name: '⚡ Offre Flash 2h',
+                badge: '-' + pct + '%',
+                desc: `${p.nom} au prix exceptionnel pendant 2h seulement. Ne manquez pas !`,
+                secs: 7200,
+                color: '#ef4444',
+                action: `openNegotiator(${p.id})`
+            },
+            {
+                name: '🎁 Bundle Privilège',
+                badge: '-10%',
+                desc: `Achetez 2 articles et bénéficiez de 10% de remise supplémentaire sur votre panier.`,
+                secs: 86400,
+                color: '#7c3aed',
+                action: `switchNegTab('advisor'); advisorShowBundle();`
+            },
+            {
+                name: '🚀 Livraison Express',
+                badge: 'GRATUIT',
+                desc: `Commandez dans les 30 min et bénéficiez de la livraison express offerte à Abidjan.`,
+                secs: 1800,
+                color: '#059669',
+                action: null
+            }
+        ];
+
+        panel.innerHTML = '';
+        offers.forEach((o, i) => {
+            const id = 'offer-timer-' + i;
+            const card = document.createElement('div');
+            card.className = 'neg-offer-card';
+            card.innerHTML = `
+                <div class="neg-offer-top">
+                    <div class="neg-offer-name">${o.name}</div>
+                    <div class="neg-offer-badge" style="background:${o.color}">${o.badge}</div>
+                </div>
+                <div class="neg-offer-desc">${o.desc}</div>
+                <div class="neg-offer-timer"><i class="fas fa-clock"></i> <span id="${id}">--:--</span> restantes</div>
+                ${o.action ? `<button class="neg-offer-btn" onclick="${o.action}" style="background:linear-gradient(135deg,${o.color},${o.color}cc)">Profiter de l'offre →</button>` : `<button class="neg-offer-btn" style="background:linear-gradient(135deg,${o.color},${o.color}cc);opacity:0.6;cursor:default">Automatique à la commande</button>`}
+            `;
+            panel.appendChild(card);
+
+            let remaining = o.secs;
+            function updateTimer() {
+                const h = Math.floor(remaining/3600);
+                const m = Math.floor((remaining%3600)/60);
+                const s = remaining % 60;
+                const el = document.getElementById(id);
+                if (el) el.textContent = (h>0?h+'h ':'')+String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';
+                if (remaining <= 0) clearInterval(tid);
+                remaining--;
+            }
+            updateTimer();
+            const tid = setInterval(updateTimer, 1000);
+            offerTimers.push(tid);
+        });
+    }
+
+    // ══ MODE 5 : TIPS MARKETING ═════════════════════════════════════════
+    function loadMarketingPanel(p) {
+        const panel = document.getElementById('negMktPanel');
+        const pct   = Math.floor(8 + Math.random() * 15);
+        const views = Math.floor(15 + Math.random() * 70);
+        const tips = [
+            { icon:'💎', title:'Programme fidélité', text:`Chaque achat vous rapporte des points SLM Coins. Avec ${p.prix.toLocaleString()} FCFA, gagnez <strong style="color:#fbbf24">${Math.floor(p.prix/100)} coins</strong> = réduction sur votre prochain achat !` },
+            { icon:'🔥', title:'Urgence de stock', text:`<strong style="color:#ef4444">${views} acheteurs</strong> regardent ce produit en ce moment. Le stock est limité — les derniers articles partent vite.` },
+            { icon:'📣', title:'Parrainage gagnant', text:`Partagez SLM Market avec un ami. S'il commande, vous recevez <strong style="color:#10b981">500 FCFA</strong> de crédit offert directement sur votre compte.` },
+            { icon:'🎯', title:'Meilleur moment d\'achat', text:`Les prix SLM sont ${pct}% plus bas que le marché local. En commandant maintenant, vous optimisez votre budget.` },
+            { icon:'🔁', title:'Retour facile', text:`Pas satisfait ? SLM Market rembourse sous 7 jours. Commandez sans risque avec notre garantie satisfaction.` },
+        ];
+        panel.innerHTML = tips.map(t => `
+            <div class="neg-mkt-tip">
+                <div class="neg-mkt-icon">${t.icon}</div>
+                <div class="neg-mkt-text"><strong>${t.title}</strong>${t.text}</div>
+            </div>`).join('');
+    }
+
+    function shareProduct() {
+        const p = negCurrentProduct;
+        if (!p) return;
+        const text = `🛍️ Découvrez "${p.nom}" à ${p.prix.toLocaleString()} FCFA sur SLM Market ! #SLMMarket`;
+        if (navigator.share) {
+            navigator.share({ title: 'SLM Market', text, url: window.location.href }).catch(()=>{});
+        } else {
+            navigator.clipboard.writeText(text).catch(()=>{});
+            showToast('📋 Lien copié ! Partagez-le pour gagner 500 FCFA.', 'success');
+        }
     }
     </script>
 </body>
