@@ -1294,6 +1294,75 @@
         .neg-choice-desc { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px; }
         .neg-choice-arrow { font-size: 11px; color: rgba(255,255,255,0.25); flex-shrink: 0; }
 
+        /* ── Recherche Visuelle ── */
+        .neg-visual-panel { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .neg-visual-drop {
+            border: 2px dashed rgba(168,85,247,0.4);
+            border-radius: 12px; padding: 20px 12px;
+            text-align: center; cursor: pointer;
+            background: rgba(168,85,247,0.04);
+            transition: all 0.2s;
+        }
+        .neg-visual-drop:hover, .neg-visual-drop.drag-over {
+            border-color: #a855f7;
+            background: rgba(168,85,247,0.1);
+        }
+        .neg-visual-drop i { font-size: 26px; color: #a855f7; margin-bottom: 8px; display: block; }
+        .neg-visual-drop p { font-size: 11px; color: rgba(255,255,255,0.5); margin: 0; line-height: 1.5; }
+        .neg-visual-drop span { color: #a855f7; text-decoration: underline; cursor: pointer; font-weight: 700; }
+        .neg-visual-preview {
+            width: 100%; max-height: 120px; object-fit: contain;
+            border-radius: 10px; margin-top: 8px; display: none;
+        }
+        .neg-visual-or {
+            text-align: center; font-size: 10px;
+            color: rgba(255,255,255,0.25); letter-spacing: 1px;
+        }
+        .neg-visual-row {
+            display: flex; gap: 8px;
+        }
+        .neg-visual-row input {
+            flex: 1; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; padding: 9px 12px;
+            color: #fff; font-size: 12px; font-family: inherit;
+            outline: none;
+        }
+        .neg-visual-row input::placeholder { color: rgba(255,255,255,0.3); }
+        .neg-visual-row input:focus { border-color: #a855f7; }
+        .neg-visual-search-btn {
+            background: linear-gradient(135deg,#7c3aed,#a855f7);
+            border: none; border-radius: 8px; padding: 0 14px;
+            color: #fff; font-size: 14px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .neg-visual-search-btn:hover { transform: scale(1.05); }
+        .neg-visual-results { display: flex; flex-direction: column; gap: 8px; }
+        .neg-visual-result {
+            display: flex; gap: 10px; align-items: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; padding: 9px 11px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .neg-visual-result:hover { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.07); transform: translateX(3px); }
+        .neg-visual-result img { width: 44px; height: 44px; object-fit: contain; border-radius: 8px; background: #f5f5f5; flex-shrink: 0; }
+        .neg-visual-result-info { flex: 1; min-width: 0; }
+        .neg-visual-result-name { font-size: 11px; font-weight: 800; color: #e8e8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .neg-visual-result-prix { font-size: 11px; color: #a855f7; font-weight: 700; margin-top: 2px; }
+        .neg-visual-conf {
+            font-size: 10px; font-weight: 800; padding: 3px 7px;
+            border-radius: 20px; flex-shrink: 0;
+        }
+        .neg-visual-conf.high { background: rgba(16,185,129,0.15); color: #10b981; }
+        .neg-visual-conf.med  { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+        .neg-visual-conf.low  { background: rgba(239,68,68,0.15);   color: #ef4444; }
+        .neg-visual-scanning {
+            text-align: center; padding: 16px 0;
+            font-size: 11px; color: rgba(255,255,255,0.5);
+        }
+        .neg-visual-scanning i { font-size: 20px; color: #a855f7; display: block; margin-bottom: 8px; animation: negPulse 1s infinite; }
+
         .btn-wishlist {
             width: 46px;
             height: 46px;
@@ -3227,11 +3296,12 @@
         // ── Options sélectionnées par produit (taille / couleur / quantité) ──
         const productSelections = {};
 
-        // Pré-initialiser la quantité à 1 pour tous les parfums
+        // Pré-initialiser le ml à 100 (défaut) pour tous les parfums
         function initProductSelections() {
             productDatabase.filter(p => p.cat === 'luxe').forEach(p => {
                 if (!productSelections[p.id]) productSelections[p.id] = {};
-                productSelections[p.id].qty = 1;
+                productSelections[p.id].ml = 100;
+                productSelections[p.id].mlFactor = 1.0;
             });
         }
 
@@ -3280,19 +3350,31 @@
             productSelections[productId].colorHex  = colorHex;
         }
 
-        function getProductQuantities(p) {
-            // Sélecteur de quantité disponible uniquement pour les parfums
+        // Options ml pour les parfums — facteur appliqué au prix de base (100ml)
+        const ML_OPTIONS = [
+            { ml: 30,  factor: 0.50 },
+            { ml: 50,  factor: 0.70 },
+            { ml: 100, factor: 1.00 },
+            { ml: 200, factor: 1.65 },
+        ];
+
+        function getProductMl(p) {
             if (p.cat !== 'luxe') return [];
-            const max = Math.min(p.stock, 5);
-            if (max <= 0) return [];
-            return Array.from({ length: max }, (_, i) => i + 1);
+            if (p.stock <= 0) return [];
+            return ML_OPTIONS;
         }
 
-        function selectProductQuantity(productId, qty, el) {
+        function selectProductMl(productId, ml, factor, el) {
             el.closest('.qty-picker').querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
             if (!productSelections[productId]) productSelections[productId] = {};
-            productSelections[productId].qty = qty;
+            productSelections[productId].ml       = ml;
+            productSelections[productId].mlFactor = factor;
+            // Mettre à jour l'affichage du prix dans la carte
+            const base = productDatabase.find(p => p.id === productId)?.prix || 0;
+            const newPrix = Math.round(base * factor / 100) * 100;
+            const priceEl = document.getElementById('card-price-' + productId);
+            if (priceEl) priceEl.innerHTML = newPrix.toLocaleString() + ' <small style="font-size:13px;font-weight:600">FCFA</small>';
         }
 
         function renderProducts(products) {
@@ -3329,9 +3411,9 @@
 
                 const isInWishlist = store.state.wishlist.find(w => w.id === p.id);
 
-                const sizes     = getProductSizes(p.cat);
-                const colors    = getProductColors(p.cat);
-                const quantities = getProductQuantities(p);
+                const sizes  = getProductSizes(p.cat);
+                const colors = getProductColors(p.cat);
+                const mlOpts = getProductMl(p);
 
                 const sizesHtml = sizes.length > 0 ? `
                     <div class="picker-label">Taille</div>
@@ -3345,10 +3427,10 @@
                         ${colors.map(c => `<span class="color-dot" style="background:${c.hex}" title="${c.name}" onclick="selectProductColor(${p.id},'${c.name}','${c.hex}',this);event.stopPropagation();"></span>`).join('')}
                     </div>` : '';
 
-                const quantitiesHtml = quantities.length > 0 ? `
-                    <div class="picker-label">Quantité</div>
+                const mlHtml = mlOpts.length > 0 ? `
+                    <div class="picker-label">Contenance</div>
                     <div class="qty-picker">
-                        ${quantities.map(q => `<span class="qty-chip${q === 1 ? ' selected' : ''}" onclick="selectProductQuantity(${p.id},${q},this);event.stopPropagation();">${q}</span>`).join('')}
+                        ${mlOpts.map(o => `<span class="qty-chip${o.ml === 100 ? ' selected' : ''}" onclick="selectProductMl(${p.id},${o.ml},${o.factor},this);event.stopPropagation();">${o.ml}ml</span>`).join('')}
                     </div>` : '';
 
                 return `
@@ -3373,11 +3455,11 @@
                                 </div>
                                 ${sizesHtml}
                                 ${colorsHtml}
-                                ${quantitiesHtml}
+                                ${mlHtml}
                             </div>
                             <div class="info-bottom">
                                 <div class="price-tag">
-                                    <div class="price-jumia-main">${p.prix.toLocaleString()} <small style="font-size:13px;font-weight:600">FCFA</small></div>
+                                    <div class="price-jumia-main" id="card-price-${p.id}">${p.prix.toLocaleString()} <small style="font-size:13px;font-weight:600">FCFA</small></div>
                                     <div class="price-jumia-row">
                                         <span class="price-jumia-orig">${(Math.round(p.prix * (1.12 + (p.id % 7) * 0.02) / 1000) * 1000).toLocaleString()} FCFA</span>
                                         <span class="price-jumia-disc">-${10 + (p.id % 8)}%</span>
@@ -3680,7 +3762,11 @@
             const sel    = productSelections[productId] || {};
             const sizes  = getProductSizes(product.cat);
             const colors = getProductColors(product.cat);
-            const qtyToAdd = sel.qty || 1;
+            const qtyToAdd = 1;
+            // Prix ajusté selon le ml choisi (défaut 100ml = prix de base)
+            const mlFactor    = sel.mlFactor ?? 1.0;
+            const prixEffectif = Math.round(product.prix * mlFactor / 100) * 100;
+            const mlLabel      = sel.ml ? `${sel.ml}ml` : null;
 
             // Valider la sélection de taille si le produit en a
             if (sizes.length > 0 && !sel.size) {
@@ -3698,25 +3784,29 @@
             const existing = store.state.cart.find(item =>
                 item.id === productId &&
                 item.selectedSize  === (sel.size  || null) &&
-                item.selectedColor === (sel.color || null)
+                item.selectedColor === (sel.color || null) &&
+                item.selectedMl    === (mlLabel   || null)
             );
             if (existing) {
                 existing.quantity += qtyToAdd;
             } else {
                 store.state.cart.push({
                     ...product,
-                    quantity: qtyToAdd,
+                    prix:             prixEffectif,
+                    quantity:         qtyToAdd,
                     selectedSize:     sel.size     || null,
                     selectedColor:    sel.color    || null,
-                    selectedColorHex: sel.colorHex || null
+                    selectedColorHex: sel.colorHex || null,
+                    selectedMl:       mlLabel      || null
                 });
             }
 
             store.setState({ cart: store.state.cart });
             analytics.trackAddToCart(product, qtyToAdd);
-            addElitePoints(product.prix * qtyToAdd);
-            const optLabel = sel.size ? ` (${sel.size}${sel.color ? ' · ' + sel.color : ''})` : (qtyToAdd > 1 ? ` ×${qtyToAdd}` : '');
-            showToast(`${product.nom}${optLabel} ajouté • +${Math.floor(product.prix * qtyToAdd / 1000)} pts Elite`, 'success');
+            addElitePoints(prixEffectif * qtyToAdd);
+            const optParts = [sel.size, sel.color, mlLabel].filter(Boolean);
+            const optLabel = optParts.length ? ` (${optParts.join(' · ')})` : '';
+            showToast(`${product.nom}${optLabel} ajouté • +${Math.floor(prixEffectif / 1000)} pts Elite`, 'success');
             renderProducts(store.state.filteredProducts);
         }
  
@@ -4038,50 +4128,146 @@
                 </div>` : '';
 
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 900px; display: grid; grid-template-columns: 1fr 1fr; position:relative;">
-                    <button class="close-modal" onclick="this.closest('.modal-overlay').remove()"><i class="fas fa-times"></i></button>
-                    <div style="background: #f5f5f5; display: flex; align-items: center; justify-content: center; padding: 50px;">
-                        <img src="${product.img}" style="max-width: 100%; max-height: 400px; object-fit: contain;">
-                    </div>
-                    <div style="padding: 40px; overflow-y: auto; max-height: 90vh;">
+                <div class="modal-content" id="qvModalContent" style="
+                    max-width:900px; width:95vw; padding:0; overflow:hidden;
+                    display:flex; flex-direction:column;
+                    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+                    margin:0; user-select:none;
+                ">
+                    <!-- ── Barre de déplacement ── -->
+                    <div id="qvDragHandle" style="
+                        background:linear-gradient(135deg,#1a1a2e,#16213e);
+                        padding:10px 18px; display:flex; align-items:center;
+                        justify-content:space-between; cursor:grab;
+                        border-radius:16px 16px 0 0;
+                        border-bottom:2px solid rgba(255,106,0,0.35);
+                        flex-shrink:0;
+                    ">
+                        <div style="display:flex;align-items:center;gap:8px;color:#fff;font-size:11px;font-weight:800;letter-spacing:1.2px;opacity:0.85;">
+                            <i class="fas fa-grip-horizontal" style="color:#ff6a00;font-size:13px;"></i>
+                            DÉPLACER
+                        </div>
                         <button onclick="this.closest('.modal-overlay').remove()" style="
-                            display: inline-flex; align-items: center; gap: 7px;
-                            background: #f5f5f5; border: none; border-radius: 8px;
-                            padding: 8px 14px; font-size: 13px; font-weight: 700;
-                            color: #444; cursor: pointer; margin-bottom: 22px;
-                            font-family: inherit; transition: all 0.2s;
-                        " onmouseover="this.style.background='#ebebeb';this.style.color='#111'" onmouseout="this.style.background='#f5f5f5';this.style.color='#444'">
-                            <i class="fas fa-arrow-left" style="font-size:11px"></i> Retour
+                            width:32px;height:32px;border-radius:50%;border:none;
+                            background:#ff6a00;color:#fff;font-size:14px;
+                            display:flex;align-items:center;justify-content:center;
+                            cursor:pointer;flex-shrink:0;
+                            box-shadow:0 2px 8px rgba(255,106,0,0.4);
+                        ">
+                            <i class="fas fa-times"></i>
                         </button>
-                        <small style="color: var(--sm-primary); font-weight: 800; text-transform: uppercase;">${product.cat}</small>
-                        <h2 class="title-serif" style="font-size: 26px; margin: 12px 0;">${product.nom}</h2>
-                        <div class="rating" style="margin: 10px 0;">
-                            <span class="stars" style="color:#f5a623; font-size:14px;">${'★'.repeat(Math.floor(product.rating))}${ (product.rating % 1) >= 0.5 ? '⯨' : '' }${'☆'.repeat(5 - Math.ceil(product.rating))}</span>
-                            <span class="score">${product.rating}</span>
-                            <span class="verified"><i class="fas fa-check-circle"></i> Vérifié S.L.M</span>
+                    </div>
+                    <!-- ── Contenu en grille ── -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden;">
+                        <div style="background:#f5f5f5;display:flex;align-items:center;justify-content:center;padding:50px;">
+                            <img src="${product.img}" style="max-width:100%;max-height:380px;object-fit:contain;">
                         </div>
-                        <p style="color: var(--sm-text-muted); line-height:1.7;">${product.desc}</p>
-                        <div style="font-size: 30px; color: var(--sm-primary); font-weight: 900; margin: 20px 0;">${product.prix.toLocaleString()} FCFA</div>
-                        ${qvSizesHtml}
-                        ${qvColorsHtml}
-                        <div style="background: ${stockStatus.status === 'in-stock' ? 'rgba(0,230,118,0.1)' : stockStatus.status === 'low-stock' ? 'rgba(255,193,7,0.1)' : 'rgba(255,68,68,0.1)'};
-                                   color: ${stockStatus.status === 'in-stock' ? '#059669' : stockStatus.status === 'low-stock' ? '#b45309' : '#dc2626'};
-                                   border: 1px solid currentColor; padding: 10px; border-radius: 8px; margin: 18px 0; text-align: center; font-weight: 700; font-size:13px;">
-                            <i class="fas fa-circle" style="font-size:8px;margin-right:6px;"></i>${stockStatus.label}
+                        <div style="padding:36px;overflow-y:auto;max-height:82vh;">
+                            <button onclick="this.closest('.modal-overlay').remove()" style="
+                                display:inline-flex;align-items:center;gap:7px;
+                                background:#ff6a00;border:none;border-radius:8px;
+                                padding:9px 16px;font-size:13px;font-weight:800;
+                                color:#fff;cursor:pointer;margin-bottom:22px;
+                                font-family:inherit;box-shadow:0 2px 8px rgba(255,106,0,0.3);
+                            ">
+                                <i class="fas fa-arrow-left" style="font-size:12px"></i> Retour
+                            </button>
+                            <small style="color:var(--sm-primary);font-weight:800;text-transform:uppercase;">${product.cat}</small>
+                            <h2 class="title-serif" style="font-size:26px;margin:12px 0;">${product.nom}</h2>
+                            <div class="rating" style="margin:10px 0;">
+                                <span class="stars" style="color:#f5a623;font-size:14px;">${'★'.repeat(Math.floor(product.rating))}${ (product.rating % 1) >= 0.5 ? '⯨' : '' }${'☆'.repeat(5 - Math.ceil(product.rating))}</span>
+                                <span class="score">${product.rating}</span>
+                                <span class="verified"><i class="fas fa-check-circle"></i> Vérifié S.L.M</span>
+                            </div>
+                            <p style="color:var(--sm-text-muted);line-height:1.7;">${product.desc}</p>
+                            <div style="font-size:30px;color:var(--sm-primary);font-weight:900;margin:20px 0;">${product.prix.toLocaleString()} FCFA</div>
+                            ${qvSizesHtml}
+                            ${qvColorsHtml}
+                            <div style="background:${stockStatus.status==='in-stock'?'rgba(0,230,118,0.1)':stockStatus.status==='low-stock'?'rgba(255,193,7,0.1)':'rgba(255,68,68,0.1)'};
+                                        color:${stockStatus.status==='in-stock'?'#059669':stockStatus.status==='low-stock'?'#b45309':'#dc2626'};
+                                        border:1px solid currentColor;padding:10px;border-radius:8px;
+                                        margin:18px 0;text-align:center;font-weight:700;font-size:13px;">
+                                <i class="fas fa-circle" style="font-size:8px;margin-right:6px;"></i>${stockStatus.label}
+                            </div>
+                            <button class="btn-checkout" onclick="addToCart(${product.id});this.closest('.modal-overlay').remove();">
+                                <i class="fas fa-shopping-bag"></i> AJOUTER AU COFFRE
+                            </button>
+                            <button class="btn-buy" onclick="toggleWishlistItem(${product.id});this.closest('.modal-overlay').remove();" style="margin-top:10px;">
+                                <i class="fas fa-heart"></i> AJOUTER AUX FAVORIS
+                            </button>
                         </div>
-                        <button class="btn-checkout" onclick="addToCart(${product.id}); this.closest('.modal-overlay').remove();">
-                            <i class="fas fa-shopping-bag"></i> AJOUTER AU COFFRE
-                        </button>
-                        <button class="btn-buy" onclick="toggleWishlistItem(${product.id}); this.closest('.modal-overlay').remove();" style="margin-top: 10px;">
-                            <i class="fas fa-heart"></i> AJOUTER AUX FAVORIS
-                        </button>
                     </div>
                 </div>`;
- 
+
             document.body.appendChild(modal);
+
+            // ── Fermer en cliquant sur le fond ──
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) modal.remove();
             });
+
+            // ── Drag & Drop ──
+            const content = document.getElementById('qvModalContent');
+            const handle  = document.getElementById('qvDragHandle');
+            let dragging = false, ox = 0, oy = 0;
+
+            handle.addEventListener('mousedown', (e) => {
+                if (e.target.closest('button')) return;
+                dragging = true;
+                handle.style.cursor = 'grabbing';
+                const r = content.getBoundingClientRect();
+                // Passer de transform:translate à left/top fixes
+                content.style.transform = 'none';
+                content.style.left = r.left + 'px';
+                content.style.top  = r.top  + 'px';
+                ox = e.clientX - r.left;
+                oy = e.clientY - r.top;
+                e.preventDefault();
+            });
+
+            function onMove(e) {
+                if (!dragging) return;
+                let nx = e.clientX - ox;
+                let ny = e.clientY - oy;
+                // Garder dans la fenêtre
+                nx = Math.max(0, Math.min(nx, window.innerWidth  - content.offsetWidth));
+                ny = Math.max(0, Math.min(ny, window.innerHeight - content.offsetHeight));
+                content.style.left = nx + 'px';
+                content.style.top  = ny + 'px';
+            }
+            function onUp() {
+                dragging = false;
+                handle.style.cursor = 'grab';
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup',   onUp);
+            }
+
+            handle.addEventListener('mousedown', () => {
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup',   onUp);
+            });
+
+            // ── Support tactile (mobile) ──
+            handle.addEventListener('touchstart', (e) => {
+                if (e.target.closest('button')) return;
+                const t = e.touches[0];
+                dragging = true;
+                const r = content.getBoundingClientRect();
+                content.style.transform = 'none';
+                content.style.left = r.left + 'px';
+                content.style.top  = r.top  + 'px';
+                ox = t.clientX - r.left;
+                oy = t.clientY - r.top;
+            }, { passive: true });
+            handle.addEventListener('touchmove', (e) => {
+                if (!dragging) return;
+                const t = e.touches[0];
+                let nx = Math.max(0, Math.min(t.clientX - ox, window.innerWidth  - content.offsetWidth));
+                let ny = Math.max(0, Math.min(t.clientY - oy, window.innerHeight - content.offsetHeight));
+                content.style.left = nx + 'px';
+                content.style.top  = ny + 'px';
+            }, { passive: true });
+            handle.addEventListener('touchend', () => { dragging = false; });
         }
  
         function showToast(message, type = 'success') {
