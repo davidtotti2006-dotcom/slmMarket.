@@ -1006,7 +1006,10 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        @keyframes botSlideIn { from { opacity:0; transform:translateY(20px) scale(0.96); } to { opacity:1; transform:none; } }
+        @keyframes botSlideIn {
+            from { opacity:0; transform:translate(-50%,-50%) translateY(20px) scale(0.96); }
+            to   { opacity:1; transform:translate(-50%,-50%); }
+        }
         .neg-header {
             background: linear-gradient(135deg, #1a1040, #2e1065);
             padding: 11px 14px;
@@ -5578,6 +5581,13 @@
 
         // Afficher l'écran d'accueil — l'utilisateur choisit
         showNegWelcome();
+        // Remettre le modal au centre avant chaque ouverture
+        const botEl = document.querySelector('.neg-modal');
+        if (botEl) {
+            botEl.style.left      = '50%';
+            botEl.style.top       = '50%';
+            botEl.style.transform = 'translate(-50%,-50%)';
+        }
         document.getElementById('negModal').classList.add('open');
         initBotDrag();
     }
